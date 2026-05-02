@@ -665,9 +665,35 @@ function buildCharts(){
   const lblAV=msAV.map(getLabelAV);
   const lblAll=msAll.map(getLabelAll);
 
-  // 1. Facturación total
+  // 1. Facturación total + línea cajas
   const ntAll=netoByMes(msAll).map(v=>Math.round(v/1e6*100)/100);
-  mc('cFact',{type:'bar',data:{labels:lblAll,datasets:[{label:'Facturación $M',data:ntAll,backgroundColor:msAll.map(m=>m<'2025-11'?'rgba(27,79,138,0.55)':'rgba(11,110,110,0.75)'),borderRadius:5,borderSkipped:false,yAxisID:'y',order:2},{type:'line',label:'Cajas AV',data:msAll.map(m=>{const i=MESES_AV.indexOf(m);return i>=0?CAJAS_TOT[i]:null}),borderColor:'rgba(245,194,0,0.9)',backgroundColor:'rgba(245,194,0,0.07)',fill:false,tension:.3,pointRadius:msAll.map(m=>MESES_AV.includes(m)?4:0),pointBackgroundColor:'rgba(245,194,0,0.9)',pointBorderColor:'white',pointBorderWidth:2,borderDash:[5,3],yAxisID:'y2',order:1,spanGaps:false}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{labels:{font:{size:11},padding:8,usePointStyle:true,boxWidth:10}},tooltip:{titleFont:{size:12},bodyFont:{size:11},callbacks:{label:ctx=>ctx.dataset.yAxisID==='y2'?' Cajas: '+ctx.parsed.y.toLocaleString('es-CL'):' $'+ctx.parsed.y+'M'}}},scales:{x:{grid:{display:false},ticks:{font:{size:11},maxRotation:0}},y:{position:'left',grid:{color:'#EEF0F5'},ticks:{callback:v=>'$'+v+'M',font:{size:11}}},y2:{position:'right',min:1500,max:3200,grid:{display:false},ticks:{callback:v=>v.toLocaleString('es-CL')+' cj',font:{size:10}}}}}})
+  mc('cFact',{
+    data:{labels:lblAll,datasets:[
+      {type:'bar',label:'Facturación $M',data:ntAll,
+       backgroundColor:msAll.map(m=>m<'2025-11'?'rgba(27,79,138,0.55)':'rgba(11,110,110,0.75)'),
+       borderRadius:5,borderSkipped:false,yAxisID:'y',order:2},
+      {type:'line',label:'Cajas AV',
+       data:msAll.map(m=>{const i=MESES_AV.indexOf(m);return i>=0?CAJAS_TOT[i]:null;}),
+       borderColor:'rgba(245,194,0,0.9)',backgroundColor:'rgba(245,194,0,0.07)',
+       fill:false,tension:0.3,spanGaps:false,
+       pointRadius:msAll.map(m=>MESES_AV.includes(m)?4:0),
+       pointBackgroundColor:'rgba(245,194,0,0.9)',pointBorderColor:'white',pointBorderWidth:2,
+       borderDash:[5,3],yAxisID:'y2',order:1}
+    ]},
+    options:{responsive:true,maintainAspectRatio:true,
+      plugins:{legend:{labels:{font:{size:11},padding:8,usePointStyle:true,boxWidth:10}},
+        tooltip:{titleFont:{size:12},bodyFont:{size:11},callbacks:{label:ctx=>{
+          if(ctx.dataset.yAxisID==='y2') return ' Cajas: '+Math.round(ctx.parsed.y).toLocaleString('es-CL');
+          return ' $'+ctx.parsed.y+'M';
+        }}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:11},maxRotation:0}},
+        y:{position:'left',grid:{color:'#EEF0F5'},ticks:{callback:v=>'$'+v+'M',font:{size:11}}},
+        y2:{position:'right',min:1500,max:3200,grid:{display:false},
+            ticks:{callback:v=>v.toLocaleString('es-CL')+' cj',font:{size:10}}}
+      }
+    }
+  });
 
   // 2. Por grupo
   const grps=['Richard','German','Admin','Otros'];
@@ -675,121 +701,175 @@ function buildCharts(){
   mc('cGrupo',{type:'bar',data:{labels:lblAll,datasets:grps.map((g,i)=>({
     label:g,data:netoGrupoByMes(g,msAll).map(v=>Math.round(v/1e6*100)/100),
     backgroundColor:grpColors[i],borderRadius:3}))},
-    options:{...BASE,scales:{x:{...BASE.scales.x,stacked:true},y:{...BASE.scales.y,stacked:true,ticks:{callback:v=>'$'+v+'M'}}}}});
+    options:{...BASE,scales:{x:{...BASE.scales.x,stacked:true},y:{...BASE.scales.y,stacked:true,ticks:{callback:v=>'$'+v+'M'}}}}
+  });
 
   // 3. Ticket
   const tpAll=msAll.map(m=>vs.reduce((s,v)=>s+(RAW[v]?.pedidos?.[m]||0),0));
   const ntAllRaw=netoByMes(msAll);
+  const CLI_V_ALL=[28566,31824,33108,32562,35040,35700,46167,46389,53820,50778,55836,54252];
   const tpArr=msAll.map((m,i)=>tpAll[i]>0?Math.round(ntAllRaw[i]/tpAll[i]):0);
-  const tcArr=msAll.map(m=>{
-    const n=ntAllRaw[msAll.indexOf(m)];
-    // usar clientes globales (no filtrable)
-    const cArr=[496, 525, 460, 522, 554, 498, 522, 532, 463, 349, 456, 449];
-    const c=cArr[MESES_ALL.indexOf(m)]||1;
-    return n>0?Math.round(n/c):0;
+  const tcArr=msAll.map((m,i)=>{
+    const allcli=[522,532,463,349,456,449];
+    const avidx=MESES_AV.indexOf(m);
+    const c=avidx>=0?allcli[avidx]:1;
+    return ntAllRaw[i]>0&&c>0?Math.round(ntAllRaw[i]/c):0;
   });
   mc('cTicket',{type:'line',data:{labels:lblAll,datasets:[
-    {label:'Ticket/Pedido',data:tpArr,borderColor:BLUE,backgroundColor:'rgba(27,79,138,0.08)',fill:true,tension:.35,pointRadius:4,pointBackgroundColor:BLUE,pointBorderColor:'white',pointBorderWidth:2},
-    {label:'Ticket/Cliente',data:tcArr,borderColor:TEAL,fill:false,tension:.35,pointRadius:3,borderDash:[5,3]}]},
-    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,ticks:{...BASE.scales.y.ticks,callback:v=>'$'+v.toLocaleString('es-CL')}}}}});
+    {label:'Ticket/Pedido',data:tpArr,borderColor:BLUE,backgroundColor:'rgba(27,79,138,0.08)',fill:true,tension:0.35,pointRadius:4,pointBackgroundColor:BLUE,pointBorderColor:'white',pointBorderWidth:2},
+    {label:'Ticket/Cliente',data:tcArr,borderColor:TEAL,fill:false,tension:0.35,pointRadius:3,borderDash:[5,3]}]},
+    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,ticks:{...BASE.scales.y.ticks,callback:v=>'$'+v.toLocaleString('es-CL')}}}}
+  });
 
-  // 4. Precio/caja (EERR — no filtrable)
+  // 4. Precio/caja
   mc('cPrecioCaja',{data:{labels:LAV,datasets:[
-  {type:'bar',label:'Precio Neto/Caja ($)',data:[11712, 10784, 10671, 10705, 10205, 10073],backgroundColor:LAV.map((_,i)=>i<2?'rgba(27,79,138,0.45)':'rgba(27,79,138,0.82)'),borderRadius:5,yAxisID:'y',order:2},
-  {type:'bar',label:'Costo CV/Caja ($)',data:["null", "null", 5124, 5114, 5114, 5169],backgroundColor:LAV.map((_,i)=>i<2?'rgba(0,0,0,0)':'rgba(192,57,43,0.72)'),borderRadius:5,yAxisID:'y',order:2},
-  {type:'line',label:'Margen Bruto % (eje der.)',data:["null", "null", 52.0, 52.2, 49.9, 48.7],borderColor:'rgba(27,122,74,0.9)',backgroundColor:'rgba(27,122,74,0.07)',fill:true,tension:.3,pointRadius:LAV.map((_,i)=>i<2?0:5),pointBackgroundColor:'rgba(27,122,74,0.9)',pointBorderColor:'white',pointBorderWidth:2,yAxisID:'y2',order:1,spanGaps:false}]},
-options:{responsive:true,maintainAspectRatio:true,
-  plugins:{legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},
-    tooltip:{titleFont:{size:12},bodyFont:{size:11},callbacks:{label:ctx=>{
-      if(ctx.dataset.yAxisID==='y2') return ' Margen: '+(ctx.parsed.y!==null?ctx.parsed.y+'%':'sin dato');
-      return ' '+ctx.dataset.label+': $'+Math.round(ctx.parsed.y).toLocaleString('es-CL');
-    }}}},
-  scales:{
-    x:{grid:{display:false},ticks:{font:{size:11}}},
-    y:{position:'left',grid:{color:'#EEF0F5'},min:0,
-      ticks:{callback:v=>'$'+v.toLocaleString('es-CL'),font:{size:10}}},
-    y2:{position:'right',min:40,max:60,grid:{display:false},
-      ticks:{callback:v=>v+'%',font:{size:10}}}}}
-});
+    {type:'bar',label:'Precio Neto/Caja ($)',data:[11712,10784,10671,10705,10205,10073],
+     backgroundColor:LAV.map((_,i)=>i<2?'rgba(27,79,138,0.45)':'rgba(27,79,138,0.82)'),borderRadius:5,yAxisID:'y',order:2},
+    {type:'bar',label:'Costo CV/Caja ($)',data:[null,null,5124,5114,5114,5169],
+     backgroundColor:'rgba(192,57,43,0.72)',borderRadius:5,yAxisID:'y',order:2},
+    {type:'line',label:'Margen Bruto %',data:[null,null,52.0,52.2,49.9,48.7],
+     borderColor:'rgba(27,122,74,0.9)',backgroundColor:'rgba(27,122,74,0.07)',fill:true,
+     tension:0.3,spanGaps:false,
+     pointRadius:LAV.map((_,i)=>i<2?0:5),
+     pointBackgroundColor:'rgba(27,122,74,0.9)',pointBorderColor:'white',pointBorderWidth:2,
+     yAxisID:'y2',order:1}]},
+    options:{responsive:true,maintainAspectRatio:true,
+      plugins:{legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},
+        tooltip:{titleFont:{size:12},bodyFont:{size:11},callbacks:{label:ctx=>{
+          if(ctx.dataset.yAxisID==='y2') return ' Margen: '+(ctx.parsed.y!==null?ctx.parsed.y+'%':'sin dato');
+          return ' '+ctx.dataset.label+': $'+Math.round(ctx.parsed.y).toLocaleString('es-CL');
+        }}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:11}}},
+        y:{position:'left',grid:{color:'#EEF0F5'},min:0,ticks:{callback:v=>'$'+v.toLocaleString('es-CL'),font:{size:10}}},
+        y2:{position:'right',min:40,max:60,grid:{display:false},ticks:{callback:v=>v+'%',font:{size:10}}}
+      }
+    }
+  });
 
-  // 5. Conversión — barras + línea, eje dual
+  // 5. Conversión — barras + línea dual
   const visArr=visitasByMes(msAV);
   const vtaArr=ventasByMes(msAV);
   const convArr=convByMes(msAV);
   mc('cConv',{data:{labels:lblAV,datasets:[
     {type:'bar',label:'Contactos totales',data:visArr,backgroundColor:'rgba(27,79,138,0.5)',borderRadius:4,yAxisID:'y',order:2},
     {type:'bar',label:'Ventas',data:vtaArr,backgroundColor:'rgba(27,122,74,0.8)',borderRadius:4,yAxisID:'y',order:2},
-    {type:'line',label:'% Conversión',data:convArr,borderColor:RED,backgroundColor:'rgba(192,57,43,0.05)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:convArr.map(v=>v>=75?GREEN:RED),pointBorderColor:'white',pointBorderWidth:2,yAxisID:'y2',order:1},
-    {type:'line',label:'Meta 75%',data:msAV.map(()=>75),borderColor:'rgba(224,120,32,0.6)',borderWidth:1.5,borderDash:[4,4],pointRadius:0,fill:false,yAxisID:'y2',order:0}]},
+    {type:'line',label:'% Conversión',data:convArr,
+     borderColor:RED,backgroundColor:'rgba(192,57,43,0.05)',fill:true,tension:0.3,
+     pointRadius:5,pointBackgroundColor:convArr.map(v=>v>=75?GREEN:RED),
+     pointBorderColor:'white',pointBorderWidth:2,yAxisID:'y2',order:1},
+    {type:'line',label:'Meta 75%',data:msAV.map(()=>75),
+     borderColor:'rgba(224,120,32,0.6)',borderWidth:1.5,borderDash:[4,4],
+     pointRadius:0,fill:false,yAxisID:'y2',order:0}]},
     options:{responsive:true,maintainAspectRatio:true,
-    plugins:{legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},tooltip:{titleFont:{size:12},bodyFont:{size:11}}},
-    scales:{x:{grid:{display:false},ticks:{font:{size:11},maxRotation:0}},
-      y:{position:'left',grid:{color:'#EEF0F5'},ticks:{font:{size:11},callback:v=>v.toLocaleString('es-CL')}},
-      y2:{position:'right',min:0,max:110,grid:{display:false},ticks:{callback:v=>v+'%',font:{size:10}}}}}});
+      plugins:{legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},
+        tooltip:{titleFont:{size:12},bodyFont:{size:11}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:11},maxRotation:0}},
+        y:{position:'left',grid:{color:'#EEF0F5'},ticks:{font:{size:11},callback:v=>v.toLocaleString('es-CL')}},
+        y2:{position:'right',min:0,max:110,grid:{display:false},ticks:{callback:v=>v+'%',font:{size:10}}}
+      }
+    }
+  });
 
-  // 6. Cajas — siempre total (no filtrable por vendedor individualmente)
-  mc('cCajas',{type:'bar',data:{labels:LAV,datasets:[{label:'Richard',data:CAJAS_R,backgroundColor:'rgba(27,79,138,0.85)',borderRadius:3,stack:'s'},{label:'Germán', data:CAJAS_G,backgroundColor:'rgba(224,120,32,0.85)',borderRadius:3,stack:'s'},{label:'Admin',  data:CAJAS_O,backgroundColor:'rgba(155,89,182,0.7)',borderRadius:3,stack:'s'},{label:'Total cajas',data:CAJAS_TOT,type:'line',borderColor:'rgba(27,122,74,0.8)',borderWidth:2,borderDash:[3,2],pointRadius:4,pointBackgroundColor:'rgba(27,122,74,0.9)',pointBorderColor:'white',pointBorderWidth:2,fill:false,order:0},{label:'BE 3.190',data:CAJAS_TOT.map(()=>3190),type:'line',borderColor:RED,borderWidth:2.5,borderDash:[6,4],pointRadius:0,fill:false,order:0}]},options:{...BASE,plugins:{...BASE.plugins,tooltip:{callbacks:{label:ctx=>{if(ctx.dataset.label==='BE 3.190') return ' BE: 3.190 cajas';if(ctx.dataset.label==='Total cajas') return ' Total: '+ctx.parsed.y.toLocaleString('es-CL')+' cajas';return ' '+ctx.dataset.label+': '+ctx.parsed.y.toLocaleString('es-CL');}}}},scales:{x:{...BASE.scales.x,stacked:true},y:{...BASE.scales.y,stacked:true,ticks:{...BASE.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}})
+  // 6. Cajas vs BE — apilado + línea total + línea BE
+  mc('cCajas',{type:'bar',data:{labels:LAV,datasets:[
+    {label:'Richard',data:CAJAS_R,backgroundColor:'rgba(27,79,138,0.85)',borderRadius:3,stack:'s'},
+    {label:'Germán', data:CAJAS_G,backgroundColor:'rgba(224,120,32,0.85)',borderRadius:3,stack:'s'},
+    {label:'Admin',  data:CAJAS_O,backgroundColor:'rgba(155,89,182,0.7)',borderRadius:3,stack:'s'},
+    {type:'line',label:'Total cajas',data:CAJAS_TOT,
+     borderColor:'rgba(27,122,74,0.85)',borderWidth:2.5,borderDash:[3,2],
+     pointRadius:4,pointBackgroundColor:'rgba(27,122,74,0.9)',
+     pointBorderColor:'white',pointBorderWidth:2,fill:false,order:0},
+    {type:'line',label:'BE 3.190',data:CAJAS_TOT.map(()=>3190),
+     borderColor:RED,borderWidth:2.5,borderDash:[6,4],pointRadius:0,fill:false,order:0}]},
+    options:{responsive:true,maintainAspectRatio:true,
+      plugins:{legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},
+        tooltip:{titleFont:{size:12},bodyFont:{size:11},callbacks:{label:ctx=>{
+          if(ctx.dataset.label==='BE 3.190') return ' BE: 3.190 cajas';
+          if(ctx.dataset.label==='Total cajas') return ' Total: '+ctx.parsed.y.toLocaleString('es-CL')+' cajas';
+          return ' '+ctx.dataset.label+': '+ctx.parsed.y.toLocaleString('es-CL');
+        }}}},
+      scales:{
+        x:{...BASE.scales.x,stacked:true},
+        y:{...BASE.scales.y,stacked:true,ticks:{...BASE.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}
+      }
+    }
+  });
 
   // 7. Cajas/cliente
   mc('cCpk',{type:'bar',data:{labels:LAV,datasets:[
-    {label:'Cajas/Cliente',data:CPK,backgroundColor:CPK.map(v=>v>=6.9?'rgba(27,122,74,0.85)':v>=5?'rgba(27,79,138,0.8)':'rgba(192,57,43,0.75)'),borderRadius:6,borderSkipped:false},
-    {label:'Meta 6.9',data:CPK.map(()=>6.9),type:'line',borderColor:AMBER,borderWidth:2.5,borderDash:[5,4],pointRadius:0,fill:false}]},
-    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,min:0,max:9}}}});
+    {label:'Cajas/Cliente',data:CPK,
+     backgroundColor:CPK.map(v=>v>=6.9?'rgba(27,122,74,0.85)':v>=5?'rgba(27,79,138,0.8)':'rgba(192,57,43,0.75)'),
+     borderRadius:6,borderSkipped:false},
+    {type:'line',label:'Meta 6.9',data:CPK.map(()=>6.9),
+     borderColor:AMBER,borderWidth:2.5,borderDash:[5,4],pointRadius:0,fill:false}]},
+    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,min:0,max:9}}}
+  });
 
-  // 8. Distribución cajas — apilado
-  const dcColors=["rgba(192,57,43,0.82)", "rgba(224,120,32,0.82)", "rgba(241,196,15,0.85)", "rgba(27,79,138,0.82)", "rgba(11,110,110,0.85)", "rgba(27,122,74,0.88)", "rgba(90,50,160,0.82)"];
+  // 8. Distribución cajas apilado
+  const dcColors=['rgba(192,57,43,0.82)','rgba(224,120,32,0.82)','rgba(241,196,15,0.85)',
+    'rgba(27,79,138,0.82)','rgba(11,110,110,0.85)','rgba(27,122,74,0.88)','rgba(90,50,160,0.82)'];
   mc('cDistCajas',{type:'bar',data:{labels:LAV,
     datasets:[
       ...RANGO_LABELS.map((rl,i)=>({label:rl+' cajas',data:DIST_RANGO[rl],backgroundColor:dcColors[i],borderRadius:3,stack:'s'})),
-      {type:'line',label:'Total',data:PROM_CLI_MES,borderColor:NAVY,borderWidth:2.5,borderDash:[5,4],pointRadius:4,pointBackgroundColor:NAVY,pointBorderColor:'white',pointBorderWidth:2,fill:false,order:0},
-      {type:'line',label:'Prom 452',data:PROM_CLI_MES.map(()=>452),borderColor:AMBER,borderWidth:1.5,borderDash:[3,3],pointRadius:0,fill:false,order:0}
+      {type:'line',label:'Total',data:PROM_CLI_MES,borderColor:NAVY,borderWidth:2.5,borderDash:[5,4],
+       pointRadius:4,pointBackgroundColor:NAVY,pointBorderColor:'white',pointBorderWidth:2,fill:false,order:0},
+      {type:'line',label:'Prom',data:PROM_CLI_MES.map(()=>449),
+       borderColor:AMBER,borderWidth:1.5,borderDash:[3,3],pointRadius:0,fill:false,order:0}
     ]},
-    options:{...BASE,plugins:{...BASE.plugins,tooltip:{callbacks:{label:ctx=>{
-      if(ctx.datasetIndex>=RANGO_LABELS.length) return ' '+ctx.dataset.label+': '+ctx.parsed.y;
-      const tot=PROM_CLI_MES[ctx.dataIndex]||1;
-      return ' '+ctx.dataset.label+': '+ctx.parsed.y+' cli ('+Math.round(ctx.parsed.y/tot*100)+'%)';
-    }}}},
-    scales:{x:{...BASE.scales.x,stacked:true},y:{...BASE.scales.y,stacked:true,ticks:{...BASE.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}}});
+    options:{...BASE,
+      plugins:{...BASE.plugins,tooltip:{callbacks:{label:ctx=>{
+        if(ctx.datasetIndex>=RANGO_LABELS.length) return ' '+ctx.dataset.label+': '+ctx.parsed.y;
+        const tot=PROM_CLI_MES[ctx.dataIndex]||1;
+        return ' '+ctx.dataset.label+': '+ctx.parsed.y+' cli ('+Math.round(ctx.parsed.y/tot*100)+'%)';
+      }}}},
+      scales:{x:{...BASE.scales.x,stacked:true},y:{...BASE.scales.y,stacked:true,ticks:{...BASE.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}
+    }
+  });
 
   // 9. Inactividad
   mc('cInact',{type:'line',data:{labels:LAV,datasets:[
-    {label:'% Inactivos',data:INAC,borderColor:RED,backgroundColor:'rgba(192,57,43,0.08)',fill:true,tension:.35,pointRadius:5,pointBackgroundColor:INAC.map(v=>v>60?RED:ORANGE),pointBorderColor:'white',pointBorderWidth:2},
+    {label:'% Inactivos',data:INAC,borderColor:RED,backgroundColor:'rgba(192,57,43,0.08)',fill:true,tension:0.35,
+     pointRadius:5,pointBackgroundColor:INAC.map(v=>v>60?RED:ORANGE),pointBorderColor:'white',pointBorderWidth:2},
     {label:'Meta 20%',data:INAC.map(()=>20),borderColor:ORANGE,borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false}]},
-    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,min:0,max:100,ticks:{...BASE.scales.y.ticks,callback:v=>v+'%'}}}}});
+    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,min:0,max:100,ticks:{...BASE.scales.y.ticks,callback:v=>v+'%'}}}}
+  });
 
   // 10. Fidelidad donut
-  const fidV=[233, 170, 139, 131, 123, 107]; const fidP=[25.8, 18.8, 15.4, 14.5, 13.6, 11.8]; const fidL=["1 mes", "2 meses", "3 meses", "4 meses", "5 meses", "6 meses"];
+  const fidV=[29,93,106,118,127,107];
+  const fidP=[3.4,10.9,12.5,13.9,15.0,12.6];
+  const fidL=["1 mes","2 meses","3 meses","4 meses","5 meses","6 meses"];
   const fidColors=['rgba(192,57,43,.85)','rgba(224,120,32,.85)','rgba(241,196,15,.85)','rgba(27,79,138,.8)','rgba(11,110,110,.85)','rgba(27,122,74,.9)'];
   mc('cFidel',{type:'doughnut',data:{labels:fidL.map((l,i)=>l+' — '+fidV[i]+' ('+fidP[i]+'%)'),
     datasets:[{data:fidV,backgroundColor:fidColors,borderWidth:2,borderColor:'white',hoverOffset:6}]},
     options:{responsive:true,maintainAspectRatio:true,cutout:'52%',
-    plugins:{legend:{position:'right',labels:{font:{size:10},padding:8,boxWidth:12}},
-      tooltip:{callbacks:{label:ctx=>' '+fidV[ctx.dataIndex]+' clientes — '+fidP[ctx.dataIndex]+'%'}}}}});
+      plugins:{legend:{position:'right',labels:{font:{size:10},padding:8,boxWidth:12}},
+        tooltip:{callbacks:{label:ctx=>' '+fidV[ctx.dataIndex]+' clientes — '+fidP[ctx.dataIndex]+'%'}}}}
+  });
 
   // 11. Cartera vs activos
   mc('cCartera',{type:'bar',data:{labels:LAV,datasets:[
     {label:'Cartera acumulada',data:CART,backgroundColor:'rgba(107,122,153,0.35)',borderRadius:4},
     {label:'Con compra ese mes',data:CLIV,backgroundColor:'rgba(27,122,74,0.8)',borderRadius:4}]},
-    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,ticks:{...BASE.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}}});
+    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,ticks:{...BASE.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}}
+  });
 
   // 12. EERR
-  mc('cEERR',{type:'bar',data:{labels:LEE,datasets:[
-    {label:'Ventas',data:[27.573, 20.468, 28.159, 21.129],backgroundColor:'rgba(27,79,138,0.85)',borderRadius:4,stack:'s'},
-    {label:'Costo CV',data:[13.24, 9.778, 14.111, 10.839],backgroundColor:'rgba(192,57,43,0.75)',borderRadius:4,stack:'c'},
-    {label:'Despacho',data:[3.778, 2.535, 5.549, 1.851],backgroundColor:'rgba(224,120,32,0.7)',borderRadius:4,stack:'c'},
-    {label:'Remun.',data:[4.926, 5.702, 5.919, 5.862],backgroundColor:'rgba(241,196,15,0.85)',borderRadius:4,stack:'c'},
-    {label:'Gtos Op.',data:[5.502, 5.593, 6.184, 8.506],backgroundColor:'rgba(107,122,153,0.7)',borderRadius:4,stack:'c'},
-    {type:'line',label:'Resultado Op.',data:[-0.437, -3.666, -4.131, -7.235],borderColor:'rgba(192,57,43,0.95)',backgroundColor:'rgba(192,57,43,0.08)',fill:false,tension:.3,pointRadius:7,pointBackgroundColor:[-0.437, -3.666, -4.131, -7.235].map(v=>v>=0?GREEN:RED),pointBorderColor:'white',pointBorderWidth:2,order:0}]},
-    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,ticks:{...BASE.scales.y.ticks,callback:v=>'$'+v+'M'}}}}});
+  mc('cEERR',{type:'bar',data:{labels:["Ene-26","Feb-26","Mar-26","Abr-26"],datasets:[
+    {label:'Ventas',data:[27.6,20.5,28.2,21.1],backgroundColor:'rgba(27,79,138,0.85)',borderRadius:4,stack:'s'},
+    {label:'Costo CV',data:[14.2,10.6,14.4,10.9],backgroundColor:'rgba(192,57,43,0.75)',borderRadius:4,stack:'c'},
+    {label:'Despacho',data:[3.5,3.2,4.0,4.1],backgroundColor:'rgba(224,120,32,0.7)',borderRadius:4,stack:'c'},
+    {label:'Remun.',data:[3.2,3.1,3.3,3.5],backgroundColor:'rgba(241,196,15,0.85)',borderRadius:4,stack:'c'},
+    {label:'Gtos Op.',data:[2.3,2.2,2.0,5.0],backgroundColor:'rgba(107,122,153,0.7)',borderRadius:4,stack:'c'},
+    {type:'line',label:'Resultado Op.',data:[-0.4,-1.6,1.4,-7.2],
+     borderColor:'rgba(192,57,43,0.95)',fill:false,tension:0.3,
+     pointRadius:7,pointBackgroundColor:[-0.4,-1.6,1.4,-7.2].map(v=>v>=0?GREEN:RED),
+     pointBorderColor:'white',pointBorderWidth:2,order:0}]},
+    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,ticks:{...BASE.scales.y.ticks,callback:v=>'$'+v+'M'}}}}
+  });
 }
 
-// ── APPLY FILTERS ────────────────────────────────────────────────────
-function applyFilters(){
-  fVend=document.getElementById('fVendedor').value;
-  
-  updateKpis();
-  buildCharts();
-}
 
 // INIT
 buildCharts();
