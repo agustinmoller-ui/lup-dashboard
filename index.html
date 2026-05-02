@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUP · Dashboard Comercial</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<style>
+  :root {
+    --navy: #0D1F3C;
+    --blue: #1A4A8A;
+    --teal: #0B6E6E;
+    --green: #1A7A4A;
+    --amber: #F5C200;
+    --red: #C0392B;
+    --orange: #E67E22;
+    --bg: #F0F3F8;
+    --card: #FFFFFF;
+    --border: #DDE3EE;
+    --text: #1A2540;
+    --muted: #6B7A99;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+  
+  /* HEADER */
+  .header { background: var(--navy); color: white; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; }
+  .header-title { display: flex; align-items: center; gap: 14px; }
+  .header-logo { width: 42px; height: 42px; background: var(--amber); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; color: var(--navy); }
+  .header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+  .header p { font-size: 12px; color: #8FA3C8; margin-top: 2px; }
+  .header-badge { background: rgba(245,194,0,0.15); border: 1px solid rgba(245,194,0,0.3); color: var(--amber); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+
+  /* NOTICE */
+  .notice { background: #FFF8E1; border-left: 4px solid var(--amber); padding: 10px 32px; font-size: 12px; color: #7A5700; line-height: 1.5; }
+
+  /* LAYOUT */
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px 24px; }
+  
+  /* SECTION TITLES */
+  .section-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin: 28px 0 14px; display: flex; align-items: center; gap: 8px; }
+  .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* KPI CARDS */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+  .kpi { background: var(--card); border-radius: var(--radius); padding: 16px; border: 1px solid var(--border); position: relative; overflow: hidden; }
+  .kpi::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background: var(--kpi-color, var(--blue)); }
+  .kpi-label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .kpi-value { font-size: 22px; font-weight: 800; color: var(--text); line-height: 1; }
+  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .kpi.warn { --kpi-color: var(--orange); }
+  .kpi.danger { --kpi-color: var(--red); }
+  .kpi.success { --kpi-color: var(--green); }
+  .kpi.accent { --kpi-color: var(--amber); }
+
+  /* CHART GRID */
+  .chart-grid { display: grid; gap: 16px; }
+  .chart-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .chart-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .chart-grid.cols-1-2 { grid-template-columns: 1fr 2fr; }
+  .chart-grid.cols-2-1 { grid-template-columns: 2fr 1fr; }
+  @media(max-width:900px) { .chart-grid.cols-2,.chart-grid.cols-3,.chart-grid.cols-1-2,.chart-grid.cols-2-1 { grid-template-columns:1fr; } }
+
+  /* CARD */
+  .card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 20px; }
+  .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+  .card-title { font-size: 13px; font-weight: 700; color: var(--text); }
+  .card-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .chart-wrap { position: relative; }
+  
+  /* TAKEAWAY */
+  .takeaway { background: #F0F8F0; border-left: 3px solid var(--green); border-radius: 0 6px 6px 0; padding: 8px 12px; font-size: 11px; color: #1A4A2A; line-height: 1.55; margin-top: 12px; }
+  .takeaway.warn { background: #FFF8E1; border-color: var(--amber); color: #7A5700; }
+  .takeaway.danger { background: #FEF0EE; border-color: var(--red); color: #8B1A10; }
+
+  /* ALERTS TABLE */
+  .alerts-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .alerts-table th { background: #F5F7FB; padding: 8px 10px; text-align: left; font-weight: 600; color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); }
+  .alerts-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .alerts-table tr:hover td { background: #F8F9FC; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+  .badge.no-compro { background: #FDECEA; color: #C0392B; }
+  .badge.bajo-fuerte { background: #FFF3E0; color: #E67E22; }
+  .badge.bajo { background: #FFF8E1; color: #F39C12; }
+  .var-neg { color: var(--red); font-weight: 700; }
+  .var-0 { color: var(--muted); }
+
+  /* EERR TABLE */
+  .eerr-table { width:100%; border-collapse:collapse; font-size:12px; }
+  .eerr-table th { background:#0D1F3C; color:white; padding:8px 12px; text-align:right; font-size:10px; font-weight:600; letter-spacing:0.5px; }
+  .eerr-table th:first-child { text-align:left; }
+  .eerr-table td { padding:7px 12px; border-bottom:1px solid var(--border); text-align:right; }
+  .eerr-table td:first-child { text-align:left; font-weight:600; color:var(--muted); font-size:11px; }
+  .eerr-table tr.total td { font-weight:700; background:#F5F7FB; }
+  .eerr-table tr.resultado td { font-weight:800; font-size:13px; }
+  .eerr-table td.pos { color: var(--green); }
+  .eerr-table td.neg { color: var(--red); }
+
+  /* LINE REF */
+  .stat-row { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:10px; }
+  .stat-item { font-size:11px; color:var(--muted); } 
+  .stat-item strong { color:var(--text); font-size:13px; }
+
+  footer { text-align:center; padding:20px; font-size:11px; color:var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">
+    <div class="header-logo">L</div>
+    <div>
+      <h1>LUP · Dashboard Comercial</h1>
+      <p>Mayo 2025 – Abril 2026 &nbsp;|&nbsp; TP + Autoventa &nbsp;|&nbsp; Actualizado 2026-05-01</p>
+    </div>
+  </div>
+  <span class="header-badge">⚡ 12 meses</span>
+</div>
+
+<div class="notice">
+  ⚠️ <strong>Nota metodológica:</strong> TP (May-Oct 2025) no registra cajas ni conversión real. Cajas = solo DETERG.LIQ.LUP 4×5L desde Autoventa. Admin LUP ($6.5M, 12M) excluida de KPIs comerciales. Breakeven: 3.190 cajas/mes. EERR disponible Ene–Abr 2026.
+</div>
+
+<div class="container">
+
+<!-- KPIs PRINCIPALES -->
+<div class="section-title">📊 KPIs Anuales — 12 Meses</div>
+<div class="kpi-grid">
+  <div class="kpi accent">
+    <div class="kpi-label">Total Neto 12M</div>
+    <div class="kpi-value">$323M</div>
+    <div class="kpi-sub">Sin Admin LUP: ~$317M</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Promedio Mensual</div>
+    <div class="kpi-value">$27.0M</div>
+    <div class="kpi-sub">Meta: $24M ✅</div>
+  </div>
+  <div class="kpi success">
+    <div class="kpi-label">Mejor Mes</div>
+    <div class="kpi-value">May-25</div>
+    <div class="kpi-sub">$31.0M</div>
+  </div>
+  <div class="kpi warn">
+    <div class="kpi-label">Peor Mes</div>
+    <div class="kpi-value">Feb-26</div>
+    <div class="kpi-sub">$19.4M (estacionalidad)</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Ticket / Pedido</div>
+    <div class="kpi-value">$45.8K</div>
+    <div class="kpi-sub">Prom 12 meses</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Ticket / Cliente</div>
+    <div class="kpi-value">$56.3K</div>
+    <div class="kpi-sub">Prom 12 meses</div>
+  </div>
+  <div class="kpi warn">
+    <div class="kpi-label">Cajas Prom/Mes AV</div>
+    <div class="kpi-value">2.433</div>
+    <div class="kpi-sub">BE: 3.190 → brecha 757</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Cajas/Cliente AV</div>
+    <div class="kpi-value">5.5</div>
+    <div class="kpi-sub">Meta: 6.5+ cajas/cli</div>
+  </div>
+  <div class="kpi danger">
+    <div class="kpi-label">% Inactivos Abr-26</div>
+    <div class="kpi-value">49.9%</div>
+    <div class="kpi-sub">Meta: &lt;20%</div>
+  </div>
+  <div class="kpi success">
+    <div class="kpi-label">Clientes Leales</div>
+    <div class="kpi-value">225</div>
+    <div class="kpi-sub">5+ compras en 6M AV</div>
+  </div>
+  <div class="kpi danger">
+    <div class="kpi-label">Result. Op Prom</div>
+    <div class="kpi-value" style="color:var(--green)">+$6.6M</div>
+    <div class="kpi-sub">Ene–Abr 2026</div>
+  </div>
+  <div class="kpi warn">
+    <div class="kpi-label">Alertas Clientes</div>
+    <div class="kpi-value">15</div>
+    <div class="kpi-sub">Cambio comportamiento</div>
+  </div>
+</div>
+
+<!-- VENTAS -->
+<div class="section-title">📈 Facturación — 12 Meses</div>
+<div class="chart-grid cols-2">
+  <div class="card">
+    <div class="card-header">
+      <div><div class="card-title">Facturación Neta Total ($M)</div><div class="card-sub">Todos los vendedores, excl. Admin LUP</div></div>
+    </div>
+    <div class="chart-wrap"><canvas id="chartFact" height="220"></canvas></div>
+    <div class="takeaway">💡 Promedio $27M/mes, sobre la meta de $24M. Caída marcada en Feb-26 ($19.4M) por estacionalidad. Recuperación clara en Mar-26 con $28.4M.</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div><div class="card-title">Facturación por Grupo ($M) — Apilado</div><div class="card-sub">Richard / Germán / Otros</div></div>
+    </div>
+    <div class="chart-wrap"><canvas id="chartGrupo" height="220"></canvas></div>
+    <div class="takeaway">💡 Richard representa ~80% de la facturación total. Otros (Susan, Jose) desaparecen en Nov-25 con la transición a AV. Riesgo de concentración en la familia Vera.</div>
+  </div>
+</div>
+
+<!-- TICKET PROMEDIO -->
+<div class="section-title">🎫 Ticket Promedio de Compra</div>
+<div class="chart-grid cols-2">
+  <div class="card">
+    <div class="card-header">
+      <div><div class="card-title">Ticket Promedio por Pedido vs por Cliente ($)</div><div class="card-sub">12 meses consecutivos</div></div>
+    </div>
+    <div class="chart-wrap"><canvas id="chartTicket" height="220"></canvas></div>
+    <div class="takeaway">💡 Ticket/pedido estable ~$45-50K. La diferencia ticket/cliente vs ticket/pedido muestra que algunos clientes hacen múltiples pedidos por mes. Mar-26 mejor ticket: $52.7K/pedido.</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div><div class="card-title">Precio Neto/Caja vs Costo MP/Caja ($)</div><div class="card-sub">AV Nov-25 a Abr-26 · Margen directo %</div></div>
+    </div>
+    <div class="chart-wrap"><canvas id="chartPrecioCaja" height="220"></canvas></div>
+    <div class="takeaway warn">⚠️ Sin datos de costo MP para Nov-Dic (período TP). En AV: precio estable ~$10.3-10.8K/caja. Costo MP varía fuerte: $4.2K (Mar-26) a $6.6K (Feb-26). Margen directo: 38.6% a 59.5%.</div>
+  </div>
+</div>
+
+<!-- CONVERSIÓN + CAJAS -->
+<div class="section-title">🔄 Conversión & Cajas — AV Nov-25 a Abr-26</div>
+<div class="chart-grid cols-2">
+  <div class="card">
+    <div class="card-header">
+      <div><div class="card-title">Conversión Visita→Venta (%)</div><div class="card-sub">Total / Richard / Germán</div></div>
+    </div>
+    <div class="chart-wrap"><canvas id="chartConv" height="220"></canvas></div>
+    <div class="takeaway danger">🚨 Abr-26: conversión cae a 52% total y 48.8% Richard — el peor mes. Germán mantiene 100% constante. La caída de Richard necesita análisis urgente: ¿saturación? ¿motivación? ¿rutas?</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div><div class="card-title">Cajas Vendidas vs Breakeven</div><div class="card-sub">Richard + Germán · Línea roja = 3.190 cajas BE</div></div>
+    </div>
+    <div class="chart-wrap"><canvas id="chartCajas" height="220"></canvas></div>
+    <div class="takeaway danger">🚨 Ningún mes supera el breakeven de 3.190 cajas. Mejor mes: Mar-26 con 2.764 cajas (brecha 426). El déficit promedio es 757 cajas/mes ≈ $7.7M de ventas que faltan.</div>
+  </div>
+</div>
+
+<div class="chart-grid cols-2">
+  <div class="card">
+    <div class="card-header">
+      <div><div class="card-title">Cajas Promedio por Cliente</div><div class="card-sub">AV · Meta: 6.5 cajas/cliente</div></div>
+    </div>
+    <div class="chart-wrap"><canvas id="chartCpk" height="200"></canvas></div>
+    <div class="takeaway">💡 Promedio: 5.5 cajas/cliente. Si se sube a 6.5 con la cartera actual → +$1.5M/mes sin necesitar nuevos clientes. Mar-26 fue el mejor con 6.06 cajas/cliente.</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div><div class="card-title">Inactividad de Cartera (%)</div><div class="card-sub">% clientes sin compra ese mes · Límite saludable: 20%</div></div>
+    </div>
+    <div class="chart-wrap"><canvas id="chartInact" height="200"></canvas></div>
+    <div class="takeaway danger">🚨 Inactividad sube de 0% (Nov-25) a 49.9% (Abr-26). Más de la mitad de la cartera no compró en el último mes. La campaña C5 activa desde Abr-26 busca revertir esto.</div>
+  </div>
+</div>
+
+<!-- FIDELIDAD -->
+<div class="section-title">❤️ Fidelidad de Clientes — AV 6 Meses</div>
+<div class="chart-grid cols-1-2">
+  <div class="card">
+    <div class="card-header">
+      <div><div class="card-title">Distribución por Frecuencia de Compra</div><div class="card-sub">Total 806 clientes AV</div></div>
+    </div>
+    <div class="chart-wrap" style="max-height:280px"><canvas id="chartFidelidad" height="260"></canvas></div>
+    <div class="takeaway">💡 225 clientes con 5+ compras en 6 meses = núcleo leal (28%). Meta: llevar a 40% (≈322 clientes). 347 clientes solo compraron 1-2 veces — oportunidad de retención enorme.</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div><div class="card-title">Cartera vs Clientes Activos por Mes</div><div class="card-sub">Crecimiento de cartera histórica vs compradores reales</div></div>
+    </div>
+    <div class="chart-wrap"><canvas id="chartCartera" height="280"></canvas></div>
+    <div class="takeaway warn">⚠️ La cartera crece (522→861 clientes acumulados) pero los compradores activos no siguen el ritmo. La brecha es la inactividad. Crecer sin retener = fuga constante.</div>
+  </div>
+</div>
+
+<!-- EERR -->
+<div class="section-title">💰 Estado de Resultados — Ene–Abr 2026</div>
+<div class="chart-grid cols-2">
+  <div class="card">
+    <div class="card-header">
+      <div><div class="card-title">EERR: Ventas vs Costos ($M)</div><div class="card-sub">Resultado operacional por mes</div></div>
+    </div>
+    <div class="chart-wrap"><canvas id="chartEERR" height="250"></canvas></div>
+    <div class="takeaway danger">🚨 Gastos op Abr-26: $4.95M vs $1.98M Ene-26 (+150%). El resultado operacional cae de $8.3M a $3.4M. Si los costos no se controlan, el resultado puede tornarse negativo.</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div><div class="card-title">EERR Detalle ($M)</div></div>
+    </div>
+    <table class="eerr-table">
+      <thead>
+        <tr>
+          <th>Concepto</th>
+          <th>ENE-26</th><th>FEB-26</th><th>MAR-26</th><th>ABR-26</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Ventas Netas</td><td>$28.3</td><td>$24.2</td><td>$28.4</td><td>$24.3</td></tr>
+        <tr><td>– Costo MP</td><td>$14.7</td><td>$12.6</td><td>$11.6</td><td>$11.8</td></tr>
+        <tr><td>– Despacho</td><td>$1.3</td><td>$0.9</td><td>$1.1</td><td>$1.1</td></tr>
+        <tr><td>– Remuneraciones</td><td>$2.1</td><td>$2.3</td><td>$2.1</td><td>$3.0</td></tr>
+        <tr><td>– Gastos Op.</td><td style="color:var(--green)">$2.0</td><td>$3.6</td><td>$3.7</td><td style="color:var(--red)"><strong>$5.0</strong></td></tr>
+        <tr class="total"><td>Costos Totales</td><td>$20.1</td><td>$19.4</td><td>$18.5</td><td>$20.9</td></tr>
+        <tr class="resultado"><td>Resultado Op.</td>
+          <td class="pos">+$8.3</td><td class="pos">+$4.8</td><td class="pos">+$10.0</td><td class="pos">+$3.4</td></tr>
+        <tr><td>Margen Bruto %</td><td>48.2%</td><td>48.0%</td><td>59.1%</td><td>51.3%</td></tr>
+      </tbody>
+    </table>
+    <div class="takeaway warn" style="margin-top:12px">⚠️ Mar-26 destaca con margen bruto 59.1% (menor costo MP). La variación de costo MP entre meses sugiere diferente mix de compra o descuentos puntuales.</div>
+  </div>
+</div>
+
+<!-- ALERTAS CLIENTES -->
+<div class="section-title">🚨 Alertas: Top Clientes con Cambio de Comportamiento</div>
+<div class="card">
+  <div class="card-header">
+    <div><div class="card-title">Clientes con bajada significativa Mar-26 → Abr-26</div><div class="card-sub">Solo clientes con venta ≥$50.000 en Mar-26. Total: 20 alertas detectadas.</div></div>
+  </div>
+  <table class="alerts-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Cliente</th>
+        <th>RUT</th>
+        <th>Venta Mar-26</th>
+        <th>Venta Abr-26</th>
+        <th>Variación</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="color:var(--muted)">1</td>
+        <td><strong>Articulos de Aseo Alvaro Frau</strong></td>
+        <td style="color:var(--muted);font-size:11px">77.143.784-2</td>
+        <td>$582,968</td>
+        <td>—</td>
+        <td class="var-neg">−100%</td>
+        <td><span class="badge no-compro">NO COMPRÓ</span></td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted)">2</td>
+        <td><strong>Luis Gonzalez Carvajal</strong></td>
+        <td style="color:var(--muted);font-size:11px">12.259.747-4</td>
+        <td>$506,403</td>
+        <td>—</td>
+        <td class="var-neg">−100%</td>
+        <td><span class="badge no-compro">NO COMPRÓ</span></td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted)">3</td>
+        <td><strong>Jose Samuel Millapan Jara</strong></td>
+        <td style="color:var(--muted);font-size:11px">12.255.589-5</td>
+        <td>$281,455</td>
+        <td>—</td>
+        <td class="var-neg">−100%</td>
+        <td><span class="badge no-compro">NO COMPRÓ</span></td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted)">4</td>
+        <td><strong>Rosa Elena Arenas</strong></td>
+        <td style="color:var(--muted);font-size:11px">7.682.976-4</td>
+        <td>$281,425</td>
+        <td>—</td>
+        <td class="var-neg">−100%</td>
+        <td><span class="badge no-compro">NO COMPRÓ</span></td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted)">5</td>
+        <td><strong>Panhue Express Spa</strong></td>
+        <td style="color:var(--muted);font-size:11px">76.484.306-1</td>
+        <td>$281,335</td>
+        <td>—</td>
+        <td class="var-neg">−100%</td>
+        <td><span class="badge no-compro">NO COMPRÓ</span></td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted)">6</td>
+        <td><strong>Francisco Javier Urbano Mehue</strong></td>
+        <td style="color:var(--muted);font-size:11px">22.158.493-7</td>
+        <td>$281,335</td>
+        <td>—</td>
+        <td class="var-neg">−100%</td>
+        <td><span class="badge no-compro">NO COMPRÓ</span></td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted)">7</td>
+        <td><strong>Ventas Varias Mauricio Alberto Beni</strong></td>
+        <td style="color:var(--muted);font-size:11px">77.109.177-6</td>
+        <td>$271,361</td>
+        <td>—</td>
+        <td class="var-neg">−100%</td>
+        <td><span class="badge no-compro">NO COMPRÓ</span></td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted)">8</td>
+        <td><strong>Loreto Soledad Fernandez Silva</strong></td>
+        <td style="color:var(--muted);font-size:11px">13.453.225-4</td>
+        <td>$271,361</td>
+        <td>—</td>
+        <td class="var-neg">−100%</td>
+        <td><span class="badge no-compro">NO COMPRÓ</span></td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted)">9</td>
+        <td><strong>Selim Alfredo Ananias Pino</strong></td>
+        <td style="color:var(--muted);font-size:11px">11.186.260-5</td>
+        <td>$271,361</td>
+        <td>—</td>
+        <td class="var-neg">−100%</td>
+        <td><span class="badge no-compro">NO COMPRÓ</span></td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted)">10</td>
+        <td><strong>Jose Leonardo llancapan cayupul</strong></td>
+        <td style="color:var(--muted);font-size:11px">8.938.910-0</td>
+        <td>$271,361</td>
+        <td>—</td>
+        <td class="var-neg">−100%</td>
+        <td><span class="badge no-compro">NO COMPRÓ</span></td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted)">11</td>
+        <td><strong>Maria Soledad Hernandez Neyra</strong></td>
+        <td style="color:var(--muted);font-size:11px">24.334.135-3</td>
+        <td>$253,310</td>
+        <td>—</td>
+        <td class="var-neg">−100%</td>
+        <td><span class="badge no-compro">NO COMPRÓ</span></td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted)">12</td>
+        <td><strong>Comercializadora de alimentos Don V</strong></td>
+        <td style="color:var(--muted);font-size:11px">77.151.575-4</td>
+        <td>$253,310</td>
+        <td>—</td>
+        <td class="var-neg">−100%</td>
+        <td><span class="badge no-compro">NO COMPRÓ</span></td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted)">13</td>
+        <td><strong>Comercializadora Y Distribuidora Ve</strong></td>
+        <td style="color:var(--muted);font-size:11px">76.730.988-0</td>
+        <td>$218,060</td>
+        <td>$147,502</td>
+        <td class="var-neg">-32.4%</td>
+        <td><span class="badge bajo-fuerte">BAJÓ FUERTE</span></td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted)">14</td>
+        <td><strong>Aurora Soledad Flores Nuñez</strong></td>
+        <td style="color:var(--muted);font-size:11px">8.344.150-K</td>
+        <td>$200,002</td>
+        <td>$72,288</td>
+        <td class="var-neg">-63.9%</td>
+        <td><span class="badge bajo-fuerte">BAJÓ FUERTE</span></td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted)">15</td>
+        <td><strong>Mardones Prieto Luis Roberto Limita</strong></td>
+        <td style="color:var(--muted);font-size:11px">76.903.710-1</td>
+        <td>$186,073</td>
+        <td>$160,647</td>
+        <td class="var-neg">-13.7%</td>
+        <td><span class="badge bajo">BAJÓ</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="takeaway danger" style="margin-top:12px">🚨 15 clientes que compraron en Mar-26 no compraron en Abr-26. Acción inmediata: llamar a los top 10 de esta lista. Muchos son clientes de ~$60K/mes — recuperar 5 de ellos = +$300K/mes.</div>
+</div>
+
+</div><!-- /container -->
+
+<footer>LUP · Dashboard generado por Lupita · Datos: MAESTRA → lup_data.json · 2026-05-01</footer>
+
+<script>
+Chart.register(ChartDataLabels);
+
+// Colores
+const NAVY='#0D1F3C', BLUE='#1A4A8A', TEAL='#0B6E6E', GREEN='#1A7A4A',
+      AMBER='#F5C200', RED='#C0392B', ORANGE='#E67E22', MUTED='#6B7A99',
+      LBLUE='rgba(26,74,138,0.15)', LGREEN='rgba(26,122,74,0.15)';
+
+const defaultOpts = {
+  responsive: true,
+  maintainAspectRatio: true,
+  plugins: {
+    legend: { labels: { font: { size: 11 }, padding: 12 } },
+    datalabels: { display: false },
+    tooltip: { titleFont: {size:12}, bodyFont:{size:11} }
+  },
+  scales: {
+    x: { grid:{display:false}, ticks:{font:{size:11}} },
+    y: { grid:{color:'#EEF0F5'}, ticks:{font:{size:11}} }
+  }
+};
+
+function merge(a,b) { return Object.assign({},a,b); }
+
+// 1. Facturación total
+new Chart(document.getElementById('chartFact'), {
+  type:'bar', data:{
+    labels:["May-25", "Jun-25", "Jul-25", "Ago-25", "Sep-25", "Oct-25", "Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],
+    datasets:[{ label:'Neto $M', data:[31.0, 28.36, 27.13, 28.92, 30.36, 27.96, 25.21, 27.93, 26.32, 19.45, 27.2, 23.65],
+      backgroundColor: ["May-25", "Jun-25", "Jul-25", "Ago-25", "Sep-25", "Oct-25", "Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"].map((_,i)=>i<6?'rgba(26,74,138,0.7)':'rgba(11,110,110,0.7)'),
+      borderRadius:4, borderSkipped:false }]
+  },
+  options: merge(defaultOpts, {
+    plugins:{ legend:{display:false}, datalabels:{display:true,anchor:'end',align:'top',font:{size:9,weight:'700'},formatter:v=>v>0?'$'+v.toFixed(1):'',color:NAVY} },
+    scales:{ y:{ ticks:{callback:v=>'$'+v+'M'} } }
+  })
+});
+
+// 2. Por grupo apilado
+new Chart(document.getElementById('chartGrupo'), {
+  type:'bar', data:{
+    labels:["May-25", "Jun-25", "Jul-25", "Ago-25", "Sep-25", "Oct-25", "Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],
+    datasets:[
+      {label:'Richard', data:[15.46, 14.5, 15.65, 17.25, 22.71, 23.97, 21.33, 24.32, 22.14, 17.08, 23.34, 20.7], backgroundColor:'rgba(26,74,138,0.85)', borderRadius:2},
+      {label:'Germán',  data:[4.49, 4.44, 3.87, 3.71, 3.62, 3.99, 3.88, 3.61, 4.18, 2.37, 3.86, 2.95],  backgroundColor:'rgba(230,126,34,0.85)', borderRadius:2},
+      {label:'Otros',   data:[11.04, 9.42, 7.61, 7.97, 4.03, 0.0, 0.87, 0.51, 1.41, 1.05, 1.21, 1.44],   backgroundColor:'rgba(107,122,153,0.6)', borderRadius:2},
+    ]
+  },
+  options: merge(defaultOpts, {
+    plugins:{ datalabels:{display:false} },
+    scales:{ x:{stacked:true}, y:{stacked:true, ticks:{callback:v=>'$'+v+'M'}} }
+  })
+});
+
+// 3. Ticket promedio
+new Chart(document.getElementById('chartTicket'), {
+  type:'line', data:{
+    labels:["May-25", "Jun-25", "Jul-25", "Ago-25", "Sep-25", "Oct-25", "Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],
+    datasets:[
+      {label:'Ticket/Pedido', data:[50078, 43630, 46376, 44016, 41244, 43895, 41536, 43041, 46428, 50914, 52722, 45739], borderColor:BLUE, backgroundColor:LBLUE, fill:true, tension:0.3, pointRadius:4, pointBackgroundColor:BLUE},
+      {label:'Ticket/Cliente', data:[62496, 54018, 58978, 55399, 54793, 56146, 49729, 53512, 58369, 58057, 62684, 54866], borderColor:TEAL, backgroundColor:'rgba(11,110,110,0.08)', fill:false, tension:0.3, pointRadius:4, borderDash:[4,3]},
+    ]
+  },
+  options: merge(defaultOpts, {
+    plugins:{ datalabels:{display:false} },
+    scales:{ y:{ticks:{callback:v=>'$'+v.toLocaleString('es-CL')}} }
+  })
+});
+
+// 4. Precio vs Costo x caja
+new Chart(document.getElementById('chartPrecioCaja'), {
+  type:'bar', data:{
+    labels:["Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],
+    datasets:[
+      {label:'Precio Neto/Caja', data:[11321, 10589, 10168, 10172, 9843, 9578], backgroundColor:'rgba(26,122,74,0.8)', borderRadius:4, yAxisID:'y'},
+      {label:'Costo MP/Caja',    data:["null", "null", 5662, 6579, 4200, 4791],  backgroundColor:'rgba(192,57,43,0.7)', borderRadius:4, yAxisID:'y'},
+      {label:'Margen Directo %', data:["null", "null", 44.3, 35.3, 57.3, 50.0], borderColor:AMBER, backgroundColor:'transparent', type:'line', tension:0.3, pointRadius:5, pointBackgroundColor:AMBER, yAxisID:'y2'},
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:true,
+    plugins:{ legend:{labels:{font:{size:11},padding:10}}, datalabels:{display:false},
+      tooltip:{titleFont:{size:12},bodyFont:{size:11}} },
+    scales:{
+      x:{grid:{display:false},ticks:{font:{size:11}}},
+      y:{position:'left', ticks:{callback:v=>v?'$'+v.toLocaleString('es-CL'):'',font:{size:10}},grid:{color:'#EEF0F5'}},
+      y2:{position:'right', ticks:{callback:v=>v+'%',font:{size:10}},grid:{display:false},min:0,max:80}
+    }
+  }
+});
+
+// 5. Conversión
+new Chart(document.getElementById('chartConv'), {
+  type:'line', data:{
+    labels:["Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],
+    datasets:[
+      {label:'Total', data:[74.1, 69.7, 75.8, 80.2, 87.4, 52.2], borderColor:BLUE, backgroundColor:LBLUE, fill:true, tension:0.3, pointRadius:5, pointBackgroundColor:BLUE},
+      {label:'Richard', data:[72.2, 71.6, 72.4, 76.8, 84.6, 48.8], borderColor:ORANGE, fill:false, tension:0.3, pointRadius:4, borderDash:[4,3]},
+      {label:'Germán', data:[83.5, 65.6, 100.0, 100.0, 100.0, 100.0], borderColor:GREEN, fill:false, tension:0.3, pointRadius:4},
+    ]
+  },
+  options: merge(defaultOpts, {
+    plugins:{
+      datalabels:{display:true,anchor:'top',align:'top',font:{size:9,weight:'700'},formatter:v=>v+'%',color:ctx=>ctx.dataset.label==='Total'?NAVY:MUTED},
+      annotation:{ annotations:{ line75:{ type:'line',yMin:75,yMax:75,borderColor:'rgba(192,57,43,0.4)',borderWidth:1.5,borderDash:[4,4],label:{display:true,content:'75% ref',font:{size:9},position:'end'} } } }
+    },
+    scales:{ y:{ min:0, max:110, ticks:{callback:v=>v+'%'} } }
+  })
+});
+
+// 6. Cajas vs Breakeven
+new Chart(document.getElementById('chartCajas'), {
+  type:'bar', data:{
+    labels:["Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],
+    datasets:[
+      {label:'Richard', data:[1841, 1904, 984, 836, 1235, 1064], backgroundColor:'rgba(26,74,138,0.85)', borderRadius:4},
+      {label:'Germán',  data:[305, 335, 390, 218, 360, 270], backgroundColor:'rgba(230,126,34,0.85)', borderRadius:4},
+      {label:'Breakeven 3.190',
+        data:[3190,3190,3190,3190,3190,3190],
+        type:'line', borderColor:'rgba(192,57,43,0.9)', borderWidth:2.5,
+        borderDash:[6,4], pointRadius:0, fill:false},
+    ]
+  },
+  options: merge(defaultOpts, {
+    plugins:{
+      datalabels:{display:ctx=>ctx.datasetIndex<2&&ctx.chart.data.datasets[ctx.datasetIndex].data.reduce((a,b)=>a+b)>0,anchor:'end',align:'top',font:{size:9,weight:'700'},formatter:(_,ctx)=>ctx.datasetIndex===0?[2227, 2638, 2589, 1912, 2764, 2469][ctx.dataIndex]:'',color:NAVY},
+    },
+    scales:{ x:{stacked:true}, y:{stacked:true,ticks:{callback:v=>v.toLocaleString('es-CL')}} }
+  })
+});
+
+// 7. Cajas/cliente
+new Chart(document.getElementById('chartCpk'), {
+  type:'bar', data:{
+    labels:["Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],
+    datasets:[{
+      label:'Cajas/Cliente', data:[4.39, 5.05, 5.74, 5.71, 6.37, 5.73],
+      backgroundColor:[4.39, 5.05, 5.74, 5.71, 6.37, 5.73].map(v=>v>=6.5?'rgba(26,122,74,0.85)':v>=5?'rgba(26,74,138,0.8)':'rgba(192,57,43,0.7)'),
+      borderRadius:6, borderSkipped:false
+    },
+    {label:'Meta 6.5', data:[6.5,6.5,6.5,6.5,6.5,6.5], type:'line', borderColor:AMBER, borderWidth:2, borderDash:[5,4], pointRadius:0, fill:false}]
+  },
+  options: merge(defaultOpts, {
+    plugins:{
+      datalabels:{display:true,anchor:'end',align:'top',font:{size:10,weight:'700'},formatter:v=>v.toFixed(2),color:NAVY},
+    },
+    scales:{ y:{ min:0, max:8 } }
+  })
+});
+
+// 8. Inactividad
+new Chart(document.getElementById('chartInact'), {
+  type:'line', data:{
+    labels:["Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],
+    datasets:[{
+      label:'% Inactivos', data:[0.0, 28.8, 43.2, 59.0, 48.6, 49.9],
+      borderColor:RED, backgroundColor:'rgba(192,57,43,0.12)', fill:true, tension:0.3,
+      pointRadius:5, pointBackgroundColor:[0.0, 28.8, 43.2, 59.0, 48.6, 49.9].map(v=>v>40?RED:ORANGE), pointBorderWidth:2, pointBorderColor:'white'
+    },
+    {label:'Límite saludable 20%', data:[20,20,20,20,20,20], type:'line', borderColor:ORANGE, borderWidth:1.5, borderDash:[5,4], pointRadius:0, fill:false}]
+  },
+  options: merge(defaultOpts, {
+    plugins:{
+      datalabels:{display:true,anchor:'top',align:'top',font:{size:10,weight:'700'},formatter:v=>v+'%',color:ctx=>ctx.parsed.y>40?RED:ORANGE},
+    },
+    scales:{ y:{ min:0, max:70, ticks:{callback:v=>v+'%'} } }
+  })
+});
+
+// 9. Fidelidad donut
+new Chart(document.getElementById('chartFidelidad'), {
+  type:'doughnut', data:{
+    labels:["1 compra", "2 compras", "3 compras", "4 compras", "5 compras", "6+ compras"],
+    datasets:[{
+      data:[160, 157, 134, 130, 121, 0],
+      backgroundColor:['rgba(192,57,43,0.85)','rgba(230,126,34,0.85)','rgba(241,196,15,0.85)','rgba(26,74,138,0.75)','rgba(11,110,110,0.85)','rgba(26,122,74,0.9)'],
+      borderWidth:2, borderColor:'white', hoverOffset:6
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:true, cutout:'55%',
+    plugins:{
+      legend:{position:'right',labels:{font:{size:11},padding:10,generateLabels:chart=>{const d=chart.data; return d.labels.map((l,i)=>({{'text':l+' ('+d.datasets[0].data[i]+')','fillStyle':d.datasets[0].backgroundColor[i],'strokeStyle':'white','lineWidth':2}}))}}},
+      datalabels:{display:ctx=>ctx.parsed>20,formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return Math.round(v/t*100)+'%'},font:{size:11,weight:'700'},color:'white'}
+    }
+  }
+});
+
+// 10. Cartera vs activos
+new Chart(document.getElementById('chartCartera'), {
+  type:'bar', data:{
+    labels:["Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],
+    datasets:[
+      {label:'Cartera histórica', data:[507, 733, 794, 818, 844, 861], backgroundColor:'rgba(107,122,153,0.4)', borderRadius:4},
+      {label:'Con compra ese mes', data:[507, 522, 451, 335, 434, 431],
+        backgroundColor:'rgba(26,122,74,0.85)', borderRadius:4},
+    ]
+  },
+  options: merge(defaultOpts, {
+    plugins:{ datalabels:{display:false} },
+    scales:{ y:{ticks:{callback:v=>v.toLocaleString('es-CL')}} }
+  })
+});
+
+// 11. EERR
+new Chart(document.getElementById('chartEERR'), {
+  type:'bar', data:{
+    labels:["ENE-26", "FEB-26", "MAR-26", "ABR-26"],
+    datasets:[
+      {label:'Ventas', data:[28.3, 24.2, 28.4, 24.3], backgroundColor:'rgba(26,74,138,0.85)', borderRadius:4},
+      {label:'Costo MP', data:[14.66, 12.58, 11.61, 11.83], backgroundColor:'rgba(192,57,43,0.7)', borderRadius:4},
+      {label:'Despacho', data:[1.3, 0.94, 1.07, 1.14], backgroundColor:'rgba(230,126,34,0.7)', borderRadius:4},
+      {label:'Remuneraciones', data:[2.05, 2.31, 2.1, 2.95], backgroundColor:'rgba(241,196,15,0.85)', borderRadius:4},
+      {label:'Gastos Op.', data:[1.98, 3.56, 3.67, 4.95], backgroundColor:'rgba(107,122,153,0.7)', borderRadius:4},
+      {label:'Resultado Op.', data:[8.31, 4.81, 9.95, 3.43],
+        type:'line', borderColor:'rgba(26,122,74,0.9)', backgroundColor:'rgba(26,122,74,0.1)',
+        fill:false, tension:0.3, pointRadius:6, pointBackgroundColor:'rgba(26,122,74,0.9)', pointBorderColor:'white', pointBorderWidth:2},
+    ]
+  },
+  options: merge(defaultOpts, {
+    plugins:{
+      datalabels:{display:ctx=>ctx.datasetIndex===5,anchor:'top',align:'top',font:{size:10,weight:'800'},formatter:v=>'$'+v.toFixed(1)+'M',color:'rgba(26,122,74,0.9)'},
+    },
+    scales:{ y:{ ticks:{callback:v=>'$'+v+'M'} } }
+  })
+});
+</script>
+</body>
+</html>
