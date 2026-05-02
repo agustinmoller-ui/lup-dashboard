@@ -417,20 +417,21 @@ const dcNeto=[1.08, 4.65, 14.24, 25.36, 21.21, 24.98, 54.85];
 const dcColors=['rgba(192,57,43,.8)','rgba(224,120,32,.8)','rgba(241,196,15,.85)','rgba(27,79,138,.8)','rgba(11,110,110,.85)','rgba(27,122,74,.9)','rgba(90,50,160,.8)'];
 const dcTotal=dcVals.reduce((a,b)=>a+b,0);
 mc('cDistCajas',{type:'bar',
-  data:{labels:['Distribución Clientes'],
-    datasets:dcLabels.map((l,i)=>({
-      label:l+' cajas ('+dcVals[i]+' cli, '+Math.round(dcVals[i]/dcTotal*100)+'%)',
-      data:[dcVals[i]],backgroundColor:dcColors[i],borderRadius:4,borderSkipped:false
-    }))},
-  options:{responsive:true,maintainAspectRatio:true,indexAxis:'y',
-  plugins:{
-    legend:{position:'right',labels:{font:{size:10},padding:8,usePointStyle:true,boxWidth:10}},
-    tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label.split('(')[0].trim()+': '+ctx.parsed.x+' clientes · $'+dcNeto[ctx.datasetIndex]+'M'}}
-  },
-  scales:{
-    x:{grid:{color:'#EEF0F5'},ticks:{font:{size:11}},stacked:true},
-    y:{grid:{display:false},stacked:true,ticks:{display:false}}
-  }}});
+  data:{labels:["Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],
+    datasets:[
+      {'label':'1-2 cajas','data':[73, 69, 51, 31, 41, 44],'backgroundColor':'rgba(192,57,43,0.82)','borderRadius':3,'stack':'s'},{'label':'3 cajas','data':[213, 234, 184, 123, 147, 117],'backgroundColor':'rgba(224,120,32,0.82)','borderRadius':3,'stack':'s'},{'label':'4-7 cajas','data':[109, 155, 140, 133, 157, 203],'backgroundColor':'rgba(241,196,15,0.85)','borderRadius':3,'stack':'s'},{'label':'8-13 cajas','data':[26, 30, 43, 20, 46, 37],'backgroundColor':'rgba(27,79,138,0.82)','borderRadius':3,'stack':'s'},{'label':'14-18 cajas','data':[19, 18, 17, 19, 25, 20],'backgroundColor':'rgba(11,110,110,0.85)','borderRadius':3,'stack':'s'},{'label':'19-26 cajas','data':[0, 3, 6, 1, 1, 1],'backgroundColor':'rgba(27,122,74,0.88)','borderRadius':3,'stack':'s'},{'label':'27+ cajas','data':[10, 13, 10, 8, 17, 9],'backgroundColor':'rgba(90,50,160,0.82)','borderRadius':3,'stack':'s'},
+      {type:'line',label:'Total clientes/mes',data:[450, 522, 451, 335, 434, 431],borderColor:'#0D1F3C',borderWidth:2.5,borderDash:[5,4],pointRadius:5,pointBackgroundColor:'#0D1F3C',pointBorderColor:'white',pointBorderWidth:2,fill:false,order:0},
+      {type:'line',label:'Promedio 437 cli',data:[437,437,437,437,437,437],borderColor:'rgba(245,194,0,0.9)',borderWidth:1.5,borderDash:[3,3],pointRadius:0,fill:false,order:0}
+  ]},
+  options:{...base,
+    plugins:{...base.plugins,
+      tooltip:{callbacks:{label:ctx=>{
+        if(ctx.datasetIndex>=7)return ' '+ctx.dataset.label+': '+ctx.parsed.y;
+        const total=[450, 522, 451, 335, 434, 431][ctx.dataIndex]||1;
+        return ' '+ctx.dataset.label+': '+ctx.parsed.y+' cli ('+Math.round(ctx.parsed.y/total*100)+'%)';
+      }}}},
+    scales:{x:{...base.scales.x,stacked:true},
+      y:{...base.scales.y,stacked:true,ticks:{...base.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}}});
 
 mc('cInact',{type:'line',data:{labels:LAV,datasets:[
   {label:'% Inactivos',data:[69.7, 69.2, 73.2, 79.8, 73.6, 74.0],borderColor:RED,backgroundColor:'rgba(192,57,43,0.08)',fill:true,tension:.35,pointRadius:5,pointBackgroundColor:[69.7, 69.2, 73.2, 79.8, 73.6, 74.0].map(v=>v>60?RED:ORANGE),pointBorderColor:'white',pointBorderWidth:2},
@@ -455,9 +456,9 @@ mc('cFidel',{type:'doughnut',
     tooltip:{callbacks:{label:ctx=>' '+fidV[ctx.dataIndex]+' clientes — '+fidP[ctx.dataIndex]+'%'}}
   }}});
 
-mc('cCartera',{type:'bar',data:{labels:LAV,datasets:[
-  {label:'Cartera histórica',data:[522, 532, 463, 349, 456, 449],backgroundColor:'rgba(107,122,153,0.35)',borderRadius:4},
-  {label:'Con compra ese mes',data:[522, 532, 463, 349, 456, 449],backgroundColor:'rgba(27,122,74,0.8)',borderRadius:4}]},
+mc('cCartera',{type:'bar',data:{labels:["Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],datasets:[
+  {label:'Cartera acumulada (nunca compraron antes)',data:[451, 677, 738, 762, 788, 805],backgroundColor:'rgba(107,122,153,0.35)',borderRadius:4},
+  {label:'Con compra ese mes',data:[451, 522, 451, 335, 434, 431],backgroundColor:'rgba(27,122,74,0.8)',borderRadius:4}]},
   options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}}});
 
 mc('cEERR',{type:'bar',data:{labels:LEE,datasets:[
