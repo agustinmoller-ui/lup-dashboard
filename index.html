@@ -152,22 +152,7 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
       <option value="Administracion LUP">Admin LUP</option>
       <option value="__grupo_Richard">Grupo Richard</option>
     </select>
-    <span class="filter-label">Desde</span>
-    <select class="hsel" id="fDesde" onchange="applyFilters()">
-      <option value="2025-11">Nov-25</option>
-      <option value="2025-12">Dic-25</option>
-      <option value="2026-01">Ene-26</option>
-      <option value="2026-02">Feb-26</option>
-      <option value="2026-03">Mar-26</option>
-    </select>
-    <span class="filter-label">Hasta</span>
-    <select class="hsel" id="fHasta" onchange="applyFilters()">
-      <option value="2025-12">Dic-25</option>
-      <option value="2026-01">Ene-26</option>
-      <option value="2026-02">Feb-26</option>
-      <option value="2026-03">Mar-26</option>
-      <option value="2026-04" selected>Abr-26</option>
-    </select>
+    
     <span class="hbadge live">● LIVE</span>
     <span class="hbadge">12 meses</span>
   </div>
@@ -537,7 +522,7 @@ const PROM_CLI_MES=[465, 532, 463, 349, 456, 449];
 const GRUPOS={"Richard Vera Sr": "Richard", "Richard Vera Jr": "Richard", "Richard Vera Jr2": "Richard", "German Castillo": "German", "Administracion LUP": "Admin", "Susan Custodio": "Otros", "Jose Oviedo": "Otros", "Sebastian Burgos": "Otros"};
 
 // ── ESTADO FILTROS ──────────────────────────────────────────────────
-let fVend='todos', fDesde='2025-11', fHasta='2026-04';
+let fVend='todos';
 let charts={};
 
 function openModal(id){document.getElementById(id).classList.add('open')}
@@ -552,11 +537,7 @@ function getVendores(){
   }
   return [fVend];
 }
-function getMesesRange(pool){
-  const idx_d=pool.indexOf(fDesde), idx_h=pool.indexOf(fHasta);
-  if(idx_d<0||idx_h<0) return pool;
-  return pool.slice(idx_d, idx_h+1);
-}
+function getMesesRange(pool){ return pool; }
 function getMesesAV(){return getMesesRange(MESES_AV)}
 function getMesesAll(){return getMesesRange(MESES_ALL)}
 function getLabelAV(m){return LAV[MESES_AV.indexOf(m)]||m}
@@ -811,12 +792,7 @@ options:{responsive:true,maintainAspectRatio:true,
 // ── APPLY FILTERS ────────────────────────────────────────────────────
 function applyFilters(){
   fVend=document.getElementById('fVendedor').value;
-  fDesde=document.getElementById('fDesde').value;
-  fHasta=document.getElementById('fHasta').value;
-  // Validar rango
-  if(MESES_AV.indexOf(fDesde)>MESES_AV.indexOf(fHasta)){
-    fHasta=fDesde; document.getElementById('fHasta').value=fDesde;
-  }
+  
   updateKpis();
   buildCharts();
 }
