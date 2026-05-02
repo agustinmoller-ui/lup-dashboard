@@ -126,6 +126,10 @@ header{background:var(--navy);padding:0 16px;height:auto;min-height:56px;positio
 .modal-box p strong{color:var(--text)}
 .modal-box button{margin-top:10px;padding:7px 18px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
 
+
+@media(max-width:760px){
+  #panelBody > div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
+}
 footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
 </style>
 </head>
@@ -173,6 +177,76 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
   ⚠️ <strong>Nota:</strong> TP (May–Oct 2025) sin cajas ni conversión. Cajas AV = DETERG.LIQ.LUP 4×5L. BE: <strong>3.190 cajas/mes</strong>.<br>
   <strong>KPI = período seleccionado (último mes) · Ø = promedio del rango · % = diferencia vs promedio</strong>
 </div>
+<div id="panelIA" style="margin:18px 0 0;border-radius:14px;border:1px solid #D4D9EE;background:#fff;overflow:hidden">
+  <div onclick="togglePanel()" style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--navy);cursor:pointer;user-select:none">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:28px;height:28px;background:var(--amber);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px">🧠</div>
+      <div>
+        <div style="color:#fff;font-size:13px;font-weight:700">Análisis Lupita — Diagnóstico y Acciones</div>
+        <div style="color:#7A9AD0;font-size:10px">Basado en todos los gráficos · Abr-26 · Haz clic para expandir</div>
+      </div>
+    </div>
+    <span id="panelArrow" style="color:var(--amber);font-size:18px;transition:transform .2s">▾</span>
+  </div>
+  <div id="panelBody" style="display:none;padding:18px 20px 20px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+
+      <div style="border-radius:10px;border-left:4px solid #C0392B;background:#FEF0EE;padding:13px 15px">
+        <div style="font-size:10px;font-weight:700;color:#C0392B;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">🚨 Problema urgente — Resultado Operacional</div>
+        <div style="font-size:12px;color:#5A1A12;line-height:1.65">
+          LUP opera con <strong>resultado negativo todos los meses</strong>: −$0.4M (Ene) → −$7.2M (Abr). El problema no es el margen bruto (52%) — es que los gastos operacionales crecieron <strong>+55% en 4 meses</strong> ($5.5M → $8.5M). Ese crecimiento no tiene correlato en ventas.<br><br>
+          <strong>Acción:</strong> Auditar línea "Gastos generales" de Abr-26 ($5M solo en esa línea). Identificar qué generó el salto. Es la palanca más inmediata para volver a resultado positivo.
+        </div>
+      </div>
+
+      <div style="border-radius:10px;border-left:4px solid #C0392B;background:#FEF0EE;padding:13px 15px">
+        <div style="font-size:10px;font-weight:700;color:#C0392B;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">🚨 Conversión en mínimo histórico — 52.2%</div>
+        <div style="font-size:12px;color:#5A1A12;line-height:1.65">
+          De cada 2 visitas, 1 no compra. La meta es 75%. Con 1.029 contactos en Abr-26, si la conversión fuera 75% tendrías <strong>~772 ventas vs 537 actuales</strong> — eso son ~235 ventas adicionales al mes.<br><br>
+          <strong>Acción:</strong> Revisar con Richard qué pasa en las visitas sin compra: ¿clientes sin stock? ¿precio? ¿no estaban? La respuesta a esa pregunta vale más que cualquier otra acción comercial.
+        </div>
+      </div>
+
+      <div style="border-radius:10px;border-left:4px solid #E07820;background:#FFF3E0;padding:13px 15px">
+        <div style="font-size:10px;font-weight:700;color:#E07820;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">⚠️ Cajas: 1.093 de distancia al breakeven</div>
+        <div style="font-size:12px;color:#7A4A00;line-height:1.65">
+          Abr-26: 2.097 cajas vs BE de 3.190. Para cerrar la brecha sin nuevos clientes, cada uno de los 449 activos tendría que pasar de 4.7 a <strong>7.1 cajas/mes</strong>. El 47% de los clientes ya compra 4-7 cajas — subir ese grupo un escalón cierra buena parte del déficit.<br><br>
+          <strong>Acción:</strong> Ofrecer incentivo por volumen en próxima visita. "2 cajas más y te dejo precio especial" es más fácil de ejecutar que conseguir clientes nuevos.
+        </div>
+      </div>
+
+      <div style="border-radius:10px;border-left:4px solid #E07820;background:#FFF3E0;padding:13px 15px">
+        <div style="font-size:10px;font-weight:700;color:#E07820;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">⚠️ 74% de la cartera inactiva — 903 clientes</div>
+        <div style="font-size:12px;color:#7A4A00;line-height:1.65">
+          Solo 449 de 903 compraron en Abr-26. Los 16 clientes del panel de alertas que dejaron de comprar representan <strong>~$35M anuales</strong> en riesgo si no vuelven. Campaña C5 va en la dirección correcta pero es insuficiente a esta escala.<br><br>
+          <strong>Acción:</strong> Priorizar los top 10 del panel de alertas (compras ≥$300K/mes en Mar, no compraron Abr). Llamada directa esta semana — tienen historial, el costo de recuperarlos es mínimo.
+        </div>
+      </div>
+
+      <div style="border-radius:10px;border-left:4px solid #1B4F8A;background:#EEF4FF;padding:13px 15px">
+        <div style="font-size:10px;font-weight:700;color:#1B4F8A;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">💡 Fortaleza — Núcleo de 107 clientes leales</div>
+        <div style="font-size:12px;color:#1A2A50;line-height:1.65">
+          107 clientes compraron los 6 meses consecutivos. Son el 12.6% de la cartera AV pero probablemente generan el 35-40% de la facturación. Ese núcleo es el activo más valioso y el más frágil si se descuida.<br><br>
+          <strong>Acción:</strong> Identificarlos, visitarlos primero en cada ruta, y nunca dejarlos más de 3 semanas sin contacto. Un cliente leal perdido vale $500K-$1M/año.
+        </div>
+      </div>
+
+      <div style="border-radius:10px;border-left:4px solid #1B4F8A;background:#EEF4FF;padding:13px 15px">
+        <div style="font-size:10px;font-weight:700;color:#1B4F8A;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">💡 Precio bajando — atención al mix</div>
+        <div style="font-size:12px;color:#1A2A50;line-height:1.65">
+          El precio promedio por caja bajó de $10.671 (Ene) a $10.073 (Abr) — una caída de <strong>$600/caja en 4 meses</strong>. Con 2.100 cajas, eso son $1.3M menos de facturación mensual solo por precio. El costo CV está estable, así que el margen se comprime por el lado del precio.<br><br>
+          <strong>Acción:</strong> Revisar si hay descuentos no autorizados, ventas de productos de menor valor, o si el mix cambió. No subir costos — defender precio de venta.
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:12px;border-radius:10px;background:#F0F3F8;padding:12px 16px;font-size:11px;color:var(--muted);line-height:1.6">
+      <strong style="color:var(--navy)">En resumen:</strong> LUP tiene un margen bruto sólido (~50%) y una cartera de clientes con potencial real. El problema es doble: <strong>(1) gasto operacional descontrolado</strong> que consume todo el margen sobre ventas, y <strong>(2) baja conversión + alta inactividad</strong> que impide alcanzar el volumen necesario. Son problemas distintos que necesitan dueños distintos — el primero es tuyo, el segundo es de la operación de rutas.
+    </div>
+  </div>
+</div>
+
 
 <div class="page">
 <div class="st"><span class="st-tag">KPIs</span> <span id="kpiTitle">Último Mes (Abr-26) vs Promedio 6M AV</span></div>
@@ -244,7 +318,7 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
     <div class="mk" style="background:#F0FAF5"><div class="mkl">Mejor Margen</div><div class="mkv" style="color:var(--green)">0%</div><div style="font-size:9px;color:var(--muted)">Ene-26</div></div>
     <div class="mk" style="background:#FFF8E1"><div class="mkl">Peor Margen</div><div class="mkv" style="color:var(--orange)">0%</div><div style="font-size:9px;color:var(--muted)">Ene-26</div></div>
   </div>
-  <div class="tk w">⚠️ Costo CV/caja estable ~$5.1K. Margen baja de 52% (Ene) a 48.7% (Abr) por menor precio promedio de venta (−$600/caja).</div>
+  <div class="tk w">⚠️ Nov–Dic sin dato de costo (EERR disponible desde Ene-26). Precio baja $600/caja de Ene a Abr. Costo estable ~$5.1K. El margen cae de 52.2% a 48.7% — la palanca es sostener precio de venta, no el costo.</div>
 </div>
 
 <div class="st"><span class="st-tag">AV</span> Cajas & Clientes · Nov-25 a Abr-26</div>
@@ -641,14 +715,22 @@ function buildCharts(){
 
   // 4. Precio/caja (EERR — no filtrable)
   mc('cPrecioCaja',{data:{labels:LAV,datasets:[
-    {type:'bar',label:'Precio Neto/Caja',data:[11712, 10784, 0, 0, 0, 0],backgroundColor:'rgba(27,79,138,0.8)',borderRadius:5,yAxisID:'y',order:2},
-    {type:'bar',label:'Costo CV/Caja',data:["null", "null", 5124, 5114, 5114, 5169],backgroundColor:'rgba(192,57,43,0.75)',borderRadius:5,yAxisID:'y',order:2},
-    {type:'line',label:'Margen %',data:["null", "null", 0, 0, 0, 0],borderColor:GREEN,backgroundColor:'rgba(27,122,74,0.08)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:GREEN,pointBorderColor:'white',pointBorderWidth:2,yAxisID:'y2',order:1}]},
-    options:{responsive:true,maintainAspectRatio:true,
-    plugins:{legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},tooltip:{titleFont:{size:12},bodyFont:{size:11}}},
-    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},
-      y:{position:'left',grid:{color:'#EEF0F5'},ticks:{callback:v=>'$'+v.toLocaleString('es-CL'),font:{size:10}}},
-      y2:{position:'right',min:0,max:70,grid:{display:false},ticks:{callback:v=>v+'%',font:{size:10}}}}}});
+  {type:'bar',label:'Precio Neto/Caja ($)',data:[11712, 10784, 10671, 10705, 10205, 10073],backgroundColor:LAV.map((_,i)=>i<2?'rgba(27,79,138,0.45)':'rgba(27,79,138,0.82)'),borderRadius:5,yAxisID:'y',order:2},
+  {type:'bar',label:'Costo CV/Caja ($)',data:["null", "null", 5124, 5114, 5114, 5169],backgroundColor:LAV.map((_,i)=>i<2?'rgba(0,0,0,0)':'rgba(192,57,43,0.72)'),borderRadius:5,yAxisID:'y',order:2},
+  {type:'line',label:'Margen Bruto % (eje der.)',data:["null", "null", 52.0, 52.2, 49.9, 48.7],borderColor:'rgba(27,122,74,0.9)',backgroundColor:'rgba(27,122,74,0.07)',fill:true,tension:.3,pointRadius:LAV.map((_,i)=>i<2?0:5),pointBackgroundColor:'rgba(27,122,74,0.9)',pointBorderColor:'white',pointBorderWidth:2,yAxisID:'y2',order:1,spanGaps:false}]},
+options:{responsive:true,maintainAspectRatio:true,
+  plugins:{legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},
+    tooltip:{titleFont:{size:12},bodyFont:{size:11},callbacks:{label:ctx=>{
+      if(ctx.dataset.yAxisID==='y2') return ' Margen: '+(ctx.parsed.y!==null?ctx.parsed.y+'%':'sin dato');
+      return ' '+ctx.dataset.label+': $'+Math.round(ctx.parsed.y).toLocaleString('es-CL');
+    }}}},
+  scales:{
+    x:{grid:{display:false},ticks:{font:{size:11}}},
+    y:{position:'left',grid:{color:'#EEF0F5'},min:0,
+      ticks:{callback:v=>'$'+v.toLocaleString('es-CL'),font:{size:10}}},
+    y2:{position:'right',min:40,max:60,grid:{display:false},
+      ticks:{callback:v=>v+'%',font:{size:10}}}}}
+});
 
   // 5. Conversión — barras + línea, eje dual
   const visArr=visitasByMes(msAV);
@@ -742,5 +824,13 @@ function applyFilters(){
 // INIT
 buildCharts();
 updateKpis();
+
+function togglePanel(){
+  const body=document.getElementById('panelBody');
+  const arrow=document.getElementById('panelArrow');
+  const open=body.style.display==='none';
+  body.style.display=open?'block':'none';
+  arrow.style.transform=open?'rotate(180deg)':'';
+}
 </script>
 </body></html>
