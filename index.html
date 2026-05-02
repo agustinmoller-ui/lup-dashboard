@@ -184,12 +184,12 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
   <div class="chd"><div><div class="ctitle">Precio Neto/Caja vs Costo MP/Caja + Margen Directo %</div><div class="csub">AV Nov-25 a Abr-26 · eje dual · costo MP disponible Ene–Abr 2026</div></div><span class="cbadge">eje dual</span></div>
   <canvas id="cPrecioCaja" height="165"></canvas>
   <div class="mks">
-    <div class="mk" style="background:#EEF4FF"><div class="mkl">Precio Prom AV</div><div class="mkv" style="color:var(--blue)">$10.4K</div></div>
-    <div class="mk" style="background:#FEF0EE"><div class="mkl">Costo Prom MP</div><div class="mkv" style="color:var(--red)">$5.6K</div></div>
-    <div class="mk" style="background:#F0FAF5"><div class="mkl">Mejor Margen</div><div class="mkv" style="color:var(--green)">59.5%</div><div style="font-size:9px;color:var(--muted)">Mar-26</div></div>
-    <div class="mk" style="background:#FFF8E1"><div class="mkl">Peor Margen</div><div class="mkv" style="color:var(--orange)">38.6%</div><div style="font-size:9px;color:var(--muted)">Feb-26</div></div>
+    <div class="mk" style="background:#EEF4FF"><div class="mkl">Precio Prom Ene-Abr</div><div class="mkv" style="color:var(--blue)">$10,414</div><div style="font-size:9px;color:var(--muted)">por caja</div></div>
+    <div class="mk" style="background:#FEF0EE"><div class="mkl">Costo CV Prom/Caja</div><div class="mkv" style="color:var(--red)">$5,130</div><div style="font-size:9px;color:var(--muted)">detergente</div></div>
+    <div class="mk" style="background:#F0FAF5"><div class="mkl">Mejor Margen</div><div class="mkv" style="color:var(--green)">52.2%</div><div style="font-size:9px;color:var(--muted)">Feb-26</div></div>
+    <div class="mk" style="background:#FFF8E1"><div class="mkl">Peor Margen</div><div class="mkv" style="color:var(--orange)">48.7%</div><div style="font-size:9px;color:var(--muted)">Abr-26</div></div>
   </div>
-  <div class="tk w">⚠️ Costo MP varía $4.2K–$6.6K/caja (+57% entre meses). Sin mover precio de venta, negociar mejor el MP puede sumar o restar $3M/mes.</div>
+  <div class="tk w">⚠️ Costo CV/caja estable ~$5.1K–$5.2K. El margen bajó de 52% (Ene) a 48.7% (Abr). La caída es por precio de venta promedio menor (−$600/caja) — revisar mix de productos y descuentos.</div>
 </div>
 
 <div class="st"><span class="st-tag">AV</span> Conversión & Cajas · Nov-25 a Abr-26</div>
@@ -241,10 +241,10 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
 
 <div class="st"><span class="st-tag">EERR</span> Estado de Resultados · Ene–Abr 2026</div>
 <div class="eerr-big">
-  <div class="ek"><div class="ekl">Ventas Prom/Mes</div><div class="ekv">$26.3M</div><div class="eks">Ene–Abr 2026</div></div>
-  <div class="ek warn"><div class="ekl">Costos Totales Prom</div><div class="ekv">$19.7M</div><div class="eks">MP+Desp+Remun+Op</div></div>
-  <div class="ek pos"><div class="ekl">Resultado Op. Prom</div><div class="ekv">+$6.6M</div><div class="eks">Positivo todos los meses</div></div>
-  <div class="ek"><div class="ekl">Margen Bruto Prom</div><div class="ekv">51.7%</div><div class="eks">Ventas − Costo MP</div></div>
+  <div class="ek"><div class="ekl">Ventas Prom/Mes</div><div class="ekv">$24.3M</div><div class="eks">Ene–Abr 2026</div></div>
+  <div class="ek warn"><div class="ekl">Costo Venta Prom</div><div class="ekv">$12.0M</div><div class="eks">detergente + envases</div></div>
+  <div class="ek"><div class="ekl">Margen Bruto Prom</div><div class="ekv">50.7%</div><div class="eks">ventas − costo CV</div></div>
+  <div class="ek neg"><div class="ekl">Resultado Op. Prom</div><div class="ekv">-$3.9M</div><div class="eks">🚨 negativo todos los meses</div></div>
 </div>
 <div class="g21">
   <div class="card">
@@ -257,17 +257,21 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
     <table class="etbl">
       <thead><tr><th>Concepto</th><th>ENE-26</th><th>FEB-26</th><th>MAR-26</th><th>ABR-26</th></tr></thead>
       <tbody>
-        <tr><td>Ventas Netas</td><td>$28.3</td><td>$24.2</td><td>$28.4</td><td>$24.3</td></tr>
-        <tr class="ec"><td>– Costo MP</td><td>$14.7</td><td>$12.6</td><td>$11.6</td><td>$11.8</td></tr>
-        <tr class="ec"><td>– Despacho</td><td>$1.3</td><td>$0.9</td><td>$1.1</td><td>$1.1</td></tr>
-        <tr class="ec"><td>– Remuneraciones</td><td>$2.1</td><td>$2.3</td><td>$2.1</td><td>$3.0</td></tr>
-        <tr class="eg"><td>– Gastos Op.</td><td>$2.0</td><td>$3.6</td><td>$3.7</td><td style="color:var(--red)">$5.0 🚨</td></tr>
-        <tr class="et"><td>Costos Totales</td><td>$20.1</td><td>$19.4</td><td>$18.5</td><td>$20.9</td></tr>
-        <tr class="er"><td>Resultado Op.</td><td>+$8.3</td><td>+$4.8</td><td>+$9.9</td><td>+$3.4</td></tr>
-        <tr class="em"><td>Margen Bruto %</td><td>48.2%</td><td>48.0%</td><td>59.1%</td><td>51.3%</td></tr>
+        <tr style=""><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:var(--muted);">Ventas Netas</td><td>+$27.6M</td><td>+$20.5M</td><td>+$28.2M</td><td>+$21.1M</td></tr>
+<tr style="background:#FFF8F6;"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:var(--muted);">− Costo de Ventas</td><td>$13.2M</td><td>$9.8M</td><td>$14.1M</td><td>$10.8M</td></tr>
+<tr style="background:#F0F3F8;font-weight:700;"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;">= Margen Bruto</td><td>+$14.3M</td><td>+$10.7M</td><td>+$14.0M</td><td>+$10.3M</td></tr>
+<tr style="background:#F5FAF7;font-size:10px;"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:var(--muted);">  % Margen Bruto</td><td style="color:var(--green)">52.0%</td><td style="color:var(--green)">52.2%</td><td style="color:var(--green)">49.9%</td><td style="color:var(--green)">48.7%</td></tr>
+<tr style="background:#FFF8F6;"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:var(--muted);">− Despacho</td><td>$3.8M</td><td>$2.5M</td><td>$5.5M</td><td>$1.9M</td></tr>
+<tr style="background:#F0F3F8;font-weight:700;"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;">= Margen s/Ventas</td><td>+$10.6M</td><td>+$8.2M</td><td>+$8.5M</td><td>+$8.4M</td></tr>
+<tr style="background:#FFF8F6;"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:var(--muted);">− Remuneraciones</td><td>$4.9M</td><td>$5.7M</td><td>$5.9M</td><td>$5.9M</td></tr>
+<tr style="background:#FFF8F6;"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:var(--muted);">− Gastos Operación</td><td>$5.5M</td><td>$5.6M</td><td>$6.2M</td><td>$8.5M</td></tr>
+<tr style="background:#F0F3F8;font-weight:700;border-top:2px solid var(--border);"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:var(--muted);">= Total Gastos Op.</td><td>$11.0M</td><td>$11.8M</td><td>$12.6M</td><td>$15.7M</td></tr>
+<tr style="background:var(--navy);"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:#8FAFDD;">RESULTADO OP.</td><td style="font-weight:800;color:#FF6B6B">$0.4M</td><td style="font-weight:800;color:#FF6B6B">$3.7M</td><td style="font-weight:800;color:#FF6B6B">$4.1M</td><td style="font-weight:800;color:#FF6B6B">$7.2M</td></tr>
+<tr style="background:#F5FAF7;font-size:10px;"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:var(--muted);">  % Margen Op.</td><td style="color:var(--red)">-1.6%</td><td style="color:var(--red)">-17.9%</td><td style="color:var(--red)">-14.7%</td><td style="color:var(--red)">-34.2%</td></tr>
+
       </tbody>
     </table>
-    <div class="tk w" style="margin-top:10px">⚠️ Mar-26: mejor margen (59.1%) con menor costo MP. La variabilidad del MP es la palanca de margen más directa.</div>
+    <div class="tk r" style="margin-top:10px">🚨 Resultado operacional negativo todos los meses. Feb-26 peor mes: −$3.7M (−17.9%). Abr-26: −$7.2M por explosión de gastos op ($8.5M). Los gastos operacionales son el principal problema — crecieron 54% en 4 meses.</div>
   </div>
 </div>
 
@@ -385,14 +389,15 @@ mc('cTicket',{type:'line',data:{labels:L12,datasets:[
   options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>'$'+v.toLocaleString('es-CL')}}}}});
 
 mc('cPrecioCaja',{data:{labels:LAV,datasets:[
-  {type:'bar',label:'Precio Neto/Caja',data:[11321, 10589, 10168, 10172, 9843, 9578],backgroundColor:'rgba(27,79,138,0.8)',borderRadius:5,yAxisID:'y',order:2},
-  {type:'bar',label:'Costo MP/Caja',data:["null", "null", 5662, 6579, 4200, 4791],backgroundColor:'rgba(192,57,43,0.75)',borderRadius:5,yAxisID:'y',order:2},
-  {type:'line',label:'Margen Directo %',data:["null", "null", 44.3, 35.3, 57.3, 50.0],borderColor:GREEN,backgroundColor:'rgba(27,122,74,0.08)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:GREEN,pointBorderColor:'white',pointBorderWidth:2,yAxisID:'y2',order:1}]},
-  options:{responsive:true,maintainAspectRatio:true,
+  {type:'bar',label:'Precio Neto/Caja',data:[11321, 10589, 10671, 10705, 10205, 10073],backgroundColor:'rgba(27,79,138,0.8)',borderRadius:5,yAxisID:'y',order:2},
+  {type:'bar',label:'Costo CV/Caja',data:["null", "null", 5124, 5114, 5114, 5169],backgroundColor:'rgba(192,57,43,0.75)',borderRadius:5,yAxisID:'y',order:2},
+  {type:'line',label:'Margen Bruto %',data:["null", "null", 52.0, 52.2, 49.9, 48.7],borderColor:'rgba(27,122,74,0.9)',backgroundColor:'rgba(27,122,74,0.08)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:'rgba(27,122,74,0.9)',pointBorderColor:'white',pointBorderWidth:2,yAxisID:'y2',order:1}
+]},options:{responsive:true,maintainAspectRatio:true,
   plugins:{legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},tooltip:{titleFont:{size:12},bodyFont:{size:11}}},
   scales:{x:{grid:{display:false},ticks:{font:{size:11}}},
     y:{position:'left',grid:{color:'#EEF0F5'},ticks:{callback:v=>'$'+v.toLocaleString('es-CL'),font:{size:10}}},
-    y2:{position:'right',min:0,max:80,grid:{display:false},ticks:{callback:v=>v+'%',font:{size:10}}}}}});
+    y2:{position:'right',min:0,max:70,grid:{display:false},ticks:{callback:v=>v+'%',font:{size:10}}}}}
+});
 
 mc('cConv',{type:'line',data:{labels:LAV,datasets:[
   {label:'Total',data:[74.1, 69.7, 75.8, 80.2, 87.4, 52.2],borderColor:BLUE,backgroundColor:'rgba(27,79,138,0.08)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:BLUE,pointBorderColor:'white',pointBorderWidth:2},
@@ -462,11 +467,12 @@ mc('cCartera',{type:'bar',data:{labels:["Nov-25", "Dic-25", "Ene-26", "Feb-26", 
   options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}}});
 
 mc('cEERR',{type:'bar',data:{labels:LEE,datasets:[
-  {label:'Ventas',data:[28.3, 24.2, 28.4, 24.3],backgroundColor:'rgba(27,79,138,0.85)',borderRadius:4,stack:'s'},
-  {label:'Costo MP',data:[14.66, 12.58, 11.61, 11.83],backgroundColor:'rgba(192,57,43,0.75)',borderRadius:4,stack:'c'},
-  {label:'Despacho',data:[1.3, 0.94, 1.07, 1.14],backgroundColor:'rgba(224,120,32,0.7)',borderRadius:4,stack:'c'},
-  {label:'Remuneraciones',data:[2.05, 2.31, 2.1, 2.95],backgroundColor:'rgba(241,196,15,0.85)',borderRadius:4,stack:'c'},
-  {label:'Gastos Op.',data:[1.98, 3.56, 3.67, 4.95],backgroundColor:'rgba(107,122,153,0.7)',borderRadius:4,stack:'c'},
-  {type:'line',label:'Resultado Op.',data:[8.31, 4.81, 9.95, 3.43],borderColor:'rgba(27,122,74,0.95)',backgroundColor:'rgba(27,122,74,0.1)',fill:false,tension:.3,pointRadius:7,pointBackgroundColor:'rgba(27,122,74,0.95)',pointBorderColor:'white',pointBorderWidth:2,order:0}]},
-  options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>'$'+v+'M'}}}}});
+  {label:'Ventas',data:[27.573, 20.468, 28.159, 21.129],backgroundColor:'rgba(27,79,138,0.85)',borderRadius:4,stack:'s'},
+  {label:'Costo CV',data:[13.24, 9.778, 14.111, 10.839],backgroundColor:'rgba(192,57,43,0.75)',borderRadius:4,stack:'c'},
+  {label:'Despacho',data:[3.778, 2.535, 5.549, 1.851],backgroundColor:'rgba(224,120,32,0.7)',borderRadius:4,stack:'c'},
+  {label:'Remuneraciones',data:[4.926, 5.702, 5.919, 5.862],backgroundColor:'rgba(241,196,15,0.85)',borderRadius:4,stack:'c'},
+  {label:'Gastos Op.',data:[5.502, 5.593, 6.184, 8.506],backgroundColor:'rgba(107,122,153,0.7)',borderRadius:4,stack:'c'},
+  {type:'line',label:'Resultado Op.',data:[-0.437, -3.666, -4.131, -7.235],borderColor:'rgba(192,57,43,0.95)',backgroundColor:'rgba(192,57,43,0.08)',fill:false,tension:.3,pointRadius:7,pointBackgroundColor:'rgba(192,57,43,0.95)',pointBorderColor:'white',pointBorderWidth:2,order:0}
+]},options:{...base,
+  scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>'$'+v+'M'}}}}});
 </script></body></html>
