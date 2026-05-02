@@ -1,307 +1,187 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>LUP · Dashboard Comercial</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root{--navy:#0D1F3C;--blue:#1B4F8A;--teal:#0B6E6E;--green:#1B7A4A;--amber:#F5C200;--red:#C0392B;--orange:#E07820;--bg:#EEF1F8;--card:#fff;--border:#DDE3EE;--text:#1A2540;--muted:#6B7A99;--r:12px}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px}
-header{background:var(--navy);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100}
-.hlogo{width:36px;height:36px;background:var(--amber);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:var(--navy);margin-right:12px;flex-shrink:0}
-.htitle{color:#fff;font-size:16px;font-weight:700}
-.hsub{color:#7A9AD0;font-size:10px;margin-top:1px}
-.hbadge{background:rgba(245,194,0,.15);border:1px solid rgba(245,194,0,.3);color:var(--amber);padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap}
-.notice{background:#FFF8E1;border-bottom:1px solid #F5C200;padding:8px 20px;font-size:11px;color:#7A5700;line-height:1.5}
-.page{max-width:1320px;margin:0 auto;padding:20px 16px 48px}
-
-/* SECTION TITLE */
-.st{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin:28px 0 12px;display:flex;align-items:center;gap:8px}
-.st-tag{background:var(--navy);color:var(--amber);padding:2px 8px;border-radius:20px;font-size:8px;font-weight:700;letter-spacing:.5px}
+header{background:var(--navy);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+.hlogo{width:34px;height:34px;background:var(--amber);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;color:var(--navy);margin-right:11px;flex-shrink:0}
+.htitle{color:#fff;font-size:15px;font-weight:700}.hsub{color:#7A9AD0;font-size:10px;margin-top:1px}
+.hbadge{background:rgba(245,194,0,.15);border:1px solid rgba(245,194,0,.3);color:var(--amber);padding:3px 9px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap}
+.notice{background:#FFF8E1;border-bottom:1px solid #F5C200;padding:7px 20px;font-size:11px;color:#7A5700;line-height:1.5}
+.page{max-width:1320px;margin:0 auto;padding:18px 14px 48px}
+.st{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin:26px 0 11px;display:flex;align-items:center;gap:8px}
+.st-tag{background:var(--navy);color:var(--amber);padding:2px 8px;border-radius:20px;font-size:8px;font-weight:700}
 .st::after{content:'';flex:1;height:1px;background:var(--border)}
-
-/* KPI GRID */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
-.kpi{background:var(--card);border-radius:var(--r);padding:14px 16px 12px;border:1px solid var(--border);position:relative;overflow:hidden}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.kpi{background:var(--card);border-radius:var(--r);padding:13px 15px 11px;border:1px solid var(--border);position:relative;overflow:hidden}
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kc,var(--blue))}
 .kpi.b{--kc:var(--blue)}.kpi.g{--kc:var(--green)}.kpi.a{--kc:var(--amber)}.kpi.r{--kc:var(--red)}.kpi.w{--kc:var(--orange)}
-.kpi-label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;align-items:center;gap:4px}
-.kpi-row{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
-.kpi-value{font-size:22px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-.5px;flex-shrink:0}
-.kpi-right{text-align:right}
-.kpi-prom{font-size:11px;color:var(--muted);font-weight:500}
-.kpi-prom::before{content:'Ø '}
+.kpi-label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;align-items:center;gap:3px}
+.kpi-row{display:flex;align-items:flex-end;justify-content:space-between;gap:6px}
+.kpi-value{font-size:21px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-.5px;flex-shrink:0}
+.kpi-right{text-align:right;flex-shrink:0}
+.kpi-prom{font-size:10px;color:var(--muted)}
 .kpi-diff{font-size:10px;font-weight:700;margin-top:1px}
 .kpi-diff.pos{color:var(--green)}.kpi-diff.neg{color:var(--red)}
-.kpi-note{font-size:9px;color:var(--muted);margin-top:5px;line-height:1.3}
-.kpi-hint{display:inline-block;width:13px;height:13px;background:var(--bg);border:1px solid var(--border);border-radius:50%;text-align:center;line-height:12px;font-size:8px;color:var(--muted);cursor:pointer;margin-left:2px;font-weight:700}
+.kpi-note{font-size:9px;color:var(--muted);margin-top:4px;line-height:1.3}
+.kpi-hint{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;background:var(--bg);border:1px solid var(--border);border-radius:50%;font-size:8px;color:var(--muted);cursor:pointer;font-weight:700;flex-shrink:0}
 .kpi-hint:hover{background:var(--navy);color:var(--amber)}
-
-/* CHARTS */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
 .g12{display:grid;grid-template-columns:1fr 2fr;gap:14px}
 .g21{display:grid;grid-template-columns:2fr 1fr;gap:14px}
 @media(max-width:800px){.g2,.g3,.g12,.g21{grid-template-columns:1fr}}
-.card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:18px 20px}
-.chd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:16px 18px}
+.chd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:11px}
 .ctitle{font-size:12px;font-weight:700;color:var(--text)}
 .csub{font-size:10px;color:var(--muted);margin-top:2px}
-.cbadge{padding:2px 8px;border-radius:8px;font-size:9px;font-weight:700;background:var(--bg);color:var(--muted);white-space:nowrap}
-
-/* TAKEAWAY */
-.tk{border-radius:0 8px 8px 0;border-left:3px solid;padding:7px 11px;font-size:11px;line-height:1.55;margin-top:10px}
+.cbadge{padding:2px 7px;border-radius:7px;font-size:9px;font-weight:700;background:var(--bg);color:var(--muted);white-space:nowrap;flex-shrink:0}
+.tk{border-radius:0 8px 8px 0;border-left:3px solid;padding:7px 11px;font-size:11px;line-height:1.5;margin-top:10px}
 .tk.g{background:#F0FAF5;border-color:var(--green);color:#14422B}
 .tk.w{background:#FFF8E1;border-color:var(--amber);color:#7A5700}
 .tk.r{background:#FEF0EE;border-color:var(--red);color:#7A1A12}
 .tk.b{background:#EEF4FF;border-color:var(--blue);color:#1B3A6B}
-
-/* MINI KPIS bajo gráfico */
-.mks{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.mks{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:11px}
 .mk{border-radius:8px;padding:9px 12px;text-align:center}
 .mkl{font-size:9px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
-.mkv{font-size:17px;font-weight:800;color:var(--navy)}
-.mks2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
-@media(max-width:500px){.mks{grid-template-columns:repeat(2,1fr)}.mks2{grid-template-columns:1fr}}
-
-/* EERR BIG */
-.eerr-big{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.mkv{font-size:16px;font-weight:800;color:var(--navy)}
+.mks2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:11px}
+@media(max-width:500px){.mks{grid-template-columns:repeat(2,1fr)}}
+.eerr-big{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:13px}
 @media(max-width:700px){.eerr-big{grid-template-columns:repeat(2,1fr)}}
-.ek{background:var(--navy);border-radius:var(--r);padding:14px 16px;text-align:center}
-.ekl{font-size:9px;color:#7A9AD0;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
-.ekv{font-size:20px;font-weight:800;color:var(--amber);letter-spacing:-.5px}
+.ek{background:var(--navy);border-radius:var(--r);padding:13px 15px;text-align:center}
+.ekl{font-size:9px;color:#7A9AD0;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.ekv{font-size:19px;font-weight:800;color:var(--amber);letter-spacing:-.5px}
 .eks{font-size:9px;color:#5A7AB0;margin-top:2px}
 .ek.pos .ekv{color:#4AE090}.ek.warn .ekv{color:var(--orange)}
-
-/* EERR TABLE */
 .etbl{width:100%;border-collapse:collapse;font-size:11px}
 .etbl thead tr{background:var(--navy)}
-.etbl th{color:#8FAFDD;padding:8px 12px;text-align:right;font-size:9px;font-weight:600;letter-spacing:.5px;white-space:nowrap}
+.etbl th{color:#8FAFDD;padding:7px 11px;text-align:right;font-size:9px;font-weight:600;white-space:nowrap}
 .etbl th:first-child{text-align:left;color:#C8D8F0}
-.etbl td{padding:7px 12px;border-bottom:1px solid var(--border);text-align:right}
-.etbl td:first-child{text-align:left;color:var(--muted);font-weight:600;font-size:11px}
-.etbl .ec td{background:#FFF8F6}
-.etbl .eg td{background:#FFF3EC;font-weight:700}
+.etbl td{padding:7px 11px;border-bottom:1px solid var(--border);text-align:right}
+.etbl td:first-child{text-align:left;color:var(--muted);font-weight:600;font-size:10.5px}
+.etbl .ec td{background:#FFF8F6}.etbl .eg td{background:#FFF3EC;font-weight:700}
 .etbl .et td{background:#F0F3F8;font-weight:700;border-top:2px solid var(--border)}
 .etbl .er td{background:var(--navy);color:#4AE090;font-weight:800;font-size:12px;border:none}
 .etbl .er td:first-child{color:#8FAFDD;font-weight:600;font-size:10px}
 .etbl .em td{background:#F5FAF7;color:var(--green);font-weight:700}
 .etbl .em td:first-child{color:var(--muted)}
-
-/* ALERTAS */
-.ast{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.as{border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;min-width:0}
+.ast{display:flex;gap:8px;margin-bottom:11px;flex-wrap:wrap}
+.as{border-radius:8px;padding:6px 11px;font-size:12px;font-weight:700}
 .asl{font-size:9px;font-weight:500;display:block;margin-top:1px;opacity:.8}
 .as.r{background:#FEF0EE;color:var(--red)}.as.w{background:#FFF3E0;color:var(--orange)}
 .as.b{background:#EEF4FF;color:var(--blue)}.as.g{background:#F0FAF5;color:var(--green)}
-
-/* ALERTAS TABLE — responsive */
 .atbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:8px;border:1px solid var(--border)}
-.atbl{width:100%;border-collapse:collapse;font-size:11px;min-width:480px}
+.atbl{width:100%;border-collapse:collapse;font-size:11px;min-width:500px}
 .atbl thead tr{background:#F5F7FB}
 .atbl th{padding:8px 10px;text-align:left;font-weight:600;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);white-space:nowrap}
 .atbl th.r{text-align:right}
 .atbl td{padding:8px 10px;border-bottom:1px solid #F0F3F8;vertical-align:middle;white-space:nowrap}
-.atbl td.n{color:var(--muted);width:24px;font-size:10px}
-.atbl td.cn{font-weight:600;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.atbl td.n{color:var(--muted);width:22px;font-size:10px}
+.atbl td.cn{font-weight:600;max-width:150px;overflow:hidden;text-overflow:ellipsis}
 .atbl td.rt{color:var(--muted);font-size:10px}
 .atbl td.num{text-align:right;font-variant-numeric:tabular-nums}
-.atbl td.mu{color:var(--muted)}
-.atbl td.vn{color:var(--red);font-weight:700;text-align:right}
+.atbl td.mu{color:var(--muted)}.atbl td.vn{color:var(--red);font-weight:700;text-align:right}
 .atbl tr:hover td{background:#FAFBFE}
 .bdg{display:inline-block;padding:2px 7px;border-radius:8px;font-size:9px;font-weight:700;white-space:nowrap}
 .bdg.nc{background:#FDECEA;color:#C0392B}.bdg.bf{background:#FFF0E0;color:#D05000}.bdg.bj{background:#FFF8E1;color:#B07800}
-
-/* VENDEDORES TABLE */
 .vtbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:8px;border:1px solid var(--border)}
 .vtbl{width:100%;border-collapse:collapse;font-size:11px;min-width:700px}
 .vtbl thead tr{background:var(--navy)}
-.vtbl th{color:#8FAFDD;padding:7px 10px;text-align:right;font-size:9px;font-weight:600;letter-spacing:.4px;white-space:nowrap}
+.vtbl th{color:#8FAFDD;padding:7px 10px;text-align:right;font-size:9px;font-weight:600;white-space:nowrap}
 .vtbl th:first-child,.vtbl th:nth-child(2){text-align:left}
 .vtbl th:first-child{color:#C8D8F0}
-.vtbl td{padding:6px 10px;border-bottom:1px solid var(--border);text-align:right;font-variant-numeric:tabular-nums}
-.vtbl td.vn{text-align:left;font-weight:600}
-.vtbl td.grp{text-align:left;font-size:10px}
-.vtbl td.tot{font-weight:700;color:var(--navy)}
+.vtbl td{padding:6px 10px;border-bottom:1px solid var(--border);text-align:right;font-variant-numeric:tabular-nums;font-size:11px}
+.vtbl td.vn{text-align:left;font-weight:600}.vtbl td.grp{text-align:left;font-size:10px;color:var(--muted)}
+.vtbl td.tot{font-weight:700;color:var(--navy)}.vtbl td.num{text-align:right}
 .vtbl td.rv{color:var(--blue)}.vtbl td.gv{color:var(--orange)}.vtbl td.ov{color:var(--muted)}
-.vtbl .tot-row td{background:#F0F3F8;font-weight:700;border-top:2px solid var(--border)}
 .vtbl tr:hover td{background:#F8F9FC}
-
-/* MODAL */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:16px}
 .modal.open{display:flex}
-.modal-box{background:#fff;border-radius:14px;padding:24px;max-width:480px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.modal-box h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:12px}
+.modal-box{background:#fff;border-radius:14px;padding:22px;max-width:460px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-box h3{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:10px}
 .modal-box p{font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.6}
 .modal-box p strong{color:var(--text)}
-.modal-box button{margin-top:12px;padding:8px 20px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+.modal-box button{margin-top:10px;padding:7px 18px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
+</style></head><body>
 
-footer{text-align:center;padding:20px;font-size:10px;color:var(--muted)}
-</style>
-</head>
-<body>
 <header>
   <div style="display:flex;align-items:center">
     <div class="hlogo">L</div>
     <div><div class="htitle">LUP · Dashboard Comercial</div>
-    <div class="hsub">Mayo 2025 – Abril 2026 · TP + Autoventa · 2026-05-01</div></div>
+    <div class="hsub">Mayo 2025–Abril 2026 · TP+AV · 2026-05-02</div></div>
   </div>
-  <div style="display:flex;gap:6px"><span class="hbadge" style="background:rgba(27,122,74,.18);border-color:rgba(27,122,74,.4);color:#4AE090">● LIVE</span><span class="hbadge">12 meses</span></div>
+  <div style="display:flex;gap:6px">
+    <span class="hbadge" style="background:rgba(27,122,74,.18);border-color:rgba(27,122,74,.4);color:#4AE090">● LIVE</span>
+    <span class="hbadge">12 meses</span>
+  </div>
 </header>
-<div class="notice">⚠️ <strong>Nota:</strong> TP (May–Oct 2025) sin cajas ni conversión real. Cajas AV = DETERG.LIQ.LUP 4×5L. Admin LUP excluida de KPIs comerciales. Costo MP disponible Ene–Abr 2026. Breakeven: <strong>3.190 cajas/mes</strong>.<br>
-<strong>Columna izquierda KPIs = últimos 30 días (Abr-26) · Columna derecha = promedio 6 meses AV (Nov-25–Abr-26) · % = diferencia</strong></div>
+
+<div class="notice">
+  ⚠️ <strong>Nota:</strong> TP (May–Oct 2025) sin cajas ni conversión. Cajas AV = DETERG.LIQ.LUP 4×5L. Admin LUP excluida de KPIs comerciales. Costo MP disponible Ene–Abr 2026. BE: <strong>3.190 cajas/mes</strong>.<br>
+  <strong>KPI izquierda = Abr-26 (último mes) · Ø = promedio 6M AV (Nov-25–Abr-26) · % = diferencia vs promedio</strong>
+</div>
 
 <div class="page">
-
 <div class="st"><span class="st-tag">KPIs</span> Últimos 30 Días vs Promedio 6 Meses AV</div>
-<div class="kpi-grid">
-<div class="kpi b">
-  <div class="kpi-label">Ventas Netas</div>
-  <div class="kpi-row">
-    <div class="kpi-value">$25.1M</div>
-    <div class="kpi-right">
-      <div class="kpi-prom">$26.0M</div>
-      <div class="kpi-diff neg">-3.5%</div>
-    </div>
-  </div>
-  
-</div><div class="kpi b">
-  <div class="kpi-label">Pedidos</div>
-  <div class="kpi-row">
-    <div class="kpi-value">537</div>
-    <div class="kpi-right">
-      <div class="kpi-prom">556</div>
-      <div class="kpi-diff neg">-3.4%</div>
-    </div>
-  </div>
-  
-</div><div class="kpi b">
-  <div class="kpi-label">Clientes con Venta</div>
-  <div class="kpi-row">
-    <div class="kpi-value">449</div>
-    <div class="kpi-right">
-      <div class="kpi-prom">462</div>
-      <div class="kpi-diff neg">-2.8%</div>
-    </div>
-  </div>
-  
-</div><div class="kpi g">
-  <div class="kpi-label">Cajas Vendidas AV</div>
-  <div class="kpi-row">
-    <div class="kpi-value">2,469</div>
-    <div class="kpi-right">
-      <div class="kpi-prom">2,433</div>
-      <div class="kpi-diff pos">+1.5%</div>
-    </div>
-  </div>
-  <div class='kpi-note'>BE: 3.190 · brecha 721</div>
-</div><div class="kpi r">
-  <div class="kpi-label">Conversión AV</div>
-  <div class="kpi-row">
-    <div class="kpi-value">52.2%</div>
-    <div class="kpi-right">
-      <div class="kpi-prom">73.2%</div>
-      <div class="kpi-diff neg">-28.7%</div>
-    </div>
-  </div>
-  <div class='kpi-note'>ventas/(ventas+visitas)</div>
-</div><div class="kpi g">
-  <div class="kpi-label">Cajas/Cliente AV</div>
-  <div class="kpi-row">
-    <div class="kpi-value">5.5</div>
-    <div class="kpi-right">
-      <div class="kpi-prom">5.31</div>
-      <div class="kpi-diff pos">+3.6%</div>
-    </div>
-  </div>
-  <div class='kpi-note'>Meta BE: 6.9</div>
-</div><div class="kpi r">
-  <div class="kpi-label">% Inactividad</div>
-  <div class="kpi-row">
-    <div class="kpi-value">50.3%</div>
-    <div class="kpi-right">
-      <div class="kpi-prom">38.3%</div>
-      <div class="kpi-diff neg">+31.3%</div>
-    </div>
-  </div>
-  <div class='kpi-note'>sin compra / cartera total</div>
-</div><div class="kpi b">
-  <div class="kpi-label">Ticket / Pedido</div>
-  <div class="kpi-row">
-    <div class="kpi-value">$46,713</div>
-    <div class="kpi-right">
-      <div class="kpi-prom">$47,325</div>
-      <div class="kpi-diff neg">-1.3%</div>
-    </div>
-  </div>
-  
-</div><div class="kpi b">
-  <div class="kpi-label">Ticket / Cliente</div>
-  <div class="kpi-row">
-    <div class="kpi-value">$55,869</div>
-    <div class="kpi-right">
-      <div class="kpi-prom">$56,713</div>
-      <div class="kpi-diff neg">-1.5%</div>
-    </div>
-  </div>
-  
-</div>
-</div>
+<div class="kpi-grid"><div class="kpi b"><div class="kpi-label">Ventas Netas</div><div class="kpi-row"><div class="kpi-value">$25.1M</div><div class="kpi-right"><div class="kpi-prom">Ø $26.0M</div><div class="kpi-diff neg">-3.5%</div></div></div></div><div class="kpi b"><div class="kpi-label">Pedidos</div><div class="kpi-row"><div class="kpi-value">537</div><div class="kpi-right"><div class="kpi-prom">Ø 556</div><div class="kpi-diff neg">-3.4%</div></div></div></div><div class="kpi b"><div class="kpi-label">Clientes Activos</div><div class="kpi-row"><div class="kpi-value">449</div><div class="kpi-right"><div class="kpi-prom">Ø 462</div><div class="kpi-diff neg">-2.8%</div></div></div><div class="kpi-note">Cartera total: 1,725 (TP+AV)</div></div><div class="kpi b"><div class="kpi-label">Cajas Vendidas AV</div><div class="kpi-row"><div class="kpi-value">2,469</div><div class="kpi-right"><div class="kpi-prom">Ø 2,433</div><div class="kpi-diff pos">+1.5%</div></div></div><div class="kpi-note">BE: 3.190 · brecha 721</div></div><div class="kpi b"><div class="kpi-label">Conversión AV<span class="kpi-hint" onclick="openModal('modalConv')" title="Ver explicación">?</span></div><div class="kpi-row"><div class="kpi-value">52.2%</div><div class="kpi-right"><div class="kpi-prom">Ø 73.2%</div><div class="kpi-diff neg">-28.7%</div></div></div><div class="kpi-note">ventas / (ventas + visitas AV)</div></div><div class="kpi b"><div class="kpi-label">Cajas/Cliente AV<span class="kpi-hint" onclick="openModal('modalCpk')" title="Ver explicación">?</span></div><div class="kpi-row"><div class="kpi-value">5.5</div><div class="kpi-right"><div class="kpi-prom">Ø 5.31</div><div class="kpi-diff pos">+3.6%</div></div></div><div class="kpi-note">Meta BE: 6.9 cajas/cli</div></div><div class="kpi b"><div class="kpi-label">% Inactividad<span class="kpi-hint" onclick="openModal('modalInact')" title="Ver explicación">?</span></div><div class="kpi-row"><div class="kpi-value">74.0%</div><div class="kpi-right"><div class="kpi-prom">Ø 73.2%</div><div class="kpi-diff neg">+1.1%</div></div></div><div class="kpi-note">Base: 1,725 clientes TP+AV</div></div><div class="kpi b"><div class="kpi-label">Ticket / Pedido<span class="kpi-hint" onclick="openModal('modalTicket')" title="Ver explicación">?</span></div><div class="kpi-row"><div class="kpi-value">$46,713</div><div class="kpi-right"><div class="kpi-prom">Ø $47,325</div><div class="kpi-diff neg">-1.3%</div></div></div></div><div class="kpi b"><div class="kpi-label">Ticket / Cliente</div><div class="kpi-row"><div class="kpi-value">$55,869</div><div class="kpi-right"><div class="kpi-prom">Ø $56,713</div><div class="kpi-diff neg">-1.5%</div></div></div></div></div>
 
 <div class="st"><span class="st-tag">VENTAS</span> Facturación · 12 Meses</div>
 <div class="g2">
   <div class="card">
-    <div class="chd"><div><div class="ctitle">Facturación Neta Total — 12 Meses ($M)</div><div class="csub">TP (azul) → AV (verde) · todos los vendedores</div></div></div>
+    <div class="chd"><div><div class="ctitle">Facturación Neta Total ($M)</div><div class="csub">TP (azul) → AV (verde) · todos los vendedores</div></div></div>
     <canvas id="cFact" height="210"></canvas>
-    <div class="tk g">💡 Promedio $27M/mes, sobre meta $24M. Feb-26 mínimo ($19.4M) estacional. La transición TP→AV Nov-25 no afectó el volumen.</div>
+    <div class="tk g">💡 Promedio $27M/mes sobre meta $24M. Feb-26 mínimo ($19.4M) por estacionalidad. La transición TP→AV no afectó el volumen.</div>
   </div>
   <div class="card">
-    <div class="chd"><div><div class="ctitle">Facturación por Grupo — Apilado ($M)</div><div class="csub">Richard / Germán / Otros · todos los vendedores</div></div></div>
+    <div class="chd"><div><div class="ctitle">Facturación por Grupo ($M) — Apilado</div><div class="csub">Richard / Germán / Otros · todos los vendedores</div></div></div>
     <canvas id="cGrupo" height="210"></canvas>
-    <div class="tk w">⚠️ Richard ~80% de la facturación. Otros (Susan, Jose, Sebastián) desaparecen Nov-25 con AV. Si Richard baja 20% → LUP pierde ~$4M/mes.</div>
+    <div class="tk w">⚠️ Richard ~80% de la facturación. Otros desaparecen con AV Nov-25. Si Richard baja 20% → ~$4M/mes menos.</div>
   </div>
 </div>
 
 <div class="st"><span class="st-tag">VENDEDORES</span> Facturación por Vendedor — 12 Meses ($M)</div>
 <div class="card">
-  <div class="chd"><div><div class="ctitle">Neto por Vendedor ($M) — todos los vendedores</div><div class="csub">Incluye TP y AV · Admin LUP = traspasos internos</div></div></div>
-  <div class="vtbl-wrap">
-    <table class="vtbl">
-      <thead><tr><th>Vendedor</th><th>Grupo</th><th>May-25</th><th>Jun-25</th><th>Jul-25</th><th>Ago-25</th><th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Dic-25</th><th>Ene-26</th><th>Feb-26</th><th>Mar-26</th><th>Abr-26</th><th>TOTAL</th></tr></thead>
-      <tbody><tr><td class="vn rv">Richard Vera Sr</td><td class="grp">Richard</td><td class="num">$11.47</td><td class="num">$14.50</td><td class="num">$15.65</td><td class="num">$12.64</td><td class="num">$7.39</td><td class="num">$14.51</td><td class="num">$10.75</td><td class="num">$9.14</td><td class="num">$7.89</td><td class="num">$8.42</td><td class="num">$10.72</td><td class="num">$8.54</td><td class="num tot">$131.6</td></tr>
-<tr><td class="vn rv">Richard Vera Jr2</td><td class="grp">Richard</td><td class="num">$3.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$4.61</td><td class="num">$15.31</td><td class="num">$9.46</td><td class="num">$0.00</td><td class="num">$3.78</td><td class="num">$11.46</td><td class="num">$8.11</td><td class="num">$10.53</td><td class="num">$9.88</td><td class="num tot">$76.1</td></tr>
-<tr><td class="vn gv">German Castillo</td><td class="grp">German</td><td class="num">$4.49</td><td class="num">$4.44</td><td class="num">$3.87</td><td class="num">$3.71</td><td class="num">$3.62</td><td class="num">$3.99</td><td class="num">$3.88</td><td class="num">$3.61</td><td class="num">$4.18</td><td class="num">$2.37</td><td class="num">$3.86</td><td class="num">$2.95</td><td class="num tot">$45.0</td></tr>
-<tr><td class="vn ov">Susan Custodio</td><td class="grp">Otros</td><td class="num">$10.17</td><td class="num">$9.33</td><td class="num">$7.61</td><td class="num">$7.97</td><td class="num">$4.03</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num tot">$39.1</td></tr>
-<tr><td class="vn rv">Richard Vera Jr</td><td class="grp">Richard</td><td class="num">$1.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$10.57</td><td class="num">$11.40</td><td class="num">$2.80</td><td class="num">$0.54</td><td class="num">$2.09</td><td class="num">$2.28</td><td class="num tot">$30.7</td></tr>
-<tr><td class="vn ov">Administracion LUP</td><td class="grp">Otros</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.87</td><td class="num">$0.51</td><td class="num">$1.41</td><td class="num">$1.05</td><td class="num">$1.21</td><td class="num">$1.44</td><td class="num tot">$6.5</td></tr>
-<tr><td class="vn ov">Sebastian Burgos</td><td class="grp">Otros</td><td class="num">$0.86</td><td class="num">$0.10</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num tot">$1.0</td></tr>
+  <div class="chd"><div><div class="ctitle">Neto por Vendedor ($M) · todos</div><div class="csub">TP + AV incluidos · Admin LUP = traspasos internos</div></div></div>
+  <div class="vtbl-wrap"><table class="vtbl">
+    <thead><tr><th>Vendedor</th><th>Grupo</th><th>May-25</th><th>Jun-25</th><th>Jul-25</th><th>Ago-25</th><th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Dic-25</th><th>Ene-26</th><th>Feb-26</th><th>Mar-26</th><th>Abr-26</th><th>TOTAL</th></tr></thead>
+    <tbody><tr><td class="vn rv">Richard Vera Sr</td><td class="grp">Richard</td><td class="num">11.5</td><td class="num">14.5</td><td class="num">15.7</td><td class="num">12.6</td><td class="num">7.4</td><td class="num">14.5</td><td class="num">10.8</td><td class="num">9.1</td><td class="num">7.9</td><td class="num">8.4</td><td class="num">10.7</td><td class="num">8.5</td><td class="num tot">131.6</td></tr>
+<tr><td class="vn rv">Richard Vera Jr2</td><td class="grp">Richard</td><td class="num">3.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">4.6</td><td class="num">15.3</td><td class="num">9.5</td><td class="num">0.0</td><td class="num">3.8</td><td class="num">11.5</td><td class="num">8.1</td><td class="num">10.5</td><td class="num">9.9</td><td class="num tot">76.1</td></tr>
+<tr><td class="vn gv">German Castillo</td><td class="grp">German</td><td class="num">4.5</td><td class="num">4.4</td><td class="num">3.9</td><td class="num">3.7</td><td class="num">3.6</td><td class="num">4.0</td><td class="num">3.9</td><td class="num">3.6</td><td class="num">4.2</td><td class="num">2.4</td><td class="num">3.9</td><td class="num">3.0</td><td class="num tot">45.0</td></tr>
+<tr><td class="vn ov">Susan Custodio</td><td class="grp">Otros</td><td class="num">10.2</td><td class="num">9.3</td><td class="num">7.6</td><td class="num">8.0</td><td class="num">4.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num tot">39.1</td></tr>
+<tr><td class="vn rv">Richard Vera Jr</td><td class="grp">Richard</td><td class="num">1.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">10.6</td><td class="num">11.4</td><td class="num">2.8</td><td class="num">0.5</td><td class="num">2.1</td><td class="num">2.3</td><td class="num tot">30.7</td></tr>
+<tr><td class="vn ov">Administracion LUP</td><td class="grp">Otros</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.9</td><td class="num">0.5</td><td class="num">1.4</td><td class="num">1.1</td><td class="num">1.2</td><td class="num">1.4</td><td class="num tot">6.5</td></tr>
+<tr><td class="vn ov">Sebastian Burgos</td><td class="grp">Otros</td><td class="num">0.9</td><td class="num">0.1</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num tot">1.0</td></tr>
 </tbody>
-    </table>
-  </div>
-  <div class="tk b">💡 Susan Custodio y Jose Oviedo solo en TP hasta Oct-25. Con la transición a AV, la cartera se concentra en los Richards y Germán. Admin LUP son traspasos internos, no venta comercial.</div>
+  </table></div>
+  <div class="tk b">💡 Susan y Jose Oviedo solo TP hasta Oct-25. Con AV la cartera se concentra en Richards+Germán. Admin LUP son traspasos internos.</div>
 </div>
 
 <div class="st"><span class="st-tag">TICKET</span> Ticket Promedio · 12 Meses</div>
 <div class="card">
-  <div class="chd">
-    <div><div class="ctitle">Ticket por Pedido vs Ticket por Cliente ($) <span class="kpi-hint" onclick="document.getElementById('modalTicket').classList.add('open')">?</span></div>
-    <div class="csub">Neto ÷ pedidos vs neto ÷ clientes únicos · todos los vendedores</div></div>
-  </div>
+  <div class="chd"><div>
+    <div class="ctitle">Ticket Pedido vs Ticket Cliente ($) <span class="kpi-hint" onclick="openModal('modalTicket')" style="cursor:pointer">?</span></div>
+    <div class="csub">Neto ÷ pedidos vs neto ÷ clientes únicos · todos los vendedores</div>
+  </div></div>
   <canvas id="cTicket" height="130"></canvas>
   <div class="mks">
-    <div class="mk" style="background:#EEF4FF"><div class="mkl">Prom Ticket/Pedido</div><div class="mkv" style="color:var(--blue)">$47,325</div></div>
-    <div class="mk" style="background:#EEF4FF"><div class="mkl">Prom Ticket/Cliente</div><div class="mkv" style="color:var(--blue)">$56,713</div></div>
-    <div class="mk" style="background:#F0FAF5"><div class="mkl">Mejor Mes Abr-26</div><div class="mkv" style="color:var(--green)">$46,713</div></div>
-    <div class="mk" style="background:#F5F7FB"><div class="mkl">Ratio Ped/Cli</div><div class="mkv">1.2x</div></div>
+    <div class="mk" style="background:#EEF4FF"><div class="mkl">Prom 6M Ticket/Pedido</div><div class="mkv" style="color:var(--blue)">$47,325</div></div>
+    <div class="mk" style="background:#EEF4FF"><div class="mkl">Prom 6M Ticket/Cliente</div><div class="mkv" style="color:var(--blue)">$56,713</div></div>
+    <div class="mk" style="background:#F0FAF5"><div class="mkl">Abr-26 Ticket/Pedido</div><div class="mkv" style="color:var(--green)">$46,713</div></div>
+    <div class="mk" style="background:#F5F7FB"><div class="mkl">Ratio Ped/Cli Abr-26</div><div class="mkv">1.2x</div></div>
   </div>
-  <div class="tk b">💡 Ticket/cliente > ticket/pedido porque algunos clientes compran varias veces en el mes. El ratio 1.2x indica recompra intra-mes. Mar-26 tuvo el mejor ticket/pedido de los 12 meses.</div>
+  <div class="tk b">💡 Ratio 1.2x = cada cliente hace 1.2 pedidos promedio en el mes. Ticket/cliente > ticket/pedido siempre — eso es bueno: indica recompra intra-mes.</div>
 </div>
 
 <div class="st"><span class="st-tag">PRECIO × CAJA</span> Precio Neto · Costo MP · Margen Directo</div>
 <div class="card">
-  <div class="chd"><div><div class="ctitle">Precio Neto/Caja vs Costo MP/Caja ($) + Margen Directo %</div><div class="csub">AV Nov-25 a Abr-26 · eje dual · costo MP disponible Ene–Abr 2026</div></div><span class="cbadge">eje dual</span></div>
+  <div class="chd"><div><div class="ctitle">Precio Neto/Caja vs Costo MP/Caja + Margen Directo %</div><div class="csub">AV Nov-25 a Abr-26 · eje dual · costo MP disponible Ene–Abr 2026</div></div><span class="cbadge">eje dual</span></div>
   <canvas id="cPrecioCaja" height="165"></canvas>
   <div class="mks">
     <div class="mk" style="background:#EEF4FF"><div class="mkl">Precio Prom AV</div><div class="mkv" style="color:var(--blue)">$10.4K</div></div>
@@ -309,46 +189,53 @@ footer{text-align:center;padding:20px;font-size:10px;color:var(--muted)}
     <div class="mk" style="background:#F0FAF5"><div class="mkl">Mejor Margen</div><div class="mkv" style="color:var(--green)">59.5%</div><div style="font-size:9px;color:var(--muted)">Mar-26</div></div>
     <div class="mk" style="background:#FFF8E1"><div class="mkl">Peor Margen</div><div class="mkv" style="color:var(--orange)">38.6%</div><div style="font-size:9px;color:var(--muted)">Feb-26</div></div>
   </div>
-  <div class="tk w">⚠️ Costo MP varía $4.2K–$6.6K/caja entre meses (+57%). Sin cambiar el precio de venta, negociar mejor el MP puede sumar o restar $3M/mes en resultado.</div>
+  <div class="tk w">⚠️ Costo MP varía $4.2K–$6.6K/caja (+57% entre meses). Sin mover precio de venta, negociar mejor el MP puede sumar o restar $3M/mes.</div>
 </div>
 
 <div class="st"><span class="st-tag">AV</span> Conversión & Cajas · Nov-25 a Abr-26</div>
 <div class="g2">
   <div class="card">
-    <div class="chd"><div><div class="ctitle">Conversión Visita → Venta (%)</div><div class="csub">Total · Richard · Germán · ref. BE = 75%</div></div></div>
+    <div class="chd"><div>
+      <div class="ctitle">Conversión Contacto → Venta (%) <span class="kpi-hint" onclick="openModal('modalConv')" style="cursor:pointer">?</span></div>
+      <div class="csub">Ventas / (Ventas + Visitas sin compra) · meta BE: 75%</div>
+    </div></div>
     <canvas id="cConv" height="210"></canvas>
-    <div class="tk r">🚨 Abr-26: Richard cae a 48.8% — peor mes. Germán 100% constante. Meta: 75% mínimo para sostener el nivel de ventas. Investigar causa urgente en Richard.</div>
+    <div class="tk r">🚨 Abr-26: Richard cae a 48.8% — peor mes AV. Germán 100% constante. Meta: 75% para sostener ventas. Acción urgente en ruta Richard.</div>
   </div>
   <div class="card">
-    <div class="chd"><div><div class="ctitle">Cajas Vendidas vs Breakeven 3.190</div><div class="csub">Richard + Germán · línea roja = BE</div></div></div>
+    <div class="chd"><div><div class="ctitle">Cajas Vendidas vs Breakeven 3.190</div><div class="csub">Todos los vendedores AV: Richard + Germán + Otros · línea roja = BE</div></div></div>
     <canvas id="cCajas" height="210"></canvas>
-    <div class="tk r">🚨 Ningún mes supera el BE. Mejor: Mar-26 con 2.764 (brecha 426). Déficit prom: 757 cajas ≈ $7.7M de ventas faltantes para equilibrio.</div>
+    <div class="tk r">🚨 Ningún mes supera el BE de 3.190 cajas. Mar-26 el mejor con 2.764 (brecha 426). Déficit prom: 757 cajas ≈ $7.7M/mes.</div>
   </div>
 </div>
+
 <div class="g2">
   <div class="card">
-    <div class="chd"><div><div class="ctitle">Cajas / Cliente <span class="kpi-hint" onclick="document.getElementById('modalCpk').classList.add('open')">?</span></div><div class="csub">Meta = BE ÷ clientes activos prom = 6.9 cajas</div></div></div>
-    <canvas id="cCpk" height="185"></canvas>
-    <div class="tk g">💡 Promedio 5.5 cajas/cliente. Meta: 6.9 para alcanzar BE. Subir 1.5 cajas/cliente con cartera actual → +$1.6M/mes sin nuevos clientes.</div>
+    <div class="chd"><div>
+      <div class="ctitle">Distribución Cajas/Cliente — 6 Meses AV <span class="kpi-hint" onclick="openModal('modalCpk')" style="cursor:pointer">?</span></div>
+      <div class="csub">Total cajas compradas por cliente en 6 meses · 778 clientes AV</div>
+    </div></div>
+    <canvas id="cDistCajas" height="210"></canvas>
+    <div class="tk g">💡 El 47.6% de los clientes compra 8+ cajas en 6 meses. Los 92 clientes de 27+ cajas generan $54.9M — el 36% de toda la facturación AV. Proteger ese grupo es prioridad.</div>
   </div>
   <div class="card">
-    <div class="chd"><div><div class="ctitle">% Inactividad <span class="kpi-hint" onclick="document.getElementById('modalInact').classList.add('open')">?</span></div><div class="csub">Clientes sin compra ese mes ÷ cartera histórica · meta &lt;20%</div></div></div>
-    <canvas id="cInact" height="185"></canvas>
-    <div class="tk r">🚨 De 0% a 49.9% en 6 meses. Cada 10% inactividad ≈ 86 clientes × $56K = $4.8M/mes perdido. C5 busca revertirlo.</div>
+    <div class="chd"><div><div class="ctitle">% Inactividad de Cartera <span class="kpi-hint" onclick="openModal('modalInact')" style="cursor:pointer">?</span></div><div class="csub">Sin compra ese mes / cartera total 1725 clientes TP+AV · meta &lt;20%</div></div></div>
+    <canvas id="cInact" height="210"></canvas>
+    <div class="tk r">🚨 74% de la cartera real no compró en Abr-26. La base correcta es 1725 clientes únicos TP+AV. Campaña C5 activa desde Abr-26.</div>
   </div>
 </div>
 
 <div class="st"><span class="st-tag">FIDELIDAD</span> Retención · AV 6 Meses</div>
 <div class="g12">
   <div class="card">
-    <div class="chd"><div><div class="ctitle">Frecuencia de Compra</div><div class="csub">740 clientes AV · Nov-25 a Abr-26</div></div></div>
-    <canvas id="cFidel" height="240"></canvas>
-    <div class="tk g">💡 225 clientes con 5+ compras = 28% de la base. Meta: 40%. Los 347 clientes de 1-2 compras son la mayor oportunidad de retención.</div>
+    <div class="chd"><div><div class="ctitle">Frecuencia de Compra — 6 Meses AV</div><div class="csub">847 clientes AV · compras consecutivas Nov-25 a Abr-26</div></div></div>
+    <canvas id="cFidel" height="250"></canvas>
+    <div class="tk g">💡 107 clientes compraron los 6 meses (12.6%). 347 solo 1-2 meses — máxima oportunidad de retención. Meta: llevar el 50% a 3+ meses consecutivos.</div>
   </div>
   <div class="card">
-    <div class="chd"><div><div class="ctitle">Cartera Histórica vs Activos</div><div class="csub">Acumulados vs compraron realmente ese mes</div></div></div>
-    <canvas id="cCartera" height="240"></canvas>
-    <div class="tk w">⚠️ Cartera crece (522→861) pero activos no siguen el ritmo. La brecha es la inactividad que hay que atacar.</div>
+    <div class="chd"><div><div class="ctitle">Cartera Histórica vs Activos</div><div class="csub">Clientes con compra real ese mes vs cartera total</div></div></div>
+    <canvas id="cCartera" height="250"></canvas>
+    <div class="tk w">⚠️ Cartera crece pero la brecha con activos también crece. Sin retención, crecer la cartera es un cubo con agujero.</div>
   </div>
 </div>
 
@@ -363,10 +250,10 @@ footer{text-align:center;padding:20px;font-size:10px;color:var(--muted)}
   <div class="card">
     <div class="chd"><div><div class="ctitle">EERR — Ventas vs Costos ($M)</div><div class="csub">Resultado operacional como línea verde</div></div></div>
     <canvas id="cEERR" height="230"></canvas>
-    <div class="tk r">🚨 Gastos op Abr-26: $5.0M vs $2.0M Ene-26 (+150%). Resultado baja de $8.3M a $3.4M. Controlar gastos op es la palanca inmediata.</div>
+    <div class="tk r">🚨 Gastos op Abr-26: $5M vs $2M Ene-26 (+150%). Resultado cae de $8.3M a $3.4M. Controlar esta línea es la palanca inmediata.</div>
   </div>
   <div class="card">
-    <div class="chd"><div><div class="ctitle">EERR Detalle</div><div class="csub">Cifras en $M</div></div></div>
+    <div class="chd"><div><div class="ctitle">EERR Detalle ($M)</div></div></div>
     <table class="etbl">
       <thead><tr><th>Concepto</th><th>ENE-26</th><th>FEB-26</th><th>MAR-26</th><th>ABR-26</th></tr></thead>
       <tbody>
@@ -380,7 +267,7 @@ footer{text-align:center;padding:20px;font-size:10px;color:var(--muted)}
         <tr class="em"><td>Margen Bruto %</td><td>48.2%</td><td>48.0%</td><td>59.1%</td><td>51.3%</td></tr>
       </tbody>
     </table>
-    <div class="tk w" style="margin-top:10px">⚠️ Mar-26: mejor margen bruto (59.1%) con menor costo MP. La variabilidad del MP entre meses es la palanca principal del margen.</div>
+    <div class="tk w" style="margin-top:10px">⚠️ Mar-26: mejor margen (59.1%) con menor costo MP. La variabilidad del MP es la palanca de margen más directa.</div>
   </div>
 </div>
 
@@ -394,172 +281,191 @@ footer{text-align:center;padding:20px;font-size:10px;color:var(--muted)}
     <div class="as b">1 <span class="asl">Bajaron &gt;10%</span></div>
     <div class="as g">~$960,000 <span class="asl">Potencial recuperable</span></div>
   </div>
-  <div class="atbl-wrap">
-    <table class="atbl">
-      <thead><tr><th>#</th><th>Cliente</th><th>RUT</th><th class="r">Mar-26</th><th class="r">Abr-26</th><th class="r">Var%</th><th>Estado</th></tr></thead>
-      <tbody><tr><td class="n">1</td><td class="cn">Articulos de Aseo Alvaro Fra</td><td class="rt">77.143.784-2</td><td class="num">$582,968</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
-<tr><td class="n">2</td><td class="cn">Luis Gonzalez Carvajal</td><td class="rt">12.259.747-4</td><td class="num">$506,403</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
-<tr><td class="n">3</td><td class="cn">Jose Samuel Millapan Jara</td><td class="rt">12.255.589-5</td><td class="num">$281,455</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
-<tr><td class="n">4</td><td class="cn">Rosa Elena Arenas</td><td class="rt">7.682.976-4</td><td class="num">$281,425</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
-<tr><td class="n">5</td><td class="cn">Panhue Express Spa</td><td class="rt">76.484.306-1</td><td class="num">$281,335</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
-<tr><td class="n">6</td><td class="cn">Francisco Javier Urbano Mehu</td><td class="rt">22.158.493-7</td><td class="num">$281,335</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
-<tr><td class="n">7</td><td class="cn">Ventas Varias Mauricio Alber</td><td class="rt">77.109.177-6</td><td class="num">$271,361</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
-<tr><td class="n">8</td><td class="cn">Loreto Soledad Fernandez Sil</td><td class="rt">13.453.225-4</td><td class="num">$271,361</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
-<tr><td class="n">9</td><td class="cn">Selim Alfredo Ananias Pino</td><td class="rt">11.186.260-5</td><td class="num">$271,361</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
-<tr><td class="n">10</td><td class="cn">Jose Leonardo llancapan cayu</td><td class="rt">8.938.910-0</td><td class="num">$271,361</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
-<tr><td class="n">11</td><td class="cn">Maria Soledad Hernandez Neyr</td><td class="rt">24.334.135-3</td><td class="num">$253,310</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
-<tr><td class="n">12</td><td class="cn">Comercializadora de alimento</td><td class="rt">77.151.575-4</td><td class="num">$253,310</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
-<tr><td class="n">13</td><td class="cn">Comercializadora Y Distribui</td><td class="rt">76.730.988-0</td><td class="num">$218,060</td><td class="num mu">$147,502</td><td class="num vn">-32.4%</td><td><span class="bdg bf">BAJÓ FUERTE</span></td></tr>
-<tr><td class="n">14</td><td class="cn">Aurora Soledad Flores Nuñez</td><td class="rt">8.344.150-K</td><td class="num">$200,002</td><td class="num mu">$72,288</td><td class="num vn">-63.9%</td><td><span class="bdg bf">BAJÓ FUERTE</span></td></tr>
-<tr><td class="n">15</td><td class="cn">Ong De Desarrollo Para Bien </td><td class="rt">65.151.988-8</td><td class="num">$191,670</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
+  <div class="atbl-wrap"><table class="atbl">
+    <thead><tr><th>#</th><th>Cliente</th><th>RUT</th><th class="r">Mar-26</th><th class="r">Abr-26</th><th class="r">Var%</th><th>Estado</th></tr></thead>
+    <tbody><tr><td class="n">1</td><td class="cn">Articulos de Aseo Alvaro Frau</td><td class="rt">771437842</td><td class="num">$582,968</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
+<tr><td class="n">2</td><td class="cn">Luis Gonzalez Carvajal</td><td class="rt">122597474</td><td class="num">$506,403</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
+<tr><td class="n">3</td><td class="cn">Jose Samuel Millapan Jara</td><td class="rt">122555895</td><td class="num">$281,455</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
+<tr><td class="n">4</td><td class="cn">Rosa Elena Arenas</td><td class="rt">76829764</td><td class="num">$281,425</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
+<tr><td class="n">5</td><td class="cn">Panhue Express Spa</td><td class="rt">764843061</td><td class="num">$281,335</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
+<tr><td class="n">6</td><td class="cn">Francisco Javier Urbano Mehue</td><td class="rt">221584937</td><td class="num">$281,335</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
+<tr><td class="n">7</td><td class="cn">Ventas Varias Mauricio Alberto</td><td class="rt">771091776</td><td class="num">$271,361</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
+<tr><td class="n">8</td><td class="cn">Loreto Soledad Fernandez Silva</td><td class="rt">134532254</td><td class="num">$271,361</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
+<tr><td class="n">9</td><td class="cn">Selim Alfredo Ananias Pino</td><td class="rt">111862605</td><td class="num">$271,361</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
+<tr><td class="n">10</td><td class="cn">Jose Leonardo llancapan cayupu</td><td class="rt">89389100</td><td class="num">$271,361</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
+<tr><td class="n">11</td><td class="cn">Maria Soledad Hernandez Neyra</td><td class="rt">243341353</td><td class="num">$253,310</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
+<tr><td class="n">12</td><td class="cn">Comercializadora de alimentos </td><td class="rt">771515754</td><td class="num">$253,310</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
+<tr><td class="n">13</td><td class="cn">Comercializadora Y Distribuido</td><td class="rt">767309880</td><td class="num">$218,060</td><td class="num mu">$147,502</td><td class="num vn">-32.4%</td><td><span class="bdg bf">BAJÓ FUERTE</span></td></tr>
+<tr><td class="n">14</td><td class="cn">Aurora Soledad Flores Nuñez</td><td class="rt">8344150K</td><td class="num">$200,002</td><td class="num mu">$72,288</td><td class="num vn">-63.9%</td><td><span class="bdg bf">BAJÓ FUERTE</span></td></tr>
+<tr><td class="n">15</td><td class="cn">Ong De Desarrollo Para Bien (1</td><td class="rt">651519888</td><td class="num">$191,670</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
 </tbody>
-    </table>
-  </div>
-  <div class="tk r" style="margin-top:10px">🚨 Recuperar top 10 "NO COMPRÓ" = +$600K/mes. Acción: llamada directa esta semana. Son clientes de $60K/mes con historial sólido.</div>
+  </table></div>
+  <div class="tk r" style="margin-top:10px">🚨 Recuperar top 10 "NO COMPRÓ" = +$600K/mes. Llamada directa esta semana — son clientes con historial sólido de $60K/mes.</div>
 </div>
 
-</div>
-<footer>LUP · Dashboard Lupita · MAESTRA TP+AV · 2026-05-01</footer>
-<div id="modalInact" class="modal" onclick="if(event.target===this)this.style.display='none'">
+</div><!-- /page -->
+
+<!-- MODALES -->
+<div id="modalInact" class="modal" onclick="if(event.target===this)closeModal('modalInact')">
 <div class="modal-box">
   <h3>¿Qué es % Inactividad?</h3>
-  <p><strong>Fórmula:</strong> Clientes sin compra ese mes ÷ Cartera histórica total</p>
-  <p><strong>Ejemplo Abr-26:</strong> 861 clientes registrados − 431 compraron = 430 sin compra → 49.9%</p>
-  <p><strong>¿Cómo se construye la cartera?</strong> Se acumula mes a mes: todos los clientes que compraron al menos 1 vez desde Nov-25 quedan en la cartera para siempre.</p>
-  <p><strong>Meta:</strong> Menos del 20%. Hoy estamos en 50% — significa que cada mes la mitad de la base conocida no compra.</p>
-  <p><strong>Campaña C5</strong> busca bajar este número reactivando clientes inactivos 21+ días.</p>
-  <button onclick="document.getElementById('modalInact').style.display='none'">Cerrar</button>
-</div></div><div id="modalTicket" class="modal" onclick="if(event.target===this)this.style.display='none'">
+  <p><strong>Fórmula:</strong> (Cartera total − Clientes que compraron ese mes) ÷ Cartera total</p>
+  <p><strong>Cartera base:</strong> 1725 clientes únicos que compraron al menos 1 vez en TP (May–Oct 25) o AV (Nov-25–Abr-26).</p>
+  <p><strong>Ejemplo Abr-26:</strong> 1725 − 449 compraron = 1276 sin compra → 74.0%</p>
+  <p><strong>Meta:</strong> menos del 20%. Hoy en 74% — 3 de cada 4 clientes no compran en el mes.</p>
+  <button onclick="closeModal('modalInact')">Cerrar</button>
+</div></div>
+
+<div id="modalConv" class="modal" onclick="if(event.target===this)closeModal('modalConv')">
+<div class="modal-box">
+  <h3>¿Qué es la Conversión?</h3>
+  <p><strong>Fórmula:</strong> Ventas ÷ (Ventas + Visitas sin compra)</p>
+  <p>Cada visita del vendedor es un "contacto". Si el cliente compra = Venta. Si no compra = Visita.</p>
+  <p><strong>Ejemplo Abr-26:</strong> Si hubo 300 ventas y 275 visitas sin compra → 300/575 = 52.2%</p>
+  <p><strong>Meta:</strong> 75% mínimo. Bajo ese umbral, el volumen de ventas no alcanza para cubrir los costos de la ruta.</p>
+  <p><strong>Nota:</strong> Germán aparece al 100% porque en su ruta cada visita registra como venta — puede indicar que no registra visitas sin compra.</p>
+  <button onclick="closeModal('modalConv')">Cerrar</button>
+</div></div>
+
+<div id="modalTicket" class="modal" onclick="if(event.target===this)closeModal('modalTicket')">
 <div class="modal-box">
   <h3>Ticket Pedido vs Ticket Cliente</h3>
-  <p><strong>Ticket por Pedido:</strong> Neto total ÷ N° de pedidos<br>
-  Si hay 537 pedidos y se venden $25M → $46.7K por pedido</p>
-  <p><strong>Ticket por Cliente:</strong> Neto total ÷ Clientes únicos<br>
-  Si hay 449 clientes y se venden $25M → $55.8K por cliente</p>
-  <p><strong>¿Por qué difieren?</strong> Un cliente puede hacer 2 pedidos en el mismo mes (reposición). El cociente ticket_cliente/ticket_pedido indica frecuencia intra-mes de recompra.</p>
-  <p>En Apr-26: ratio = $55.8K/$46.7K = 1.19 → cada cliente hace 1.19 pedidos en promedio por mes.</p>
-  <button onclick="document.getElementById('modalTicket').style.display='none'">Cerrar</button>
-</div></div><div id="modalCpk" class="modal" onclick="if(event.target===this)this.style.display='none'">
-<div class="modal-box">
-  <h3>¿Por qué la meta de cajas/cliente es 6.9?</h3>
-  <p><strong>Cálculo:</strong> Breakeven (3190 cajas/mes) ÷ Clientes activos promedio (462 clientes) = <strong>6.9 cajas/cliente</strong></p>
-  <p>Si cada cliente activo comprara 6.9 cajas, alcanzaríamos el punto de equilibrio sin necesitar nuevos clientes.</p>
-  <p>Hoy el promedio es 5.5 cajas/cliente. La brecha es 1.4 cajas/cliente.</p>
-  <p><strong>Palanca directa:</strong> Incentivar pedidos de 7+ cajas en cada visita.</p>
-  <button onclick="document.getElementById('modalCpk').style.display='none'">Cerrar</button>
+  <p><strong>Ticket/Pedido:</strong> Neto ÷ N° pedidos. Cuánto vale cada orden individual.</p>
+  <p><strong>Ticket/Cliente:</strong> Neto ÷ Clientes únicos. Cuánto gasta cada cliente en el mes.</p>
+  <p>Si un cliente hace 2 pedidos en el mes, aparece 1 en clientes pero 2 en pedidos.</p>
+  <p><strong>Ratio Abr-26:</strong> $55,869 / $46,713 = 1.2x → cada cliente hace 1.2 pedidos promedio al mes.</p>
+  <button onclick="closeModal('modalTicket')">Cerrar</button>
 </div></div>
-<script>
-// Charts sin plugin datalabels para evitar errores de carga
-const NAVY='#0D1F3C',BLUE='#1B4F8A',TEAL='#0B6E6E',GREEN='#1B7A4A',AMBER='#F5C200',RED='#C0392B',ORANGE='#E07820',MUTED='#6B7A99';
-const L12=["May-25", "Jun-25", "Jul-25", "Ago-25", "Sep-25", "Oct-25", "Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"];
-const LAV=["Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"];
-const LEE=["ENE-26", "FEB-26", "MAR-26", "ABR-26"];
 
-const base={
-  responsive:true,maintainAspectRatio:true,
+<div id="modalCpk" class="modal" onclick="if(event.target===this)closeModal('modalCpk')">
+<div class="modal-box">
+  <h3>Meta de Cajas por Cliente</h3>
+  <p><strong>Fórmula:</strong> Breakeven (3.190 cajas/mes) ÷ Clientes activos promedio (462 clientes) = <strong>6.9 cajas/cliente</strong></p>
+  <p>Si cada cliente activo comprara 6.9 cajas, alcanzaríamos el punto de equilibrio sin nuevos clientes.</p>
+  <p>Promedio actual: 5.5 cajas/cliente. Brecha: 1.4 cajas/cliente.</p>
+  <p><strong>Esta distribución muestra</strong> el total de cajas compradas por cliente en los 6 meses de AV, no por mes.</p>
+  <button onclick="closeModal('modalCpk')">Cerrar</button>
+</div></div>
+
+<footer>LUP · Dashboard Lupita · MAESTRA TP+AV · 2026-05-02</footer>
+
+<script>
+const NAVY='#0D1F3C',BLUE='#1B4F8A',TEAL='#0B6E6E',GREEN='#1B7A4A',AMBER='#F5C200',RED='#C0392B',ORANGE='#E07820',MUTED='#6B7A99';
+const L12=["May-25", "Jun-25", "Jul-25", "Ago-25", "Sep-25", "Oct-25", "Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],LAV=["Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],LEE=["ENE-26", "FEB-26", "MAR-26", "ABR-26"];
+
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+
+const base={responsive:true,maintainAspectRatio:true,
   plugins:{
-    legend:{labels:{font:{size:11},padding:12,usePointStyle:true,boxWidth:10}},
-    tooltip:{titleFont:{size:12},bodyFont:{size:11},padding:10,
-      callbacks:{label:function(ctx){let v=ctx.parsed.y;if(v===null||v===undefined)return null;return ' '+ctx.dataset.label+': '+(typeof v==='number'&&v>1000?'$'+v.toLocaleString('es-CL'):v);}}}
+    legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},
+    tooltip:{titleFont:{size:12},bodyFont:{size:11},padding:10}
   },
   scales:{
     x:{grid:{display:false},ticks:{font:{size:11},maxRotation:0}},
     y:{grid:{color:'#EEF0F5',lineWidth:.8},ticks:{font:{size:11}}}
   }
 };
+function mc(id,cfg){const el=document.getElementById(id);if(!el)return;try{new Chart(el,cfg);}catch(e){console.error(id,e);}}
 
-function mc(id,cfg){
-  const el=document.getElementById(id);
-  if(!el)return;
-  try{new Chart(el,cfg);}catch(e){console.error(id,e);}
-}
+mc('cFact',{type:'bar',data:{labels:L12,datasets:[{label:'Neto $M',data:[31.0, 28.36, 27.13, 28.92, 30.36, 27.96, 26.08, 28.45, 27.74, 20.5, 28.42, 25.09],
+  backgroundColor:L12.map((_,i)=>i<6?'rgba(27,79,138,0.78)':'rgba(11,110,110,0.78)'),borderRadius:5,borderSkipped:false}]},
+  options:{...base,plugins:{...base.plugins,legend:{display:false}},
+  scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>'$'+v+'M'}}}}});
 
-// 1. Facturación total
-mc('cFact',{type:'bar',data:{labels:L12,datasets:[{
-  label:'Neto $M',data:[31.0, 28.36, 27.13, 28.92, 30.36, 27.96, 26.08, 28.45, 27.74, 20.5, 28.42, 25.09],
-  backgroundColor:L12.map((_,i)=>i<6?'rgba(27,79,138,0.78)':'rgba(11,110,110,0.78)'),
-  borderRadius:5,borderSkipped:false
-}]},options:{...base,plugins:{...base.plugins,legend:{display:false}},
-scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>'$'+v+'M'}}}}});
-
-// 2. Por grupo
 mc('cGrupo',{type:'bar',data:{labels:L12,datasets:[
   {label:'Richard',data:[15.46, 14.5, 15.65, 17.25, 22.71, 23.97, 21.33, 24.32, 22.14, 17.08, 23.34, 20.7],backgroundColor:'rgba(27,79,138,0.85)',borderRadius:3},
   {label:'Germán', data:[4.49, 4.44, 3.87, 3.71, 3.62, 3.99, 3.88, 3.61, 4.18, 2.37, 3.86, 2.95],backgroundColor:'rgba(224,120,32,0.85)',borderRadius:3},
-  {label:'Otros',  data:[11.04, 9.42, 7.61, 7.97, 4.03, 0.0, 0.87, 0.51, 1.41, 1.05, 1.21, 1.44],backgroundColor:'rgba(107,122,153,0.55)',borderRadius:3},
-]},options:{...base,scales:{x:{...base.scales.x,stacked:true},y:{...base.scales.y,stacked:true,ticks:{callback:v=>'$'+v+'M'}}}}});
+  {label:'Otros',  data:[11.04, 9.42, 7.61, 7.97, 4.03, 0.0, 0.87, 0.51, 1.41, 1.05, 1.21, 1.44],backgroundColor:'rgba(107,122,153,0.55)',borderRadius:3}]},
+  options:{...base,scales:{x:{...base.scales.x,stacked:true},y:{...base.scales.y,stacked:true,ticks:{callback:v=>'$'+v+'M'}}}}});
 
-// 3. Ticket
 mc('cTicket',{type:'line',data:{labels:L12,datasets:[
   {label:'Ticket/Pedido',data:[50078, 43630, 46376, 44016, 41244, 43895, 41865, 43169, 47905, 51772, 52525, 46713],borderColor:BLUE,backgroundColor:'rgba(27,79,138,0.08)',fill:true,tension:.35,pointRadius:4,pointBackgroundColor:BLUE,pointBorderColor:'white',pointBorderWidth:2},
-  {label:'Ticket/Cliente',data:[62496, 54018, 58978, 55399, 54793, 56146, 49965, 53475, 59907, 58744, 62316, 55869],borderColor:TEAL,fill:false,tension:.35,pointRadius:3,borderDash:[5,3]},
-]},options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>'$'+v.toLocaleString('es-CL')}}}}});
+  {label:'Ticket/Cliente',data:[62496, 54018, 58978, 55399, 54793, 56146, 49965, 53475, 59907, 58744, 62316, 55869],borderColor:TEAL,fill:false,tension:.35,pointRadius:3,borderDash:[5,3]}]},
+  options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>'$'+v.toLocaleString('es-CL')}}}}});
 
-// 4. Precio/caja eje dual
 mc('cPrecioCaja',{data:{labels:LAV,datasets:[
   {type:'bar',label:'Precio Neto/Caja',data:[11321, 10589, 10168, 10172, 9843, 9578],backgroundColor:'rgba(27,79,138,0.8)',borderRadius:5,yAxisID:'y',order:2},
   {type:'bar',label:'Costo MP/Caja',data:["null", "null", 5662, 6579, 4200, 4791],backgroundColor:'rgba(192,57,43,0.75)',borderRadius:5,yAxisID:'y',order:2},
-  {type:'line',label:'Margen Directo %',data:["null", "null", 44.3, 35.3, 57.3, 50.0],borderColor:GREEN,backgroundColor:'rgba(27,122,74,0.08)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:GREEN,pointBorderColor:'white',pointBorderWidth:2,yAxisID:'y2',order:1},
-]},options:{responsive:true,maintainAspectRatio:true,
+  {type:'line',label:'Margen Directo %',data:["null", "null", 44.3, 35.3, 57.3, 50.0],borderColor:GREEN,backgroundColor:'rgba(27,122,74,0.08)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:GREEN,pointBorderColor:'white',pointBorderWidth:2,yAxisID:'y2',order:1}]},
+  options:{responsive:true,maintainAspectRatio:true,
   plugins:{legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},tooltip:{titleFont:{size:12},bodyFont:{size:11}}},
-  scales:{
-    x:{grid:{display:false},ticks:{font:{size:11}}},
+  scales:{x:{grid:{display:false},ticks:{font:{size:11}}},
     y:{position:'left',grid:{color:'#EEF0F5'},ticks:{callback:v=>'$'+v.toLocaleString('es-CL'),font:{size:10}}},
-    y2:{position:'right',min:0,max:80,grid:{display:false},ticks:{callback:v=>v+'%',font:{size:10}}}
-  }}});
+    y2:{position:'right',min:0,max:80,grid:{display:false},ticks:{callback:v=>v+'%',font:{size:10}}}}}});
 
-// 5. Conversión
 mc('cConv',{type:'line',data:{labels:LAV,datasets:[
   {label:'Total',data:[74.1, 69.7, 75.8, 80.2, 87.4, 52.2],borderColor:BLUE,backgroundColor:'rgba(27,79,138,0.08)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:BLUE,pointBorderColor:'white',pointBorderWidth:2},
   {label:'Richard',data:[72.2, 71.6, 72.4, 76.8, 84.6, 48.8],borderColor:ORANGE,fill:false,tension:.3,pointRadius:4,borderDash:[5,3]},
   {label:'Germán', data:[83.5, 65.6, 100.0, 100.0, 100.0, 100.0],borderColor:GREEN,fill:false,tension:.3,pointRadius:4},
-  {label:'Meta 75%',data:[75,75,75,75,75,75],borderColor:'rgba(192,57,43,0.5)',borderWidth:1.5,borderDash:[4,4],pointRadius:0,fill:false},
-]},options:{...base,scales:{...base.scales,y:{...base.scales.y,min:0,max:115,ticks:{...base.scales.y.ticks,callback:v=>v+'%'}}}}});
+  {label:'Meta 75%',data:[75,75,75,75,75,75],borderColor:'rgba(192,57,43,0.5)',borderWidth:1.5,borderDash:[4,4],pointRadius:0,fill:false}]},
+  options:{...base,scales:{...base.scales,y:{...base.scales.y,min:0,max:115,ticks:{...base.scales.y.ticks,callback:v=>v+'%'}}}}});
 
-// 6. Cajas vs BE
+// Cajas apiladas TODOS los vendedores
 mc('cCajas',{type:'bar',data:{labels:LAV,datasets:[
-  {label:'Richard',data:[1841, 1904, 984, 836, 1235, 1064],backgroundColor:'rgba(27,79,138,0.85)',borderRadius:4,stack:'s'},
-  {label:'Germán', data:[305, 335, 390, 218, 360, 270],backgroundColor:'rgba(224,120,32,0.85)',borderRadius:4,stack:'s'},
-  {label:'BE 3.190',data:[3190,3190,3190,3190,3190,3190],type:'line',borderColor:RED,borderWidth:2.5,borderDash:[6,4],pointRadius:0,fill:false,order:0},
-]},options:{...base,scales:{x:{...base.scales.x,stacked:true},y:{...base.scales.y,stacked:true,ticks:{...base.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}}});
+  {label:'Richard',data:[1841, 1904, 984, 836, 1235, 1064],backgroundColor:'rgba(27,79,138,0.85)',borderRadius:3,stack:'s'},
+  {label:'Germán', data:[305, 335, 390, 218, 360, 270],backgroundColor:'rgba(224,120,32,0.85)',borderRadius:3,stack:'s'},
+  {label:'Otros',  data:[81, 399, 1215, 858, 1169, 1135],backgroundColor:'rgba(107,122,153,0.6)',borderRadius:3,stack:'s'},
+  {label:'BE 3.190',data:[3190,3190,3190,3190,3190,3190],type:'line',borderColor:RED,borderWidth:2.5,borderDash:[6,4],pointRadius:0,fill:false,order:0}]},
+  options:{...base,
+  scales:{x:{...base.scales.x,stacked:true},y:{...base.scales.y,stacked:true,ticks:{...base.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}}});
 
-// 7. Cajas/cliente
-const cpkData=[4.27, 4.96, 5.59, 5.48, 6.06, 5.5];
-const meta_cpk=6.9;
-mc('cCpk',{type:'bar',data:{labels:LAV,datasets:[
-  {label:'Cajas/Cliente',data:cpkData,backgroundColor:cpkData.map(v=>v>=meta_cpk?'rgba(27,122,74,0.85)':v>=5?'rgba(27,79,138,0.8)':'rgba(192,57,43,0.75)'),borderRadius:6,borderSkipped:false},
-  {label:'Meta BE '+meta_cpk,data:cpkData.map(()=>meta_cpk),type:'line',borderColor:AMBER,borderWidth:2.5,borderDash:[5,4],pointRadius:0,fill:false},
-]},options:{...base,scales:{...base.scales,y:{...base.scales.y,min:0,max:9}}}});
+// Dist cajas apilado por rango, con promedio general encima
+const dcVals=[47, 98, 176, 180, 102, 83, 92];
+const dcLabels=["1-2", "3", "4-7", "8-13", "14-18", "19-26", "27+"];
+const dcNeto=[1.08, 4.65, 14.24, 25.36, 21.21, 24.98, 54.85];
+const dcColors=['rgba(192,57,43,.8)','rgba(224,120,32,.8)','rgba(241,196,15,.85)','rgba(27,79,138,.8)','rgba(11,110,110,.85)','rgba(27,122,74,.9)','rgba(90,50,160,.8)'];
+const dcTotal=dcVals.reduce((a,b)=>a+b,0);
+mc('cDistCajas',{type:'bar',
+  data:{labels:['Distribución Clientes'],
+    datasets:dcLabels.map((l,i)=>({
+      label:l+' cajas ('+dcVals[i]+' cli, '+Math.round(dcVals[i]/dcTotal*100)+'%)',
+      data:[dcVals[i]],backgroundColor:dcColors[i],borderRadius:4,borderSkipped:false
+    }))},
+  options:{responsive:true,maintainAspectRatio:true,indexAxis:'y',
+  plugins:{
+    legend:{position:'right',labels:{font:{size:10},padding:8,usePointStyle:true,boxWidth:10}},
+    tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label.split('(')[0].trim()+': '+ctx.parsed.x+' clientes · $'+dcNeto[ctx.datasetIndex]+'M'}}
+  },
+  scales:{
+    x:{grid:{color:'#EEF0F5'},ticks:{font:{size:11}},stacked:true},
+    y:{grid:{display:false},stacked:true,ticks:{display:false}}
+  }}});
 
-// 8. Inactividad
-const inacData=[0.0, 29.2, 43.2, 58.7, 48.3, 50.3];
 mc('cInact',{type:'line',data:{labels:LAV,datasets:[
-  {label:'% Inactivos',data:inacData,borderColor:RED,backgroundColor:'rgba(192,57,43,0.08)',fill:true,tension:.35,pointRadius:5,pointBackgroundColor:inacData.map(v=>v>40?RED:ORANGE),pointBorderColor:'white',pointBorderWidth:2},
-  {label:'Meta 20%',data:inacData.map(()=>20),borderColor:ORANGE,borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false},
-]},options:{...base,scales:{...base.scales,y:{...base.scales.y,min:0,max:70,ticks:{...base.scales.y.ticks,callback:v=>v+'%'}}}}});
+  {label:'% Inactivos',data:[69.7, 69.2, 73.2, 79.8, 73.6, 74.0],borderColor:RED,backgroundColor:'rgba(192,57,43,0.08)',fill:true,tension:.35,pointRadius:5,pointBackgroundColor:[69.7, 69.2, 73.2, 79.8, 73.6, 74.0].map(v=>v>60?RED:ORANGE),pointBorderColor:'white',pointBorderWidth:2},
+  {label:'Meta 20%',data:[20,20,20,20,20,20],borderColor:ORANGE,borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false}]},
+  options:{...base,scales:{...base.scales,y:{...base.scales.y,min:0,max:100,ticks:{...base.scales.y.ticks,callback:v=>v+'%'}}}}});
 
-// 9. Fidelidad donut
-const fC=['rgba(192,57,43,.85)','rgba(224,120,32,.85)','rgba(241,196,15,.85)','rgba(27,79,138,.8)','rgba(11,110,110,.85)','rgba(27,122,74,.9)'];
-mc('cFidel',{type:'doughnut',data:{labels:['1 compra','2 compras','3 compras','4 compras','5 compras','6+ compras'],
-  datasets:[{data:[177, 170, 138, 132, 123, 0],backgroundColor:fC,borderWidth:2,borderColor:'white',hoverOffset:6}]},
-  options:{responsive:true,maintainAspectRatio:true,cutout:'55%',
-    plugins:{legend:{position:'right',labels:{font:{size:11},padding:8,boxWidth:12}},
-      tooltip:{titleFont:{size:12},bodyFont:{size:11}}}}});
+// Fidelidad donut con % en labels
+const fidV=[177, 170, 138, 132, 123, 107];
+const fidP=[20.9, 20.1, 16.3, 15.6, 14.5, 12.6];
+const fidL=["1 mes", "2 meses", "3 meses", "4 meses", "5 meses", "6 meses"];
+const fidColors=['rgba(192,57,43,.85)','rgba(224,120,32,.85)','rgba(241,196,15,.85)','rgba(27,79,138,.8)','rgba(11,110,110,.85)','rgba(27,122,74,.9)'];
+mc('cFidel',{type:'doughnut',
+  data:{labels:fidL.map((l,i)=>l+' — '+fidV[i]+' cli ('+fidP[i]+'%)'),
+    datasets:[{data:fidV,backgroundColor:fidColors,borderWidth:2,borderColor:'white',hoverOffset:6}]},
+  options:{responsive:true,maintainAspectRatio:true,cutout:'52%',
+  plugins:{
+    legend:{position:'right',labels:{font:{size:10},padding:8,boxWidth:12,
+      generateLabels:chart=>{
+        const d=chart.data;
+        return d.labels.map((l,i)=>({text:l,fillStyle:d.datasets[0].backgroundColor[i],strokeStyle:'white',lineWidth:2,pointStyle:'circle'}));
+      }}},
+    tooltip:{callbacks:{label:ctx=>' '+fidV[ctx.dataIndex]+' clientes — '+fidP[ctx.dataIndex]+'%'}}
+  }}});
 
-// 10. Cartera vs activos
 mc('cCartera',{type:'bar',data:{labels:LAV,datasets:[
-  {label:'Cartera histórica',data:[522, 751, 815, 845, 882, 903],backgroundColor:'rgba(107,122,153,0.35)',borderRadius:4},
-  {label:'Con compra ese mes',data:[522, 532, 463, 349, 456, 449],backgroundColor:'rgba(27,122,74,0.8)',borderRadius:4},
-]},options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}}});
+  {label:'Cartera histórica',data:[522, 532, 463, 349, 456, 449],backgroundColor:'rgba(107,122,153,0.35)',borderRadius:4},
+  {label:'Con compra ese mes',data:[522, 532, 463, 349, 456, 449],backgroundColor:'rgba(27,122,74,0.8)',borderRadius:4}]},
+  options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}}});
 
-// 11. EERR barras apiladas + línea resultado
 mc('cEERR',{type:'bar',data:{labels:LEE,datasets:[
   {label:'Ventas',data:[28.3, 24.2, 28.4, 24.3],backgroundColor:'rgba(27,79,138,0.85)',borderRadius:4,stack:'s'},
   {label:'Costo MP',data:[14.66, 12.58, 11.61, 11.83],backgroundColor:'rgba(192,57,43,0.75)',borderRadius:4,stack:'c'},
   {label:'Despacho',data:[1.3, 0.94, 1.07, 1.14],backgroundColor:'rgba(224,120,32,0.7)',borderRadius:4,stack:'c'},
   {label:'Remuneraciones',data:[2.05, 2.31, 2.1, 2.95],backgroundColor:'rgba(241,196,15,0.85)',borderRadius:4,stack:'c'},
   {label:'Gastos Op.',data:[1.98, 3.56, 3.67, 4.95],backgroundColor:'rgba(107,122,153,0.7)',borderRadius:4,stack:'c'},
-  {type:'line',label:'Resultado Op.',data:[8.31, 4.81, 9.95, 3.43],borderColor:'rgba(27,122,74,0.95)',backgroundColor:'rgba(27,122,74,0.1)',fill:false,tension:.3,pointRadius:7,pointBackgroundColor:'rgba(27,122,74,0.95)',pointBorderColor:'white',pointBorderWidth:2,order:0},
-]},options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>'$'+v+'M'}}}}});
-</script>
-</body></html>
+  {type:'line',label:'Resultado Op.',data:[8.31, 4.81, 9.95, 3.43],borderColor:'rgba(27,122,74,0.95)',backgroundColor:'rgba(27,122,74,0.1)',fill:false,tension:.3,pointRadius:7,pointBackgroundColor:'rgba(27,122,74,0.95)',pointBorderColor:'white',pointBorderWidth:2,order:0}]},
+  options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>'$'+v+'M'}}}}});
+</script></body></html>
