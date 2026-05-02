@@ -2,35 +2,52 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LUP · Dashboard Comercial</title>
+<title>LUP · Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root{--navy:#0D1F3C;--blue:#1B4F8A;--teal:#0B6E6E;--green:#1B7A4A;--amber:#F5C200;--red:#C0392B;--orange:#E07820;--bg:#EEF1F8;--card:#fff;--border:#DDE3EE;--text:#1A2540;--muted:#6B7A99;--r:12px}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px}
-header{background:var(--navy);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
-.hlogo{width:34px;height:34px;background:var(--amber);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;color:var(--navy);margin-right:11px;flex-shrink:0}
-.htitle{color:#fff;font-size:15px;font-weight:700}.hsub{color:#7A9AD0;font-size:10px;margin-top:1px}
+
+/* HEADER */
+header{background:var(--navy);padding:0 16px;height:auto;min-height:56px;position:sticky;top:0;z-index:100;display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 16px}
+.hlogo{width:32px;height:32px;background:var(--amber);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:var(--navy);flex-shrink:0}
+.htitle{color:#fff;font-size:14px;font-weight:700}
+.hsub{color:#7A9AD0;font-size:10px}
+.hfilters{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto;align-items:center}
+.hsel{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:5px 10px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;appearance:none;-webkit-appearance:none}
+.hsel option{background:var(--navy);color:#fff}
+.hsel:focus{outline:none;border-color:var(--amber)}
 .hbadge{background:rgba(245,194,0,.15);border:1px solid rgba(245,194,0,.3);color:var(--amber);padding:3px 9px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap}
-.notice{background:#FFF8E1;border-bottom:1px solid #F5C200;padding:7px 20px;font-size:11px;color:#7A5700;line-height:1.5}
-.page{max-width:1320px;margin:0 auto;padding:18px 14px 48px}
-.st{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin:26px 0 11px;display:flex;align-items:center;gap:8px}
+.hbadge.live{background:rgba(27,122,74,.18);border-color:rgba(27,122,74,.4);color:#4AE090}
+.filter-label{color:#7A9AD0;font-size:10px;font-weight:600;white-space:nowrap}
+
+/* NOTICE */
+.notice{background:#FFF8E1;border-bottom:1px solid #F5C200;padding:7px 16px;font-size:11px;color:#7A5700;line-height:1.5}
+
+/* PAGE */
+.page{max-width:1320px;margin:0 auto;padding:16px 14px 48px}
+.st{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin:24px 0 10px;display:flex;align-items:center;gap:8px}
 .st-tag{background:var(--navy);color:var(--amber);padding:2px 8px;border-radius:20px;font-size:8px;font-weight:700}
 .st::after{content:'';flex:1;height:1px;background:var(--border)}
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
-.kpi{background:var(--card);border-radius:var(--r);padding:13px 15px 11px;border:1px solid var(--border);position:relative;overflow:hidden}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:9px}
+.kpi{background:var(--card);border-radius:var(--r);padding:12px 14px 10px;border:1px solid var(--border);position:relative;overflow:hidden;transition:box-shadow .15s}
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kc,var(--blue))}
-.kpi.b{--kc:var(--blue)}.kpi.g{--kc:var(--green)}.kpi.a{--kc:var(--amber)}.kpi.r{--kc:var(--red)}.kpi.w{--kc:var(--orange)}
-.kpi-label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;align-items:center;gap:3px}
+.kpi.b{--kc:var(--blue)}.kpi.g{--kc:var(--green)}.kpi.a{--kc:var(--amber)}.kpi.r{--kc:var(--red)}
+.kpi-label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:flex;align-items:center;gap:3px}
 .kpi-row{display:flex;align-items:flex-end;justify-content:space-between;gap:6px}
-.kpi-value{font-size:21px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-.5px;flex-shrink:0}
+.kpi-value{font-size:20px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-.5px;flex-shrink:0}
 .kpi-right{text-align:right;flex-shrink:0}
 .kpi-prom{font-size:10px;color:var(--muted)}
 .kpi-diff{font-size:10px;font-weight:700;margin-top:1px}
 .kpi-diff.pos{color:var(--green)}.kpi-diff.neg{color:var(--red)}
 .kpi-note{font-size:9px;color:var(--muted);margin-top:4px;line-height:1.3}
-.kpi-hint{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;background:var(--bg);border:1px solid var(--border);border-radius:50%;font-size:8px;color:var(--muted);cursor:pointer;font-weight:700;flex-shrink:0}
-.kpi-hint:hover{background:var(--navy);color:var(--amber)}
+.kpi-hint{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;background:rgba(0,0,0,0.06);border:1px solid var(--border);border-radius:50%;font-size:8px;color:var(--muted);cursor:pointer;font-weight:700;flex-shrink:0}
+.kpi-hint:hover{background:var(--navy);color:var(--amber);border-color:var(--navy)}
+
+/* CHARTS */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
 .g12{display:grid;grid-template-columns:1fr 2fr;gap:14px}
@@ -50,27 +67,23 @@ header{background:var(--navy);padding:0 20px;display:flex;align-items:center;jus
 .mk{border-radius:8px;padding:9px 12px;text-align:center}
 .mkl{font-size:9px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
 .mkv{font-size:16px;font-weight:800;color:var(--navy)}
-.mks2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:11px}
 @media(max-width:500px){.mks{grid-template-columns:repeat(2,1fr)}}
+
+/* EERR */
 .eerr-big{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:13px}
 @media(max-width:700px){.eerr-big{grid-template-columns:repeat(2,1fr)}}
 .ek{background:var(--navy);border-radius:var(--r);padding:13px 15px;text-align:center}
 .ekl{font-size:9px;color:#7A9AD0;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
 .ekv{font-size:19px;font-weight:800;color:var(--amber);letter-spacing:-.5px}
 .eks{font-size:9px;color:#5A7AB0;margin-top:2px}
-.ek.pos .ekv{color:#4AE090}.ek.warn .ekv{color:var(--orange)}
+.ek.pos .ekv{color:#4AE090}.ek.neg .ekv{color:#FF6B6B}
 .etbl{width:100%;border-collapse:collapse;font-size:11px}
 .etbl thead tr{background:var(--navy)}
 .etbl th{color:#8FAFDD;padding:7px 11px;text-align:right;font-size:9px;font-weight:600;white-space:nowrap}
 .etbl th:first-child{text-align:left;color:#C8D8F0}
 .etbl td{padding:7px 11px;border-bottom:1px solid var(--border);text-align:right}
-.etbl td:first-child{text-align:left;color:var(--muted);font-weight:600;font-size:10.5px}
-.etbl .ec td{background:#FFF8F6}.etbl .eg td{background:#FFF3EC;font-weight:700}
-.etbl .et td{background:#F0F3F8;font-weight:700;border-top:2px solid var(--border)}
-.etbl .er td{background:var(--navy);color:#4AE090;font-weight:800;font-size:12px;border:none}
-.etbl .er td:first-child{color:#8FAFDD;font-weight:600;font-size:10px}
-.etbl .em td{background:#F5FAF7;color:var(--green);font-weight:700}
-.etbl .em td:first-child{color:var(--muted)}
+
+/* ALERTAS */
 .ast{display:flex;gap:8px;margin-bottom:11px;flex-wrap:wrap}
 .as{border-radius:8px;padding:6px 11px;font-size:12px;font-weight:700}
 .asl{font-size:9px;font-weight:500;display:block;margin-top:1px;opacity:.8}
@@ -81,7 +94,7 @@ header{background:var(--navy);padding:0 20px;display:flex;align-items:center;jus
 .atbl thead tr{background:#F5F7FB}
 .atbl th{padding:8px 10px;text-align:left;font-weight:600;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);white-space:nowrap}
 .atbl th.r{text-align:right}
-.atbl td{padding:8px 10px;border-bottom:1px solid #F0F3F8;vertical-align:middle;white-space:nowrap}
+.atbl td{padding:8px 10px;border-bottom:1px solid #F0F3F8;white-space:nowrap;vertical-align:middle}
 .atbl td.n{color:var(--muted);width:22px;font-size:10px}
 .atbl td.cn{font-weight:600;max-width:150px;overflow:hidden;text-overflow:ellipsis}
 .atbl td.rt{color:var(--muted);font-size:10px}
@@ -90,6 +103,8 @@ header{background:var(--navy);padding:0 20px;display:flex;align-items:center;jus
 .atbl tr:hover td{background:#FAFBFE}
 .bdg{display:inline-block;padding:2px 7px;border-radius:8px;font-size:9px;font-weight:700;white-space:nowrap}
 .bdg.nc{background:#FDECEA;color:#C0392B}.bdg.bf{background:#FFF0E0;color:#D05000}.bdg.bj{background:#FFF8E1;color:#B07800}
+
+/* VENDEDORES */
 .vtbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:8px;border:1px solid var(--border)}
 .vtbl{width:100%;border-collapse:collapse;font-size:11px;min-width:700px}
 .vtbl thead tr{background:var(--navy)}
@@ -98,9 +113,11 @@ header{background:var(--navy);padding:0 20px;display:flex;align-items:center;jus
 .vtbl th:first-child{color:#C8D8F0}
 .vtbl td{padding:6px 10px;border-bottom:1px solid var(--border);text-align:right;font-variant-numeric:tabular-nums;font-size:11px}
 .vtbl td.vn{text-align:left;font-weight:600}.vtbl td.grp{text-align:left;font-size:10px;color:var(--muted)}
-.vtbl td.tot{font-weight:700;color:var(--navy)}.vtbl td.num{text-align:right}
-.vtbl td.rv{color:var(--blue)}.vtbl td.gv{color:var(--orange)}.vtbl td.ov{color:var(--muted)}
+.vtbl td.tot{font-weight:700;color:var(--navy)}
+.vtbl td.rv{color:var(--blue)}.vtbl td.gv{color:var(--orange)}.vtbl td.av{color:#9B59B6}.vtbl td.ov{color:var(--muted)}
 .vtbl tr:hover td{background:#F8F9FC}
+
+/* MODAL */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:16px}
 .modal.open{display:flex}
 .modal-box{background:#fff;border-radius:14px;padding:22px;max-width:460px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
@@ -108,47 +125,76 @@ header{background:var(--navy);padding:0 20px;display:flex;align-items:center;jus
 .modal-box p{font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.6}
 .modal-box p strong{color:var(--text)}
 .modal-box button{margin-top:10px;padding:7px 18px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+
 footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
-</style></head><body>
+</style>
+</head>
+<body>
 
 <header>
-  <div style="display:flex;align-items:center">
+  <div style="display:flex;align-items:center;gap:10px">
     <div class="hlogo">L</div>
     <div><div class="htitle">LUP · Dashboard Comercial</div>
-    <div class="hsub">Mayo 2025–Abril 2026 · TP+AV · 2026-05-02</div></div>
+    <div class="hsub">May 2025–Abr 2026 · TP+AV · 2026-05-02</div></div>
   </div>
-  <div style="display:flex;gap:6px">
-    <span class="hbadge" style="background:rgba(27,122,74,.18);border-color:rgba(27,122,74,.4);color:#4AE090">● LIVE</span>
+  <div class="hfilters">
+    <span class="filter-label">Vendedor</span>
+    <select class="hsel" id="fVendedor" onchange="applyFilters()">
+      <option value="todos">Todos</option>
+      <option value="Richard Vera Sr">Richard Sr</option>
+      <option value="Richard Vera Jr">Richard Jr</option>
+      <option value="Richard Vera Jr2">Richard Jr2</option>
+      <option value="German Castillo">Germán</option>
+      <option value="Administracion LUP">Admin LUP</option>
+      <option value="__grupo_Richard">Grupo Richard</option>
+    </select>
+    <span class="filter-label">Desde</span>
+    <select class="hsel" id="fDesde" onchange="applyFilters()">
+      <option value="2025-11">Nov-25</option>
+      <option value="2025-12">Dic-25</option>
+      <option value="2026-01">Ene-26</option>
+      <option value="2026-02">Feb-26</option>
+      <option value="2026-03">Mar-26</option>
+    </select>
+    <span class="filter-label">Hasta</span>
+    <select class="hsel" id="fHasta" onchange="applyFilters()">
+      <option value="2025-12">Dic-25</option>
+      <option value="2026-01">Ene-26</option>
+      <option value="2026-02">Feb-26</option>
+      <option value="2026-03">Mar-26</option>
+      <option value="2026-04" selected>Abr-26</option>
+    </select>
+    <span class="hbadge live">● LIVE</span>
     <span class="hbadge">12 meses</span>
   </div>
 </header>
 
-<div class="notice">
-  ⚠️ <strong>Nota:</strong> TP (May–Oct 2025) sin cajas ni conversión. Cajas AV = DETERG.LIQ.LUP 4×5L. Admin LUP excluida de KPIs comerciales. Costo MP disponible Ene–Abr 2026. BE: <strong>3.190 cajas/mes</strong>.<br>
-  <strong>KPI izquierda = Abr-26 (último mes) · Ø = promedio 6M AV (Nov-25–Abr-26) · % = diferencia vs promedio</strong>
+<div class="notice" id="noticeBar">
+  ⚠️ <strong>Nota:</strong> TP (May–Oct 2025) sin cajas ni conversión. Cajas AV = DETERG.LIQ.LUP 4×5L. BE: <strong>3.190 cajas/mes</strong>.<br>
+  <strong>KPI = período seleccionado (último mes) · Ø = promedio del rango · % = diferencia vs promedio</strong>
 </div>
 
 <div class="page">
-<div class="st"><span class="st-tag">KPIs</span> Últimos 30 Días vs Promedio 6 Meses AV</div>
-<div class="kpi-grid"><div class="kpi b"><div class="kpi-label">Ventas Netas</div><div class="kpi-row"><div class="kpi-value">$25.1M</div><div class="kpi-right"><div class="kpi-prom">Ø $26.0M</div><div class="kpi-diff neg">-3.5%</div></div></div></div><div class="kpi b"><div class="kpi-label">Pedidos</div><div class="kpi-row"><div class="kpi-value">537</div><div class="kpi-right"><div class="kpi-prom">Ø 556</div><div class="kpi-diff neg">-3.4%</div></div></div></div><div class="kpi b"><div class="kpi-label">Clientes Activos</div><div class="kpi-row"><div class="kpi-value">449</div><div class="kpi-right"><div class="kpi-prom">Ø 462</div><div class="kpi-diff neg">-2.8%</div></div></div><div class="kpi-note">Cartera total: 1,725 (TP+AV)</div></div><div class="kpi b"><div class="kpi-label">Cajas Vendidas AV</div><div class="kpi-row"><div class="kpi-value">2,469</div><div class="kpi-right"><div class="kpi-prom">Ø 2,433</div><div class="kpi-diff pos">+1.5%</div></div></div><div class="kpi-note">BE: 3.190 · brecha 721</div></div><div class="kpi b"><div class="kpi-label">Conversión AV<span class="kpi-hint" onclick="openModal('modalConv')" title="Ver explicación">?</span></div><div class="kpi-row"><div class="kpi-value">52.2%</div><div class="kpi-right"><div class="kpi-prom">Ø 73.2%</div><div class="kpi-diff neg">-28.7%</div></div></div><div class="kpi-note">ventas / (ventas + visitas AV)</div></div><div class="kpi b"><div class="kpi-label">Cajas/Cliente AV<span class="kpi-hint" onclick="openModal('modalCpk')" title="Ver explicación">?</span></div><div class="kpi-row"><div class="kpi-value">5.5</div><div class="kpi-right"><div class="kpi-prom">Ø 5.31</div><div class="kpi-diff pos">+3.6%</div></div></div><div class="kpi-note">Meta BE: 6.9 cajas/cli</div></div><div class="kpi b"><div class="kpi-label">% Inactividad<span class="kpi-hint" onclick="openModal('modalInact')" title="Ver explicación">?</span></div><div class="kpi-row"><div class="kpi-value">74.0%</div><div class="kpi-right"><div class="kpi-prom">Ø 73.2%</div><div class="kpi-diff neg">+1.1%</div></div></div><div class="kpi-note">Base: 1,725 clientes TP+AV</div></div><div class="kpi b"><div class="kpi-label">Ticket / Pedido<span class="kpi-hint" onclick="openModal('modalTicket')" title="Ver explicación">?</span></div><div class="kpi-row"><div class="kpi-value">$46,713</div><div class="kpi-right"><div class="kpi-prom">Ø $47,325</div><div class="kpi-diff neg">-1.3%</div></div></div></div><div class="kpi b"><div class="kpi-label">Ticket / Cliente</div><div class="kpi-row"><div class="kpi-value">$55,869</div><div class="kpi-right"><div class="kpi-prom">Ø $56,713</div><div class="kpi-diff neg">-1.5%</div></div></div></div></div>
+<div class="st"><span class="st-tag">KPIs</span> <span id="kpiTitle">Último Mes (Abr-26) vs Promedio 6M AV</span></div>
+<div class="kpi-grid" id="kpiGrid"><div class="kpi b" data-kpi="1"><div class="kpi-label">Ventas Netas<span class="kpi-hint" onclick="openModal('mNeto')" title="Cómo se calcula">?</span></div><div class="kpi-row"><div class="kpi-value">$25.1M</div><div class="kpi-right"><div class="kpi-prom">Ø $26.0M</div><div class="kpi-diff neg">-3.5%</div></div></div></div><div class="kpi b" data-kpi="1"><div class="kpi-label">Pedidos<span class="kpi-hint" onclick="openModal('mPed')" title="Qué es un pedido">?</span></div><div class="kpi-row"><div class="kpi-value">537</div><div class="kpi-right"><div class="kpi-prom">Ø 556</div><div class="kpi-diff neg">-3.4%</div></div></div></div><div class="kpi b" data-kpi="1"><div class="kpi-label">Clientes Activos<span class="kpi-hint" onclick="openModal('mCli')" title="Qué es cliente activo">?</span></div><div class="kpi-row"><div class="kpi-value">449</div><div class="kpi-right"><div class="kpi-prom">Ø 462</div><div class="kpi-diff neg">-2.8%</div></div></div><div class="kpi-note">Cartera: 903 clientes TP+AV</div></div><div class="kpi b" data-kpi="1"><div class="kpi-label">Visitas (contactos)<span class="kpi-hint" onclick="openModal('mVis')" title="Qué cuenta como visita">?</span></div><div class="kpi-row"><div class="kpi-value">1029</div><div class="kpi-right"><div class="kpi-prom">Ø 769</div><div class="kpi-diff pos">+33.8%</div></div></div><div class="kpi-note">ventas + visitas sin compra AV</div></div><div class="kpi b" data-kpi="1"><div class="kpi-label">Cajas Vendidas<span class="kpi-hint" onclick="openModal('mCaj')" title="Qué son las cajas">?</span></div><div class="kpi-row"><div class="kpi-value">2,097</div><div class="kpi-right"><div class="kpi-prom">Ø 2,370</div><div class="kpi-diff neg">-11.5%</div></div></div><div class="kpi-note">BE: 3.190 · brecha 1,093</div></div><div class="kpi b" data-kpi="1"><div class="kpi-label">Conversión AV<span class="kpi-hint" onclick="openModal('mConv')" title="Cómo se calcula conversión">?</span></div><div class="kpi-row"><div class="kpi-value">52.2%</div><div class="kpi-right"><div class="kpi-prom">Ø 73.2%</div><div class="kpi-diff neg">-28.7%</div></div></div><div class="kpi-note">ventas / contactos totales</div></div><div class="kpi b" data-kpi="1"><div class="kpi-label">Cajas/Cliente AV<span class="kpi-hint" onclick="openModal('mCpk')" title="Por qué esa meta">?</span></div><div class="kpi-row"><div class="kpi-value">4.67</div><div class="kpi-right"><div class="kpi-prom">Ø 5.17</div><div class="kpi-diff neg">-9.7%</div></div></div><div class="kpi-note">Meta BE: 6.9 cajas</div></div><div class="kpi b" data-kpi="1"><div class="kpi-label">% Inactividad<span class="kpi-hint" onclick="openModal('mInact')" title="Cómo se calcula">?</span></div><div class="kpi-row"><div class="kpi-value">50.3%</div><div class="kpi-right"><div class="kpi-prom">Ø 48.9%</div><div class="kpi-diff neg">+2.9%</div></div></div><div class="kpi-note">Base: 903 clientes TP+AV</div></div><div class="kpi b" data-kpi="1"><div class="kpi-label">Ticket / Pedido<span class="kpi-hint" onclick="openModal('mTicket')" title="Pedido vs cliente">?</span></div><div class="kpi-row"><div class="kpi-value">$46,713</div><div class="kpi-right"><div class="kpi-prom">Ø $47,325</div><div class="kpi-diff neg">-1.3%</div></div></div></div><div class="kpi b" data-kpi="1"><div class="kpi-label">Ticket / Cliente<span class="kpi-hint" onclick="openModal('mTicket')" title="Pedido vs cliente">?</span></div><div class="kpi-row"><div class="kpi-value">$55,869</div><div class="kpi-right"><div class="kpi-prom">Ø $56,713</div><div class="kpi-diff neg">-1.5%</div></div></div></div></div>
 
 <div class="st"><span class="st-tag">VENTAS</span> Facturación · 12 Meses</div>
 <div class="g2">
   <div class="card">
-    <div class="chd"><div><div class="ctitle">Facturación Neta Total ($M)</div><div class="csub">TP (azul) → AV (verde) · todos los vendedores</div></div></div>
+    <div class="chd"><div><div class="ctitle">Facturación Neta Total ($M)</div><div class="csub" id="subtFact">TP (azul) + AV (verde) · todos los vendedores</div></div></div>
     <canvas id="cFact" height="210"></canvas>
-    <div class="tk g">💡 Promedio $27M/mes sobre meta $24M. Feb-26 mínimo ($19.4M) por estacionalidad. La transición TP→AV no afectó el volumen.</div>
+    <div class="tk g" id="tkFact">💡 Promedio $25M/mes. Feb-26 mínimo por estacionalidad. Admin LUP incluida.</div>
   </div>
   <div class="card">
-    <div class="chd"><div><div class="ctitle">Facturación por Grupo ($M) — Apilado</div><div class="csub">Richard / Germán / Otros · todos los vendedores</div></div></div>
+    <div class="chd"><div><div class="ctitle">Facturación por Grupo ($M)</div><div class="csub">Richard / Germán / Admin / Otros</div></div></div>
     <canvas id="cGrupo" height="210"></canvas>
-    <div class="tk w">⚠️ Richard ~80% de la facturación. Otros desaparecen con AV Nov-25. Si Richard baja 20% → ~$4M/mes menos.</div>
+    <div class="tk w">⚠️ Richard ~80% de la facturación. Admin LUP representa ~5% (traspasos y ventas internas).</div>
   </div>
 </div>
 
 <div class="st"><span class="st-tag">VENDEDORES</span> Facturación por Vendedor — 12 Meses ($M)</div>
 <div class="card">
-  <div class="chd"><div><div class="ctitle">Neto por Vendedor ($M) · todos</div><div class="csub">TP + AV incluidos · Admin LUP = traspasos internos</div></div></div>
+  <div class="chd"><div><div class="ctitle">Neto por Vendedor ($M) · todos</div><div class="csub">TP + AV · Admin LUP incluida</div></div></div>
   <div class="vtbl-wrap"><table class="vtbl">
     <thead><tr><th>Vendedor</th><th>Grupo</th><th>May-25</th><th>Jun-25</th><th>Jul-25</th><th>Ago-25</th><th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Dic-25</th><th>Ene-26</th><th>Feb-26</th><th>Mar-26</th><th>Abr-26</th><th>TOTAL</th></tr></thead>
     <tbody><tr><td class="vn rv">Richard Vera Sr</td><td class="grp">Richard</td><td class="num">11.5</td><td class="num">14.5</td><td class="num">15.7</td><td class="num">12.6</td><td class="num">7.4</td><td class="num">14.5</td><td class="num">10.8</td><td class="num">9.1</td><td class="num">7.9</td><td class="num">8.4</td><td class="num">10.7</td><td class="num">8.5</td><td class="num tot">131.6</td></tr>
@@ -156,108 +202,120 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
 <tr><td class="vn gv">German Castillo</td><td class="grp">German</td><td class="num">4.5</td><td class="num">4.4</td><td class="num">3.9</td><td class="num">3.7</td><td class="num">3.6</td><td class="num">4.0</td><td class="num">3.9</td><td class="num">3.6</td><td class="num">4.2</td><td class="num">2.4</td><td class="num">3.9</td><td class="num">3.0</td><td class="num tot">45.0</td></tr>
 <tr><td class="vn ov">Susan Custodio</td><td class="grp">Otros</td><td class="num">10.2</td><td class="num">9.3</td><td class="num">7.6</td><td class="num">8.0</td><td class="num">4.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num tot">39.1</td></tr>
 <tr><td class="vn rv">Richard Vera Jr</td><td class="grp">Richard</td><td class="num">1.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">10.6</td><td class="num">11.4</td><td class="num">2.8</td><td class="num">0.5</td><td class="num">2.1</td><td class="num">2.3</td><td class="num tot">30.7</td></tr>
-<tr><td class="vn ov">Administracion LUP</td><td class="grp">Otros</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.9</td><td class="num">0.5</td><td class="num">1.4</td><td class="num">1.1</td><td class="num">1.2</td><td class="num">1.4</td><td class="num tot">6.5</td></tr>
+<tr><td class="vn av">Administracion LUP</td><td class="grp">Admin</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.9</td><td class="num">0.5</td><td class="num">1.4</td><td class="num">1.1</td><td class="num">1.2</td><td class="num">1.4</td><td class="num tot">6.5</td></tr>
 <tr><td class="vn ov">Sebastian Burgos</td><td class="grp">Otros</td><td class="num">0.9</td><td class="num">0.1</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num">0.0</td><td class="num tot">1.0</td></tr>
 </tbody>
   </table></div>
-  <div class="tk b">💡 Susan y Jose Oviedo solo TP hasta Oct-25. Con AV la cartera se concentra en Richards+Germán. Admin LUP son traspasos internos.</div>
+</div>
+
+<div class="st"><span class="st-tag">CONVERSIÓN</span> Visitas & Ventas · AV Nov-25 a Abr-26</div>
+<div class="card">
+  <div class="chd"><div>
+    <div class="ctitle">Contactos totales · Ventas · % Conversión <span class="kpi-hint" onclick="openModal('mConv')">?</span></div>
+    <div class="csub" id="subtConv">Total AV · barras = contactos y ventas · línea = % conversión</div>
+  </div><span class="cbadge">eje dual</span></div>
+  <canvas id="cConv" height="180"></canvas>
+  <div class="tk r" id="tkConv">🚨 Conversión cae a 52.2% en Abr-26 — mínimo histórico. Meta: 75%. Cada punto de conversión recuperado ≈ +$300K/mes.</div>
 </div>
 
 <div class="st"><span class="st-tag">TICKET</span> Ticket Promedio · 12 Meses</div>
 <div class="card">
   <div class="chd"><div>
-    <div class="ctitle">Ticket Pedido vs Ticket Cliente ($) <span class="kpi-hint" onclick="openModal('modalTicket')" style="cursor:pointer">?</span></div>
-    <div class="csub">Neto ÷ pedidos vs neto ÷ clientes únicos · todos los vendedores</div>
+    <div class="ctitle">Ticket/Pedido vs Ticket/Cliente ($) <span class="kpi-hint" onclick="openModal('mTicket')">?</span></div>
+    <div class="csub">Neto ÷ pedidos vs neto ÷ clientes únicos</div>
   </div></div>
   <canvas id="cTicket" height="130"></canvas>
   <div class="mks">
-    <div class="mk" style="background:#EEF4FF"><div class="mkl">Prom 6M Ticket/Pedido</div><div class="mkv" style="color:var(--blue)">$47,325</div></div>
-    <div class="mk" style="background:#EEF4FF"><div class="mkl">Prom 6M Ticket/Cliente</div><div class="mkv" style="color:var(--blue)">$56,713</div></div>
-    <div class="mk" style="background:#F0FAF5"><div class="mkl">Abr-26 Ticket/Pedido</div><div class="mkv" style="color:var(--green)">$46,713</div></div>
-    <div class="mk" style="background:#F5F7FB"><div class="mkl">Ratio Ped/Cli Abr-26</div><div class="mkv">1.2x</div></div>
+    <div class="mk" style="background:#EEF4FF"><div class="mkl">Prom 6M Ticket/Ped</div><div class="mkv" style="color:var(--blue)">$47,325</div></div>
+    <div class="mk" style="background:#EEF4FF"><div class="mkl">Prom 6M Ticket/Cli</div><div class="mkv" style="color:var(--blue)">$56,713</div></div>
+    <div class="mk" style="background:#F0FAF5"><div class="mkl">Abr-26 Ticket/Ped</div><div class="mkv" style="color:var(--green)">$46,713</div></div>
+    <div class="mk" style="background:#F5F7FB"><div class="mkl">Ratio Cli/Ped</div><div class="mkv">1.2x</div></div>
   </div>
-  <div class="tk b">💡 Ratio 1.2x = cada cliente hace 1.2 pedidos promedio en el mes. Ticket/cliente > ticket/pedido siempre — eso es bueno: indica recompra intra-mes.</div>
 </div>
 
-<div class="st"><span class="st-tag">PRECIO × CAJA</span> Precio Neto · Costo MP · Margen Directo</div>
+<div class="st"><span class="st-tag">PRECIO × CAJA</span> Precio · Costo CV · Margen</div>
 <div class="card">
-  <div class="chd"><div><div class="ctitle">Precio Neto/Caja vs Costo MP/Caja + Margen Directo %</div><div class="csub">AV Nov-25 a Abr-26 · eje dual · costo MP disponible Ene–Abr 2026</div></div><span class="cbadge">eje dual</span></div>
+  <div class="chd"><div><div class="ctitle">Precio Neto/Caja vs Costo CV/Caja + Margen %</div>
+  <div class="csub">Fuente: EERR oficial · Ene–Abr 2026 con datos reales · Nov–Dic precio estimado</div></div><span class="cbadge">eje dual</span></div>
   <canvas id="cPrecioCaja" height="165"></canvas>
   <div class="mks">
-    <div class="mk" style="background:#EEF4FF"><div class="mkl">Precio Prom Ene-Abr</div><div class="mkv" style="color:var(--blue)">$10,414</div><div style="font-size:9px;color:var(--muted)">por caja</div></div>
-    <div class="mk" style="background:#FEF0EE"><div class="mkl">Costo CV Prom/Caja</div><div class="mkv" style="color:var(--red)">$5,130</div><div style="font-size:9px;color:var(--muted)">detergente</div></div>
-    <div class="mk" style="background:#F0FAF5"><div class="mkl">Mejor Margen</div><div class="mkv" style="color:var(--green)">52.2%</div><div style="font-size:9px;color:var(--muted)">Feb-26</div></div>
-    <div class="mk" style="background:#FFF8E1"><div class="mkl">Peor Margen</div><div class="mkv" style="color:var(--orange)">48.7%</div><div style="font-size:9px;color:var(--muted)">Abr-26</div></div>
+    <div class="mk" style="background:#EEF4FF"><div class="mkl">Precio Prom/Caja</div><div class="mkv" style="color:var(--blue)">$0</div></div>
+    <div class="mk" style="background:#FEF0EE"><div class="mkl">Costo CV Prom</div><div class="mkv" style="color:var(--red)">$5,130</div></div>
+    <div class="mk" style="background:#F0FAF5"><div class="mkl">Mejor Margen</div><div class="mkv" style="color:var(--green)">0%</div><div style="font-size:9px;color:var(--muted)">Ene-26</div></div>
+    <div class="mk" style="background:#FFF8E1"><div class="mkl">Peor Margen</div><div class="mkv" style="color:var(--orange)">0%</div><div style="font-size:9px;color:var(--muted)">Ene-26</div></div>
   </div>
-  <div class="tk w">⚠️ Costo CV/caja estable ~$5.1K–$5.2K. El margen bajó de 52% (Ene) a 48.7% (Abr). La caída es por precio de venta promedio menor (−$600/caja) — revisar mix de productos y descuentos.</div>
+  <div class="tk w">⚠️ Costo CV/caja estable ~$5.1K. Margen baja de 52% (Ene) a 48.7% (Abr) por menor precio promedio de venta (−$600/caja).</div>
 </div>
 
-<div class="st"><span class="st-tag">AV</span> Conversión & Cajas · Nov-25 a Abr-26</div>
+<div class="st"><span class="st-tag">AV</span> Cajas & Clientes · Nov-25 a Abr-26</div>
 <div class="g2">
   <div class="card">
-    <div class="chd"><div>
-      <div class="ctitle">Conversión Contacto → Venta (%) <span class="kpi-hint" onclick="openModal('modalConv')" style="cursor:pointer">?</span></div>
-      <div class="csub">Ventas / (Ventas + Visitas sin compra) · meta BE: 75%</div>
-    </div></div>
-    <canvas id="cConv" height="210"></canvas>
-    <div class="tk r">🚨 Abr-26: Richard cae a 48.8% — peor mes AV. Germán 100% constante. Meta: 75% para sostener ventas. Acción urgente en ruta Richard.</div>
-  </div>
-  <div class="card">
-    <div class="chd"><div><div class="ctitle">Cajas Vendidas vs Breakeven 3.190</div><div class="csub">Todos los vendedores AV: Richard + Germán + Otros · línea roja = BE</div></div></div>
+    <div class="chd"><div><div class="ctitle">Cajas Vendidas vs Breakeven 3.190</div>
+    <div class="csub" id="subtCajas">Todos los vendedores AV apilados · línea roja = BE</div></div></div>
     <canvas id="cCajas" height="210"></canvas>
-    <div class="tk r">🚨 Ningún mes supera el BE de 3.190 cajas. Mar-26 el mejor con 2.764 (brecha 426). Déficit prom: 757 cajas ≈ $7.7M/mes.</div>
+    <div class="tk r">🚨 Ningún mes supera el BE. Mar-26 mejor: 2.759 (brecha 431). Abr-26: 2.097 (brecha 1.093).</div>
+  </div>
+  <div class="card">
+    <div class="chd"><div>
+      <div class="ctitle">Cajas/Cliente <span class="kpi-hint" onclick="openModal('mCpk')">?</span></div>
+      <div class="csub">Meta = BE ÷ clientes activos prom = 6.9 cajas</div>
+    </div></div>
+    <canvas id="cCpk" height="210"></canvas>
+    <div class="tk g">💡 Promedio 5.2 cajas/cliente. Subir 1.5 cajas/cliente con cartera actual → +$1.6M/mes.</div>
   </div>
 </div>
 
 <div class="g2">
   <div class="card">
     <div class="chd"><div>
-      <div class="ctitle">Distribución Cajas/Cliente — 6 Meses AV <span class="kpi-hint" onclick="openModal('modalCpk')" style="cursor:pointer">?</span></div>
-      <div class="csub">Total cajas compradas por cliente en 6 meses · 778 clientes AV</div>
+      <div class="ctitle">Distribución Cajas/Cliente por Mes <span class="kpi-hint" onclick="openModal('mCpk')">?</span></div>
+      <div class="csub">Clientes por rango de cajas · línea = total · punteada = promedio 452</div>
     </div></div>
     <canvas id="cDistCajas" height="210"></canvas>
-    <div class="tk g">💡 El 47.6% de los clientes compra 8+ cajas en 6 meses. Los 92 clientes de 27+ cajas generan $54.9M — el 36% de toda la facturación AV. Proteger ese grupo es prioridad.</div>
+    <div class="tk g">💡 La mayoría compra 3-7 cajas/mes. Los rangos altos (8+) son el núcleo de valor — protegerlos es prioridad.</div>
   </div>
   <div class="card">
-    <div class="chd"><div><div class="ctitle">% Inactividad de Cartera <span class="kpi-hint" onclick="openModal('modalInact')" style="cursor:pointer">?</span></div><div class="csub">Sin compra ese mes / cartera total 1725 clientes TP+AV · meta &lt;20%</div></div></div>
+    <div class="chd"><div>
+      <div class="ctitle">% Inactividad <span class="kpi-hint" onclick="openModal('mInact')">?</span></div>
+      <div class="csub">Sin compra ese mes / 903 clientes cartera TP+AV · meta &lt;20%</div>
+    </div></div>
     <canvas id="cInact" height="210"></canvas>
-    <div class="tk r">🚨 74% de la cartera real no compró en Abr-26. La base correcta es 1725 clientes únicos TP+AV. Campaña C5 activa desde Abr-26.</div>
+    <div class="tk r">🚨 74% de la cartera real no compró en Abr-26. Campaña C5 activa para revertirlo.</div>
   </div>
 </div>
 
 <div class="st"><span class="st-tag">FIDELIDAD</span> Retención · AV 6 Meses</div>
 <div class="g12">
   <div class="card">
-    <div class="chd"><div><div class="ctitle">Frecuencia de Compra — 6 Meses AV</div><div class="csub">847 clientes AV · compras consecutivas Nov-25 a Abr-26</div></div></div>
+    <div class="chd"><div><div class="ctitle">Frecuencia de Compra — 6 Meses</div><div class="csub">847 clientes AV · meses con compra Nov-25 a Abr-26</div></div></div>
     <canvas id="cFidel" height="250"></canvas>
-    <div class="tk g">💡 107 clientes compraron los 6 meses (12.6%). 347 solo 1-2 meses — máxima oportunidad de retención. Meta: llevar el 50% a 3+ meses consecutivos.</div>
+    <div class="tk g">💡 107 clientes compraron los 6 meses (12.6%). Meta: 40%. Los 347 de 1-2 meses son la mayor oportunidad.</div>
   </div>
   <div class="card">
-    <div class="chd"><div><div class="ctitle">Cartera Histórica vs Activos</div><div class="csub">Clientes con compra real ese mes vs cartera total</div></div></div>
+    <div class="chd"><div><div class="ctitle">Cartera Acumulada vs Activos</div><div class="csub">Clientes históricos vs compraron ese mes</div></div></div>
     <canvas id="cCartera" height="250"></canvas>
-    <div class="tk w">⚠️ Cartera crece pero la brecha con activos también crece. Sin retención, crecer la cartera es un cubo con agujero.</div>
+    <div class="tk w">⚠️ Cartera crece (451→805) pero activos no siguen. La brecha es la inactividad acumulada.</div>
   </div>
 </div>
 
-<div class="st"><span class="st-tag">EERR</span> Estado de Resultados · Ene–Abr 2026</div>
+<div class="st"><span class="st-tag">EERR</span> Estado de Resultados · Ene–Abr 2026 · Fuente: sheet oficial</div>
 <div class="eerr-big">
   <div class="ek"><div class="ekl">Ventas Prom/Mes</div><div class="ekv">$24.3M</div><div class="eks">Ene–Abr 2026</div></div>
-  <div class="ek warn"><div class="ekl">Costo Venta Prom</div><div class="ekv">$12.0M</div><div class="eks">detergente + envases</div></div>
+  <div class="ek"><div class="ekl">Costo CV Prom</div><div class="ekv">$12.0M</div><div class="eks">solo detergente</div></div>
   <div class="ek"><div class="ekl">Margen Bruto Prom</div><div class="ekv">50.7%</div><div class="eks">ventas − costo CV</div></div>
-  <div class="ek neg"><div class="ekl">Resultado Op. Prom</div><div class="ekv">-$3.9M</div><div class="eks">🚨 negativo todos los meses</div></div>
+  <div class="ek neg"><div class="ekl">Resultado Op. Prom</div><div class="ekv">−$3.9M</div><div class="eks">🚨 negativo todos los meses</div></div>
 </div>
 <div class="g21">
   <div class="card">
-    <div class="chd"><div><div class="ctitle">EERR — Ventas vs Costos ($M)</div><div class="csub">Resultado operacional como línea verde</div></div></div>
+    <div class="chd"><div><div class="ctitle">EERR — Ventas vs Costos ($M)</div><div class="csub">Resultado operacional como línea · rojo = negativo</div></div></div>
     <canvas id="cEERR" height="230"></canvas>
-    <div class="tk r">🚨 Gastos op Abr-26: $5M vs $2M Ene-26 (+150%). Resultado cae de $8.3M a $3.4M. Controlar esta línea es la palanca inmediata.</div>
+    <div class="tk r">🚨 Gastos op Abr-26: $8.5M vs $5.5M Ene-26 (+54%). Resultado cae a −$7.2M. Es la palanca más urgente.</div>
   </div>
   <div class="card">
-    <div class="chd"><div><div class="ctitle">EERR Detalle ($M)</div></div></div>
+    <div class="chd"><div><div class="ctitle">EERR Detalle ($M)</div><div class="csub">Fuente: sheet oficial LUP</div></div></div>
     <table class="etbl">
       <thead><tr><th>Concepto</th><th>ENE-26</th><th>FEB-26</th><th>MAR-26</th><th>ABR-26</th></tr></thead>
-      <tbody>
-        <tr style=""><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:var(--muted);">Ventas Netas</td><td>+$27.6M</td><td>+$20.5M</td><td>+$28.2M</td><td>+$21.1M</td></tr>
+      <tbody><tr style=""><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:var(--muted);">Ventas Netas</td><td>+$27.6M</td><td>+$20.5M</td><td>+$28.2M</td><td>+$21.1M</td></tr>
 <tr style="background:#FFF8F6;"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:var(--muted);">− Costo de Ventas</td><td>$13.2M</td><td>$9.8M</td><td>$14.1M</td><td>$10.8M</td></tr>
 <tr style="background:#F0F3F8;font-weight:700;"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;">= Margen Bruto</td><td>+$14.3M</td><td>+$10.7M</td><td>+$14.0M</td><td>+$10.3M</td></tr>
 <tr style="background:#F5FAF7;font-size:10px;"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:var(--muted);">  % Margen Bruto</td><td style="color:var(--green)">52.0%</td><td style="color:var(--green)">52.2%</td><td style="color:var(--green)">49.9%</td><td style="color:var(--green)">48.7%</td></tr>
@@ -265,20 +323,17 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
 <tr style="background:#F0F3F8;font-weight:700;"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;">= Margen s/Ventas</td><td>+$10.6M</td><td>+$8.2M</td><td>+$8.5M</td><td>+$8.4M</td></tr>
 <tr style="background:#FFF8F6;"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:var(--muted);">− Remuneraciones</td><td>$4.9M</td><td>$5.7M</td><td>$5.9M</td><td>$5.9M</td></tr>
 <tr style="background:#FFF8F6;"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:var(--muted);">− Gastos Operación</td><td>$5.5M</td><td>$5.6M</td><td>$6.2M</td><td>$8.5M</td></tr>
-<tr style="background:#F0F3F8;font-weight:700;border-top:2px solid var(--border);"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:var(--muted);">= Total Gastos Op.</td><td>$11.0M</td><td>$11.8M</td><td>$12.6M</td><td>$15.7M</td></tr>
 <tr style="background:var(--navy);"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:#8FAFDD;">RESULTADO OP.</td><td style="font-weight:800;color:#FF6B6B">$0.4M</td><td style="font-weight:800;color:#FF6B6B">$3.7M</td><td style="font-weight:800;color:#FF6B6B">$4.1M</td><td style="font-weight:800;color:#FF6B6B">$7.2M</td></tr>
 <tr style="background:#F5FAF7;font-size:10px;"><td style="text-align:left;font-size:10.5px;font-weight:600;padding:7px 11px;color:var(--muted);">  % Margen Op.</td><td style="color:var(--red)">-1.6%</td><td style="color:var(--red)">-17.9%</td><td style="color:var(--red)">-14.7%</td><td style="color:var(--red)">-34.2%</td></tr>
-
-      </tbody>
+</tbody>
     </table>
-    <div class="tk r" style="margin-top:10px">🚨 Resultado operacional negativo todos los meses. Feb-26 peor mes: −$3.7M (−17.9%). Abr-26: −$7.2M por explosión de gastos op ($8.5M). Los gastos operacionales son el principal problema — crecieron 54% en 4 meses.</div>
   </div>
 </div>
 
 <div class="st"><span class="st-tag">ALERTAS</span> Clientes con Cambio de Comportamiento Mar → Abr 2026</div>
 <div class="card">
-  <div class="chd"><div><div class="ctitle">Top 15 Clientes — Caída Significativa</div>
-  <div class="csub">Venta ≥$50K en Mar-26 · 20 alertas totales</div></div></div>
+  <div class="chd"><div><div class="ctitle">Top 15 — Caída Significativa</div>
+  <div class="csub">Venta ≥$50K Mar-26 · 20 alertas totales</div></div></div>
   <div class="ast">
     <div class="as r">16 <span class="asl">No compraron Abr-26</span></div>
     <div class="as w">3 <span class="asl">Bajaron &gt;30%</span></div>
@@ -304,175 +359,388 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
 <tr><td class="n">15</td><td class="cn">Ong De Desarrollo Para Bien (1</td><td class="rt">651519888</td><td class="num">$191,670</td><td class="num mu">—</td><td class="num vn">−100%</td><td><span class="bdg nc">NO COMPRÓ</span></td></tr>
 </tbody>
   </table></div>
-  <div class="tk r" style="margin-top:10px">🚨 Recuperar top 10 "NO COMPRÓ" = +$600K/mes. Llamada directa esta semana — son clientes con historial sólido de $60K/mes.</div>
+  <div class="tk r" style="margin-top:10px">🚨 Recuperar top 10 "NO COMPRÓ" = +$600K/mes. Acción: llamada directa esta semana.</div>
 </div>
-
-</div><!-- /page -->
+</div>
+<footer>LUP · Dashboard · 2026-05-02 · Fuentes: AV+TP Google Sheets + EERR oficial</footer>
 
 <!-- MODALES -->
-<div id="modalInact" class="modal" onclick="if(event.target===this)closeModal('modalInact')">
-<div class="modal-box">
-  <h3>¿Qué es % Inactividad?</h3>
-  <p><strong>Fórmula:</strong> (Cartera total − Clientes que compraron ese mes) ÷ Cartera total</p>
-  <p><strong>Cartera base:</strong> 1725 clientes únicos que compraron al menos 1 vez en TP (May–Oct 25) o AV (Nov-25–Abr-26).</p>
-  <p><strong>Ejemplo Abr-26:</strong> 1725 − 449 compraron = 1276 sin compra → 74.0%</p>
-  <p><strong>Meta:</strong> menos del 20%. Hoy en 74% — 3 de cada 4 clientes no compran en el mes.</p>
-  <button onclick="closeModal('modalInact')">Cerrar</button>
+<div id="mNeto" class="modal" onclick="if(event.target===this)closeModal('mNeto')"><div class="modal-box">
+  <h3>Ventas Netas</h3>
+  <p><strong>Fórmula:</strong> Suma de todos los pedidos netos (sin IVA) del período seleccionado.</p>
+  <p><strong>Fuente:</strong> Autoventa_Visitas + Toma Pedido Google Sheets. Incluye todos los vendedores (Richard, Germán, Admin LUP).</p>
+  <p><strong>Período:</strong> Se actualiza según el filtro de fechas y vendedor del header.</p>
+  <button onclick="closeModal('mNeto')">Cerrar</button>
 </div></div>
 
-<div id="modalConv" class="modal" onclick="if(event.target===this)closeModal('modalConv')">
-<div class="modal-box">
-  <h3>¿Qué es la Conversión?</h3>
+<div id="mPed" class="modal" onclick="if(event.target===this)closeModal('mPed')"><div class="modal-box">
+  <h3>Pedidos</h3>
+  <p>Número de transacciones de venta registradas. Un cliente puede hacer más de un pedido en el mes.</p>
+  <p>La diferencia entre pedidos y clientes activos indica cuántos clientes compran más de una vez al mes.</p>
+  <button onclick="closeModal('mPed')">Cerrar</button>
+</div></div>
+
+<div id="mCli" class="modal" onclick="if(event.target===this)closeModal('mCli')"><div class="modal-box">
+  <h3>Clientes Activos</h3>
+  <p><strong>Definición:</strong> Clientes únicos (por RUT) que realizaron al menos 1 compra en el mes seleccionado.</p>
+  <p><strong>Cartera base:</strong> 903 clientes que compraron al menos 1 vez en los 12 meses (TP May-Oct 25 + AV Nov-25 a Abr-26).</p>
+  <p>La diferencia entre cartera y activos del mes es la inactividad.</p>
+  <button onclick="closeModal('mCli')">Cerrar</button>
+</div></div>
+
+<div id="mVis" class="modal" onclick="if(event.target===this)closeModal('mVis')"><div class="modal-box">
+  <h3>Visitas (Contactos)</h3>
+  <p><strong>Incluye:</strong> Ventas AV + Visitas AV sin compra. Cada vez que un vendedor registra un contacto con un cliente, sea compra o visita.</p>
+  <p><strong>No incluye:</strong> Pedidos TP (no tienen registro de visita individual).</p>
+  <p>Más visitas + buena conversión = más ventas. La frecuencia de visita es la palanca operacional principal.</p>
+  <button onclick="closeModal('mVis')">Cerrar</button>
+</div></div>
+
+<div id="mCaj" class="modal" onclick="if(event.target===this)closeModal('mCaj')"><div class="modal-box">
+  <h3>Cajas Vendidas</h3>
+  <p><strong>Producto:</strong> DETERG.LIQ.LUP 4×5L únicamente. No incluye envases, regalos ni otros productos.</p>
+  <p><strong>Fuente:</strong> Autoventa_Productos. Dato disponible desde Nov-25 (AV).</p>
+  <p><strong>Breakeven:</strong> 3.190 cajas/mes. Ningún mes lo ha alcanzado aún. Mar-26 fue el más cercano con 2.759.</p>
+  <button onclick="closeModal('mCaj')">Cerrar</button>
+</div></div>
+
+<div id="mConv" class="modal" onclick="if(event.target===this)closeModal('mConv')"><div class="modal-box">
+  <h3>Conversión</h3>
   <p><strong>Fórmula:</strong> Ventas ÷ (Ventas + Visitas sin compra)</p>
-  <p>Cada visita del vendedor es un "contacto". Si el cliente compra = Venta. Si no compra = Visita.</p>
-  <p><strong>Ejemplo Abr-26:</strong> Si hubo 300 ventas y 275 visitas sin compra → 300/575 = 52.2%</p>
-  <p><strong>Meta:</strong> 75% mínimo. Bajo ese umbral, el volumen de ventas no alcanza para cubrir los costos de la ruta.</p>
-  <p><strong>Nota:</strong> Germán aparece al 100% porque en su ruta cada visita registra como venta — puede indicar que no registra visitas sin compra.</p>
-  <button onclick="closeModal('modalConv')">Cerrar</button>
+  <p>Cada contacto AV tiene resultado: "Venta" o "Visita". La conversión mide cuántos contactos terminan en venta.</p>
+  <p><strong>Meta: 75%.</strong> Bajo ese umbral el volumen de ventas no alcanza el BE.</p>
+  <p><strong>Solo AV:</strong> TP no registra visitas sin compra, por lo que no tiene dato de conversión.</p>
+  <button onclick="closeModal('mConv')">Cerrar</button>
 </div></div>
 
-<div id="modalTicket" class="modal" onclick="if(event.target===this)closeModal('modalTicket')">
-<div class="modal-box">
+<div id="mCpk" class="modal" onclick="if(event.target===this)closeModal('mCpk')"><div class="modal-box">
+  <h3>Cajas por Cliente — Meta 6.9</h3>
+  <p><strong>Fórmula:</strong> Cajas totales del mes ÷ Clientes activos ese mes.</p>
+  <p><strong>Meta:</strong> BE (3.190 cajas) ÷ clientes activos promedio (462) = 6.9 cajas/cliente.</p>
+  <p>Si cada cliente activo comprara 6.9 cajas, LUP alcanzaría el BE sin nuevos clientes.</p>
+  <button onclick="closeModal('mCpk')">Cerrar</button>
+</div></div>
+
+<div id="mInact" class="modal" onclick="if(event.target===this)closeModal('mInact')"><div class="modal-box">
+  <h3>% Inactividad</h3>
+  <p><strong>Fórmula:</strong> (Cartera total − Clientes con compra ese mes) ÷ Cartera total</p>
+  <p><strong>Cartera base:</strong> 903 clientes únicos que compraron al menos 1 vez en 12 meses (TP+AV).</p>
+  <p><strong>Ejemplo Abr-26:</strong> 903 − 449 compraron = 454 sin compra → 50.3%</p>
+  <p><strong>Meta: &lt;20%.</strong> Hoy en 74% — 3 de cada 4 clientes no compran en el mes.</p>
+  <button onclick="closeModal('mInact')">Cerrar</button>
+</div></div>
+
+<div id="mTicket" class="modal" onclick="if(event.target===this)closeModal('mTicket')"><div class="modal-box">
   <h3>Ticket Pedido vs Ticket Cliente</h3>
-  <p><strong>Ticket/Pedido:</strong> Neto ÷ N° pedidos. Cuánto vale cada orden individual.</p>
-  <p><strong>Ticket/Cliente:</strong> Neto ÷ Clientes únicos. Cuánto gasta cada cliente en el mes.</p>
-  <p>Si un cliente hace 2 pedidos en el mes, aparece 1 en clientes pero 2 en pedidos.</p>
-  <p><strong>Ratio Abr-26:</strong> $55,869 / $46,713 = 1.2x → cada cliente hace 1.2 pedidos promedio al mes.</p>
-  <button onclick="closeModal('modalTicket')">Cerrar</button>
+  <p><strong>Ticket/Pedido:</strong> Neto total ÷ N° pedidos. Valor promedio de cada orden.</p>
+  <p><strong>Ticket/Cliente:</strong> Neto total ÷ Clientes únicos. Cuánto gasta cada cliente en el mes.</p>
+  <p>Si ticket/cliente &gt; ticket/pedido → hay clientes que compran más de una vez al mes (buena señal).</p>
+  <p><strong>Ratio Abr-26:</strong> 1.2x → cada cliente hace 1.2 pedidos promedio al mes.</p>
+  <button onclick="closeModal('mTicket')">Cerrar</button>
 </div></div>
-
-<div id="modalCpk" class="modal" onclick="if(event.target===this)closeModal('modalCpk')">
-<div class="modal-box">
-  <h3>Meta de Cajas por Cliente</h3>
-  <p><strong>Fórmula:</strong> Breakeven (3.190 cajas/mes) ÷ Clientes activos promedio (462 clientes) = <strong>6.9 cajas/cliente</strong></p>
-  <p>Si cada cliente activo comprara 6.9 cajas, alcanzaríamos el punto de equilibrio sin nuevos clientes.</p>
-  <p>Promedio actual: 5.5 cajas/cliente. Brecha: 1.4 cajas/cliente.</p>
-  <p><strong>Esta distribución muestra</strong> el total de cajas compradas por cliente en los 6 meses de AV, no por mes.</p>
-  <button onclick="closeModal('modalCpk')">Cerrar</button>
-</div></div>
-
-<footer>LUP · Dashboard Lupita · MAESTRA TP+AV · 2026-05-02</footer>
 
 <script>
 const NAVY='#0D1F3C',BLUE='#1B4F8A',TEAL='#0B6E6E',GREEN='#1B7A4A',AMBER='#F5C200',RED='#C0392B',ORANGE='#E07820',MUTED='#6B7A99';
-const L12=["May-25", "Jun-25", "Jul-25", "Ago-25", "Sep-25", "Oct-25", "Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],LAV=["Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],LEE=["ENE-26", "FEB-26", "MAR-26", "ABR-26"];
+const LAV=["Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"];
+const L12=["May-25", "Jun-25", "Jul-25", "Ago-25", "Sep-25", "Oct-25", "Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"];
+const LEE=["Ene-26", "Feb-26", "Mar-26", "Abr-26"];
+
+// ── RAW DATA POR VENDEDOR ────────────────────────────────────────────
+const RAW={"Richard Vera Sr": {"grupo": "Richard", "neto": {"2025-05": 11468601, "2025-06": 14497779, "2025-07": 15649244, "2025-08": 12638014, "2025-09": 7394774, "2025-10": 14510923, "2025-11": 10754765, "2025-12": 9142664, "2026-01": 7888336, "2026-02": 8424046, "2026-03": 10722253, "2026-04": 8536210}, "pedidos": {"2025-05": 227, "2025-06": 336, "2025-07": 332, "2025-08": 293, "2025-09": 172, "2025-10": 378, "2025-11": 274, "2025-12": 226, "2026-01": 219, "2026-02": 173, "2026-03": 220, "2026-04": 214}, "visitas": {"2025-11": 162, "2025-12": 206, "2026-01": 183, "2026-02": 98, "2026-03": 53, "2026-04": 201}, "ventas": {"2025-11": 274, "2025-12": 226, "2026-01": 219, "2026-02": 173, "2026-03": 220, "2026-04": 214}, "clientes": {"2025-05": 200, "2025-06": 294, "2025-07": 264, "2025-08": 261, "2025-09": 163, "2025-10": 318, "2025-11": 242, "2025-12": 187, "2026-01": 188, "2026-02": 159, "2026-03": 191, "2026-04": 192}}, "Richard Vera Jr": {"grupo": "Richard", "neto": {"2025-05": 998454, "2025-06": 0, "2025-07": 0, "2025-08": 0, "2025-09": 0, "2025-10": 0, "2025-11": 10574469, "2025-12": 11401403, "2026-01": 2799766, "2026-02": 542723, "2026-03": 2091540, "2026-04": 2284198}, "pedidos": {"2025-05": 23, "2025-06": 0, "2025-07": 0, "2025-08": 0, "2025-09": 0, "2025-10": 0, "2025-11": 249, "2025-12": 251, "2026-01": 53, "2026-02": 1, "2026-03": 27, "2026-04": 42}, "visitas": {"2025-11": 22, "2025-12": 16, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 100}, "ventas": {"2025-11": 249, "2025-12": 251, "2026-01": 53, "2026-02": 1, "2026-03": 27, "2026-04": 42}, "clientes": {"2025-05": 23, "2025-06": 0, "2025-07": 0, "2025-08": 0, "2025-09": 0, "2025-10": 0, "2025-11": 211, "2025-12": 224, "2026-01": 52, "2026-02": 1, "2026-03": 27, "2026-04": 39}}, "Richard Vera Jr2": {"grupo": "Richard", "neto": {"2025-05": 2997815, "2025-06": 0, "2025-07": 0, "2025-08": 4608332, "2025-09": 15314315, "2025-10": 9463462, "2025-11": 0, "2025-12": 3776944, "2026-01": 11455590, "2026-02": 8110526, "2026-03": 10526442, "2026-04": 9881547}, "pedidos": {"2025-05": 54, "2025-06": 0, "2025-07": 0, "2025-08": 95, "2025-09": 372, "2025-10": 178, "2025-11": 0, "2025-12": 88, "2026-01": 209, "2026-02": 150, "2026-03": 183, "2026-04": 185}, "visitas": {"2025-11": 0, "2025-12": 2, "2026-01": 0, "2026-02": 0, "2026-03": 25, "2026-04": 161}, "ventas": {"2025-11": 0, "2025-12": 88, "2026-01": 209, "2026-02": 150, "2026-03": 183, "2026-04": 185}, "clientes": {"2025-05": 53, "2025-06": 0, "2025-07": 0, "2025-08": 92, "2025-09": 309, "2025-10": 162, "2025-11": 0, "2025-12": 87, "2026-01": 184, "2026-02": 144, "2026-03": 161, "2026-04": 167}}, "German Castillo": {"grupo": "German", "neto": {"2025-05": 4494151, "2025-06": 4438185, "2025-07": 3865546, "2025-08": 3706824, "2025-09": 3616000, "2025-10": 3986487, "2025-11": 3883303, "2025-12": 3612472, "2026-01": 4180739, "2026-02": 2371928, "2026-03": 3864491, "2026-04": 2945201}, "pedidos": {"2025-05": 65, "2025-06": 89, "2025-07": 78, "2025-08": 70, "2025-09": 91, "2025-10": 81, "2025-11": 84, "2025-12": 84, "2026-01": 86, "2026-02": 58, "2026-03": 86, "2026-04": 76}, "visitas": {"2025-11": 14, "2025-12": 44, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 0}, "ventas": {"2025-11": 84, "2025-12": 84, "2026-01": 86, "2026-02": 58, "2026-03": 86, "2026-04": 76}, "clientes": {"2025-05": 56, "2025-06": 68, "2025-07": 65, "2025-08": 59, "2025-09": 66, "2025-10": 64, "2025-11": 74, "2025-12": 66, "2026-01": 73, "2026-02": 50, "2026-03": 73, "2026-04": 58}}, "Administracion LUP": {"grupo": "Admin", "neto": {"2025-05": 0, "2025-06": 0, "2025-07": 0, "2025-08": 0, "2025-09": 0, "2025-10": 0, "2025-11": 869076, "2025-12": 514992, "2026-01": 1412464, "2026-02": 1052377, "2026-03": 1211553, "2026-04": 1437980}, "pedidos": {"2025-05": 0, "2025-06": 0, "2025-07": 0, "2025-08": 0, "2025-09": 0, "2025-10": 0, "2025-11": 16, "2025-12": 10, "2026-01": 12, "2026-02": 14, "2026-03": 25, "2026-04": 20}, "visitas": {"2025-11": 0, "2025-12": 18, "2026-01": 2, "2026-02": 0, "2026-03": 0, "2026-04": 30}, "ventas": {"2025-11": 16, "2025-12": 10, "2026-01": 12, "2026-02": 14, "2026-03": 25, "2026-04": 20}, "clientes": {"2025-05": 0, "2025-06": 0, "2025-07": 0, "2025-08": 0, "2025-09": 0, "2025-10": 0, "2025-11": 15, "2025-12": 10, "2026-01": 12, "2026-02": 14, "2026-03": 22, "2026-04": 18}}, "Susan Custodio": {"grupo": "Otros", "neto": {"2025-05": 10174504, "2025-06": 9325429, "2025-07": 7614908, "2025-08": 7965143, "2025-09": 4030487, "2025-10": 0, "2025-11": 0, "2025-12": 0, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 0}, "pedidos": {"2025-05": 240, "2025-06": 223, "2025-07": 175, "2025-08": 199, "2025-09": 101, "2025-10": 0, "2025-11": 0, "2025-12": 0, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 0}, "visitas": {"2025-11": 0, "2025-12": 0, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 0}, "ventas": {"2025-11": 0, "2025-12": 0, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 0}, "clientes": {"2025-05": 171, "2025-06": 162, "2025-07": 131, "2025-08": 150, "2025-09": 93, "2025-10": 0, "2025-11": 0, "2025-12": 0, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 0}}, "Jose Oviedo": {"grupo": "Otros", "neto": {"2025-05": 0, "2025-06": 0, "2025-07": 0, "2025-08": 0, "2025-09": 0, "2025-10": 0, "2025-11": 0, "2025-12": 0, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 0}, "pedidos": {"2025-05": 0, "2025-06": 0, "2025-07": 0, "2025-08": 0, "2025-09": 0, "2025-10": 0, "2025-11": 0, "2025-12": 0, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 0}, "visitas": {"2025-11": 0, "2025-12": 0, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 0}, "ventas": {"2025-11": 0, "2025-12": 0, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 0}, "clientes": {"2025-05": 0, "2025-06": 0, "2025-07": 0, "2025-08": 0, "2025-09": 0, "2025-10": 0, "2025-11": 0, "2025-12": 0, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 0}}, "Sebastian Burgos": {"grupo": "Otros", "neto": {"2025-05": 864504, "2025-06": 98319, "2025-07": 0, "2025-08": 0, "2025-09": 0, "2025-10": 0, "2025-11": 0, "2025-12": 0, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 0}, "pedidos": {"2025-05": 10, "2025-06": 2, "2025-07": 0, "2025-08": 0, "2025-09": 0, "2025-10": 0, "2025-11": 0, "2025-12": 0, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 0}, "visitas": {"2025-11": 0, "2025-12": 0, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 0}, "ventas": {"2025-11": 0, "2025-12": 0, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 0}, "clientes": {"2025-05": 9, "2025-06": 2, "2025-07": 0, "2025-08": 0, "2025-09": 0, "2025-10": 0, "2025-11": 0, "2025-12": 0, "2026-01": 0, "2026-02": 0, "2026-03": 0, "2026-04": 0}}};
+const MESES_AV=["2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04"];
+const MESES_ALL=["2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04"];
+const CAJAS_R=[1841, 1904, 984, 836, 1235, 1064];
+const CAJAS_G=[305, 335, 390, 218, 360, 270];
+const CAJAS_O=[81, 399, 1210, 858, 1164, 763];
+const CAJAS_TOT=[2227, 2638, 2584, 1912, 2759, 2097];
+const CPK=[4.27, 4.96, 5.58, 5.48, 6.05, 4.67];
+const INAC=[42.2, 41.1, 48.7, 61.4, 49.5, 50.3];
+const CART=[522, 751, 815, 845, 882, 903];
+const CLIV=[522, 532, 463, 349, 456, 449];
+const DIST_RANGO={"1-2": [76, 73, 51, 35, 45, 47], "3": [219, 239, 190, 124, 158, 126], "4-7": [113, 155, 142, 139, 160, 206], "8-13": [26, 30, 43, 21, 48, 37], "14-18": [20, 18, 18, 19, 25, 21], "19-26": [1, 3, 7, 1, 2, 1], "27+": [10, 14, 12, 10, 18, 11]};
+const RANGO_LABELS=["1-2", "3", "4-7", "8-13", "14-18", "19-26", "27+"];
+const PROM_CLI_MES=[465, 532, 463, 349, 456, 449];
+const GRUPOS={"Richard Vera Sr": "Richard", "Richard Vera Jr": "Richard", "Richard Vera Jr2": "Richard", "German Castillo": "German", "Administracion LUP": "Admin", "Susan Custodio": "Otros", "Jose Oviedo": "Otros", "Sebastian Burgos": "Otros"};
+
+// ── ESTADO FILTROS ──────────────────────────────────────────────────
+let fVend='todos', fDesde='2025-11', fHasta='2026-04';
+let charts={};
 
 function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
 
-const base={responsive:true,maintainAspectRatio:true,
-  plugins:{
-    legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},
-    tooltip:{titleFont:{size:12},bodyFont:{size:11},padding:10}
-  },
-  scales:{
-    x:{grid:{display:false},ticks:{font:{size:11},maxRotation:0}},
-    y:{grid:{color:'#EEF0F5',lineWidth:.8},ticks:{font:{size:11}}}
+// ── HELPERS ──────────────────────────────────────────────────────────
+function getVendores(){
+  if(fVend==='todos') return Object.keys(RAW);
+  if(fVend.startsWith('__grupo_')){
+    const g=fVend.replace('__grupo_','');
+    return Object.keys(RAW).filter(v=>GRUPOS[v]===g);
   }
-};
-function mc(id,cfg){const el=document.getElementById(id);if(!el)return;try{new Chart(el,cfg);}catch(e){console.error(id,e);}}
+  return [fVend];
+}
+function getMesesRange(pool){
+  const idx_d=pool.indexOf(fDesde), idx_h=pool.indexOf(fHasta);
+  if(idx_d<0||idx_h<0) return pool;
+  return pool.slice(idx_d, idx_h+1);
+}
+function getMesesAV(){return getMesesRange(MESES_AV)}
+function getMesesAll(){return getMesesRange(MESES_ALL)}
+function getLabelAV(m){return LAV[MESES_AV.indexOf(m)]||m}
+function getLabelAll(m){return L12[MESES_ALL.indexOf(m)]||m}
 
-mc('cFact',{type:'bar',data:{labels:L12,datasets:[{label:'Neto $M',data:[31.0, 28.36, 27.13, 28.92, 30.36, 27.96, 26.08, 28.45, 27.74, 20.5, 28.42, 25.09],
-  backgroundColor:L12.map((_,i)=>i<6?'rgba(27,79,138,0.78)':'rgba(11,110,110,0.78)'),borderRadius:5,borderSkipped:false}]},
-  options:{...base,plugins:{...base.plugins,legend:{display:false}},
-  scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>'$'+v+'M'}}}}});
+// Suma neto por mes para los vendedores seleccionados
+function netoByMes(meses){
+  const vs=getVendores();
+  return meses.map(m=>vs.reduce((s,v)=>s+(RAW[v]?.neto[m]||0),0));
+}
+// Suma por grupo y mes
+function netoGrupoByMes(grupo,meses){
+  return meses.map(m=>Object.keys(RAW).filter(v=>GRUPOS[v]===grupo).reduce((s,v)=>s+(RAW[v]?.neto[m]||0),0));
+}
+// Visitas y ventas AV
+function visitasByMes(meses){
+  const vs=getVendores();
+  return meses.map(m=>vs.reduce((s,v)=>s+(RAW[v]?.visitas?.[m]||0)+(RAW[v]?.ventas?.[m]||0),0));
+}
+function ventasByMes(meses){
+  const vs=getVendores();
+  return meses.map(m=>vs.reduce((s,v)=>s+(RAW[v]?.ventas?.[m]||0),0));
+}
+function convByMes(meses){
+  return meses.map(m=>{
+    const tot=visitasByMes([m])[0];
+    const vta=ventasByMes([m])[0];
+    return tot>0?Math.round(vta/tot*100*10)/10:0;
+  });
+}
 
-mc('cGrupo',{type:'bar',data:{labels:L12,datasets:[
-  {label:'Richard',data:[15.46, 14.5, 15.65, 17.25, 22.71, 23.97, 21.33, 24.32, 22.14, 17.08, 23.34, 20.7],backgroundColor:'rgba(27,79,138,0.85)',borderRadius:3},
-  {label:'Germán', data:[4.49, 4.44, 3.87, 3.71, 3.62, 3.99, 3.88, 3.61, 4.18, 2.37, 3.86, 2.95],backgroundColor:'rgba(224,120,32,0.85)',borderRadius:3},
-  {label:'Otros',  data:[11.04, 9.42, 7.61, 7.97, 4.03, 0.0, 0.87, 0.51, 1.41, 1.05, 1.21, 1.44],backgroundColor:'rgba(107,122,153,0.55)',borderRadius:3}]},
-  options:{...base,scales:{x:{...base.scales.x,stacked:true},y:{...base.scales.y,stacked:true,ticks:{callback:v=>'$'+v+'M'}}}}});
+// ── KPI UPDATE ─────────────────────────────────────────────────────
+function updateKpis(){
+  const msAV=getMesesAV();
+  if(!msAV.length) return;
+  const msAll=getMesesAll();
+  const ultM=msAV[msAV.length-1];
+  const ultLbl=getLabelAV(ultM);
+  const vs=getVendores();
 
-mc('cTicket',{type:'line',data:{labels:L12,datasets:[
-  {label:'Ticket/Pedido',data:[50078, 43630, 46376, 44016, 41244, 43895, 41865, 43169, 47905, 51772, 52525, 46713],borderColor:BLUE,backgroundColor:'rgba(27,79,138,0.08)',fill:true,tension:.35,pointRadius:4,pointBackgroundColor:BLUE,pointBorderColor:'white',pointBorderWidth:2},
-  {label:'Ticket/Cliente',data:[62496, 54018, 58978, 55399, 54793, 56146, 49965, 53475, 59907, 58744, 62316, 55869],borderColor:TEAL,fill:false,tension:.35,pointRadius:3,borderDash:[5,3]}]},
-  options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>'$'+v.toLocaleString('es-CL')}}}}});
+  // Neto
+  const netoArr=netoByMes(msAV);
+  const netoUlt=netoArr[netoArr.length-1];
+  const netoProm=netoArr.reduce((a,b)=>a+b,0)/netoArr.length;
+  // Pedidos
+  const pedArr=msAV.map(m=>vs.reduce((s,v)=>s+(RAW[v]?.pedidos?.[m]||0),0));
+  const pedUlt=pedArr[pedArr.length-1];
+  const pedProm=Math.round(pedArr.reduce((a,b)=>a+b,0)/pedArr.length);
+  // Clientes (no filtrable por vendedor — es único por RUT)
+  // Visitas
+  const visArr=visitasByMes(msAV);
+  const visUlt=visArr[visArr.length-1];
+  const visProm=Math.round(visArr.reduce((a,b)=>a+b,0)/visArr.length);
+  // Conversión
+  const convArr=convByMes(msAV);
+  const convUlt=convArr[convArr.length-1];
+  const convProm=Math.round(convArr.reduce((a,b)=>a+b,0)/convArr.length*10)/10;
 
-mc('cPrecioCaja',{data:{labels:LAV,datasets:[
-  {type:'bar',label:'Precio Neto/Caja',data:[11321, 10589, 10671, 10705, 10205, 10073],backgroundColor:'rgba(27,79,138,0.8)',borderRadius:5,yAxisID:'y',order:2},
-  {type:'bar',label:'Costo CV/Caja',data:["null", "null", 5124, 5114, 5114, 5169],backgroundColor:'rgba(192,57,43,0.75)',borderRadius:5,yAxisID:'y',order:2},
-  {type:'line',label:'Margen Bruto %',data:["null", "null", 52.0, 52.2, 49.9, 48.7],borderColor:'rgba(27,122,74,0.9)',backgroundColor:'rgba(27,122,74,0.08)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:'rgba(27,122,74,0.9)',pointBorderColor:'white',pointBorderWidth:2,yAxisID:'y2',order:1}
-]},options:{responsive:true,maintainAspectRatio:true,
-  plugins:{legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},tooltip:{titleFont:{size:12},bodyFont:{size:11}}},
-  scales:{x:{grid:{display:false},ticks:{font:{size:11}}},
-    y:{position:'left',grid:{color:'#EEF0F5'},ticks:{callback:v=>'$'+v.toLocaleString('es-CL'),font:{size:10}}},
-    y2:{position:'right',min:0,max:70,grid:{display:false},ticks:{callback:v=>v+'%',font:{size:10}}}}}
-});
+  // Ticket pedido
+  const pedAllArr=msAll.map(m=>vs.reduce((s,v)=>s+(RAW[v]?.pedidos?.[m]||0),0));
+  const netoAllArr=netoByMes(msAll);
+  const ultIdxAll=msAll.indexOf(ultM);
+  const tickPUlt=pedAllArr[ultIdxAll]>0?Math.round(netoAllArr[ultIdxAll]/pedAllArr[ultIdxAll]):0;
+  const tickPProm=Math.round(msAll.reduce((s,m,i)=>s+(pedAllArr[i]>0?netoAllArr[i]/pedAllArr[i]:0),0)/msAll.length);
 
-mc('cConv',{type:'line',data:{labels:LAV,datasets:[
-  {label:'Total',data:[74.1, 69.7, 75.8, 80.2, 87.4, 52.2],borderColor:BLUE,backgroundColor:'rgba(27,79,138,0.08)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:BLUE,pointBorderColor:'white',pointBorderWidth:2},
-  {label:'Richard',data:[72.2, 71.6, 72.4, 76.8, 84.6, 48.8],borderColor:ORANGE,fill:false,tension:.3,pointRadius:4,borderDash:[5,3]},
-  {label:'Germán', data:[83.5, 65.6, 100.0, 100.0, 100.0, 100.0],borderColor:GREEN,fill:false,tension:.3,pointRadius:4},
-  {label:'Meta 75%',data:[75,75,75,75,75,75],borderColor:'rgba(192,57,43,0.5)',borderWidth:1.5,borderDash:[4,4],pointRadius:0,fill:false}]},
-  options:{...base,scales:{...base.scales,y:{...base.scales.y,min:0,max:115,ticks:{...base.scales.y.ticks,callback:v=>v+'%'}}}}});
+  document.getElementById('kpiTitle').textContent=`Último Mes (${ultLbl}) vs Promedio ${msAV.length} meses`;
 
-// Cajas apiladas TODOS los vendedores
-mc('cCajas',{type:'bar',data:{labels:LAV,datasets:[
-  {label:'Richard',data:[1841, 1904, 984, 836, 1235, 1064],backgroundColor:'rgba(27,79,138,0.85)',borderRadius:3,stack:'s'},
-  {label:'Germán', data:[305, 335, 390, 218, 360, 270],backgroundColor:'rgba(224,120,32,0.85)',borderRadius:3,stack:'s'},
-  {label:'Otros',  data:[81, 399, 1215, 858, 1169, 1135],backgroundColor:'rgba(107,122,153,0.6)',borderRadius:3,stack:'s'},
-  {label:'BE 3.190',data:[3190,3190,3190,3190,3190,3190],type:'line',borderColor:RED,borderWidth:2.5,borderDash:[6,4],pointRadius:0,fill:false,order:0}]},
-  options:{...base,
-  scales:{x:{...base.scales.x,stacked:true},y:{...base.scales.y,stacked:true,ticks:{...base.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}}});
+  function setKpi(id,ult,prom,inv,fmt){
+    const el=document.getElementById('k_'+id); if(!el) return;
+    const d=prom!==0?Math.round((ult-prom)/prom*1000)/10:0;
+    const c=(inv?-d:d)>=0?'pos':'neg';
+    el.querySelector('.kpi-value').textContent=fmt(ult);
+    el.querySelector('.kpi-prom').textContent='Ø '+fmt(Math.round(prom*10)/10);
+    el.querySelector('.kpi-diff').textContent=(d>=0?'+':'')+d+'%';
+    el.querySelector('.kpi-diff').className='kpi-diff '+c;
+  }
 
-// Dist cajas apilado por rango, con promedio general encima
-const dcVals=[47, 98, 176, 180, 102, 83, 92];
-const dcLabels=["1-2", "3", "4-7", "8-13", "14-18", "19-26", "27+"];
-const dcNeto=[1.08, 4.65, 14.24, 25.36, 21.21, 24.98, 54.85];
-const dcColors=['rgba(192,57,43,.8)','rgba(224,120,32,.8)','rgba(241,196,15,.85)','rgba(27,79,138,.8)','rgba(11,110,110,.85)','rgba(27,122,74,.9)','rgba(90,50,160,.8)'];
-const dcTotal=dcVals.reduce((a,b)=>a+b,0);
-mc('cDistCajas',{type:'bar',
-  data:{labels:["Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],
+  // Actualizar directamente los valores en el DOM
+  const kGrid=document.getElementById('kpiGrid');
+  const kpis=kGrid.querySelectorAll('.kpi');
+  function updKpi(kpi,ultV,promV,inv,fmtFn){
+    const vEl=kpi.querySelector('.kpi-value');
+    const pEl=kpi.querySelector('.kpi-prom');
+    const dEl=kpi.querySelector('.kpi-diff');
+    if(!vEl||!pEl||!dEl) return;
+    const numUlt=parseFloat(String(ultV).replace(/[$M%,]/g,''));
+    const numProm=parseFloat(String(promV).replace(/[$M%,]/g,''));
+    const d=numProm!==0?Math.round((numUlt-numProm)/Math.abs(numProm)*1000)/10:0;
+    const good=(inv?-d:d)>=0;
+    vEl.textContent=fmtFn(ultV);
+    pEl.textContent='Ø '+fmtFn(promV);
+    dEl.textContent=(d>=0?'+':'')+d+'%';
+    dEl.className='kpi-diff '+(good?'pos':'neg');
+  }
+  const fM=v=>'$'+Math.round(v/1e6*10)/10+'M';
+  const fN=v=>Math.round(v).toLocaleString('es-CL');
+  const fP=v=>Math.round(v*10)/10+'%';
+  const fK=v=>'$'+Math.round(v).toLocaleString('es-CL');
+  if(kpis[0]) updKpi(kpis[0],netoUlt,netoProm,false,fM);
+  if(kpis[1]) updKpi(kpis[1],pedUlt,pedProm,false,fN);
+  if(kpis[4]) updKpi(kpis[4],visUlt,visProm,false,fN);  // visitas es el 4to (índice 3)
+  if(kpis[5]) updKpi(kpis[5],convUlt,convProm,false,fP);
+}
+
+// ── CHART FACTORY ─────────────────────────────────────────────────
+const BASE={responsive:true,maintainAspectRatio:true,
+  plugins:{legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},
+    tooltip:{titleFont:{size:12},bodyFont:{size:11},padding:10}},
+  scales:{x:{grid:{display:false},ticks:{font:{size:11},maxRotation:0}},
+    y:{grid:{color:'#EEF0F5'},ticks:{font:{size:11}}}}};
+function mc(id,cfg){
+  const el=document.getElementById(id); if(!el) return null;
+  if(charts[id]){charts[id].destroy();}
+  try{charts[id]=new Chart(el,cfg); return charts[id];}catch(e){console.error(id,e);return null;}
+}
+
+function buildCharts(){
+  const msAV=getMesesAV();
+  const msAll=getMesesAll();
+  const vs=getVendores();
+  const lblAV=msAV.map(getLabelAV);
+  const lblAll=msAll.map(getLabelAll);
+
+  // 1. Facturación total
+  const ntAll=netoByMes(msAll).map(v=>Math.round(v/1e6*100)/100);
+  mc('cFact',{type:'bar',data:{labels:lblAll,datasets:[{
+    label:'Neto $M',data:ntAll,
+    backgroundColor:msAll.map(m=>m<'2025-11'?'rgba(27,79,138,0.78)':'rgba(11,110,110,0.78)'),
+    borderRadius:5,borderSkipped:false}]},
+    options:{...BASE,plugins:{...BASE.plugins,legend:{display:false}},
+    scales:{...BASE.scales,y:{...BASE.scales.y,ticks:{...BASE.scales.y.ticks,callback:v=>'$'+v+'M'}}}}});
+
+  // 2. Por grupo
+  const grps=['Richard','German','Admin','Otros'];
+  const grpColors=['rgba(27,79,138,0.85)','rgba(224,120,32,0.85)','rgba(155,89,182,0.8)','rgba(107,122,153,0.55)'];
+  mc('cGrupo',{type:'bar',data:{labels:lblAll,datasets:grps.map((g,i)=>({
+    label:g,data:netoGrupoByMes(g,msAll).map(v=>Math.round(v/1e6*100)/100),
+    backgroundColor:grpColors[i],borderRadius:3}))},
+    options:{...BASE,scales:{x:{...BASE.scales.x,stacked:true},y:{...BASE.scales.y,stacked:true,ticks:{callback:v=>'$'+v+'M'}}}}});
+
+  // 3. Ticket
+  const tpAll=msAll.map(m=>vs.reduce((s,v)=>s+(RAW[v]?.pedidos?.[m]||0),0));
+  const ntAllRaw=netoByMes(msAll);
+  const tpArr=msAll.map((m,i)=>tpAll[i]>0?Math.round(ntAllRaw[i]/tpAll[i]):0);
+  const tcArr=msAll.map(m=>{
+    const n=ntAllRaw[msAll.indexOf(m)];
+    // usar clientes globales (no filtrable)
+    const cArr=[496, 525, 460, 522, 554, 498, 522, 532, 463, 349, 456, 449];
+    const c=cArr[MESES_ALL.indexOf(m)]||1;
+    return n>0?Math.round(n/c):0;
+  });
+  mc('cTicket',{type:'line',data:{labels:lblAll,datasets:[
+    {label:'Ticket/Pedido',data:tpArr,borderColor:BLUE,backgroundColor:'rgba(27,79,138,0.08)',fill:true,tension:.35,pointRadius:4,pointBackgroundColor:BLUE,pointBorderColor:'white',pointBorderWidth:2},
+    {label:'Ticket/Cliente',data:tcArr,borderColor:TEAL,fill:false,tension:.35,pointRadius:3,borderDash:[5,3]}]},
+    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,ticks:{...BASE.scales.y.ticks,callback:v=>'$'+v.toLocaleString('es-CL')}}}}});
+
+  // 4. Precio/caja (EERR — no filtrable)
+  mc('cPrecioCaja',{data:{labels:LAV,datasets:[
+    {type:'bar',label:'Precio Neto/Caja',data:[11712, 10784, 0, 0, 0, 0],backgroundColor:'rgba(27,79,138,0.8)',borderRadius:5,yAxisID:'y',order:2},
+    {type:'bar',label:'Costo CV/Caja',data:["null", "null", 5124, 5114, 5114, 5169],backgroundColor:'rgba(192,57,43,0.75)',borderRadius:5,yAxisID:'y',order:2},
+    {type:'line',label:'Margen %',data:["null", "null", 0, 0, 0, 0],borderColor:GREEN,backgroundColor:'rgba(27,122,74,0.08)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:GREEN,pointBorderColor:'white',pointBorderWidth:2,yAxisID:'y2',order:1}]},
+    options:{responsive:true,maintainAspectRatio:true,
+    plugins:{legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},tooltip:{titleFont:{size:12},bodyFont:{size:11}}},
+    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},
+      y:{position:'left',grid:{color:'#EEF0F5'},ticks:{callback:v=>'$'+v.toLocaleString('es-CL'),font:{size:10}}},
+      y2:{position:'right',min:0,max:70,grid:{display:false},ticks:{callback:v=>v+'%',font:{size:10}}}}}});
+
+  // 5. Conversión — barras + línea, eje dual
+  const visArr=visitasByMes(msAV);
+  const vtaArr=ventasByMes(msAV);
+  const convArr=convByMes(msAV);
+  mc('cConv',{data:{labels:lblAV,datasets:[
+    {type:'bar',label:'Contactos totales',data:visArr,backgroundColor:'rgba(27,79,138,0.5)',borderRadius:4,yAxisID:'y',order:2},
+    {type:'bar',label:'Ventas',data:vtaArr,backgroundColor:'rgba(27,122,74,0.8)',borderRadius:4,yAxisID:'y',order:2},
+    {type:'line',label:'% Conversión',data:convArr,borderColor:RED,backgroundColor:'rgba(192,57,43,0.05)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:convArr.map(v=>v>=75?GREEN:RED),pointBorderColor:'white',pointBorderWidth:2,yAxisID:'y2',order:1},
+    {type:'line',label:'Meta 75%',data:msAV.map(()=>75),borderColor:'rgba(224,120,32,0.6)',borderWidth:1.5,borderDash:[4,4],pointRadius:0,fill:false,yAxisID:'y2',order:0}]},
+    options:{responsive:true,maintainAspectRatio:true,
+    plugins:{legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},tooltip:{titleFont:{size:12},bodyFont:{size:11}}},
+    scales:{x:{grid:{display:false},ticks:{font:{size:11},maxRotation:0}},
+      y:{position:'left',grid:{color:'#EEF0F5'},ticks:{font:{size:11},callback:v=>v.toLocaleString('es-CL')}},
+      y2:{position:'right',min:0,max:110,grid:{display:false},ticks:{callback:v=>v+'%',font:{size:10}}}}}});
+
+  // 6. Cajas — siempre total (no filtrable por vendedor individualmente)
+  mc('cCajas',{type:'bar',data:{labels:LAV,datasets:[
+    {label:'Richard',data:CAJAS_R,backgroundColor:'rgba(27,79,138,0.85)',borderRadius:3,stack:'s'},
+    {label:'Germán', data:CAJAS_G,backgroundColor:'rgba(224,120,32,0.85)',borderRadius:3,stack:'s'},
+    {label:'Otros',  data:CAJAS_O,backgroundColor:'rgba(107,122,153,0.6)',borderRadius:3,stack:'s'},
+    {label:'BE 3.190',data:CAJAS_TOT.map(()=>3190),type:'line',borderColor:RED,borderWidth:2.5,borderDash:[6,4],pointRadius:0,fill:false,order:0}]},
+    options:{...BASE,scales:{x:{...BASE.scales.x,stacked:true},y:{...BASE.scales.y,stacked:true,ticks:{...BASE.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}}});
+
+  // 7. Cajas/cliente
+  mc('cCpk',{type:'bar',data:{labels:LAV,datasets:[
+    {label:'Cajas/Cliente',data:CPK,backgroundColor:CPK.map(v=>v>=6.9?'rgba(27,122,74,0.85)':v>=5?'rgba(27,79,138,0.8)':'rgba(192,57,43,0.75)'),borderRadius:6,borderSkipped:false},
+    {label:'Meta 6.9',data:CPK.map(()=>6.9),type:'line',borderColor:AMBER,borderWidth:2.5,borderDash:[5,4],pointRadius:0,fill:false}]},
+    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,min:0,max:9}}}});
+
+  // 8. Distribución cajas — apilado
+  const dcColors=["rgba(192,57,43,0.82)", "rgba(224,120,32,0.82)", "rgba(241,196,15,0.85)", "rgba(27,79,138,0.82)", "rgba(11,110,110,0.85)", "rgba(27,122,74,0.88)", "rgba(90,50,160,0.82)"];
+  mc('cDistCajas',{type:'bar',data:{labels:LAV,
     datasets:[
-      {'label':'1-2 cajas','data':[73, 69, 51, 31, 41, 44],'backgroundColor':'rgba(192,57,43,0.82)','borderRadius':3,'stack':'s'},{'label':'3 cajas','data':[213, 234, 184, 123, 147, 117],'backgroundColor':'rgba(224,120,32,0.82)','borderRadius':3,'stack':'s'},{'label':'4-7 cajas','data':[109, 155, 140, 133, 157, 203],'backgroundColor':'rgba(241,196,15,0.85)','borderRadius':3,'stack':'s'},{'label':'8-13 cajas','data':[26, 30, 43, 20, 46, 37],'backgroundColor':'rgba(27,79,138,0.82)','borderRadius':3,'stack':'s'},{'label':'14-18 cajas','data':[19, 18, 17, 19, 25, 20],'backgroundColor':'rgba(11,110,110,0.85)','borderRadius':3,'stack':'s'},{'label':'19-26 cajas','data':[0, 3, 6, 1, 1, 1],'backgroundColor':'rgba(27,122,74,0.88)','borderRadius':3,'stack':'s'},{'label':'27+ cajas','data':[10, 13, 10, 8, 17, 9],'backgroundColor':'rgba(90,50,160,0.82)','borderRadius':3,'stack':'s'},
-      {type:'line',label:'Total clientes/mes',data:[450, 522, 451, 335, 434, 431],borderColor:'#0D1F3C',borderWidth:2.5,borderDash:[5,4],pointRadius:5,pointBackgroundColor:'#0D1F3C',pointBorderColor:'white',pointBorderWidth:2,fill:false,order:0},
-      {type:'line',label:'Promedio 437 cli',data:[437,437,437,437,437,437],borderColor:'rgba(245,194,0,0.9)',borderWidth:1.5,borderDash:[3,3],pointRadius:0,fill:false,order:0}
-  ]},
-  options:{...base,
-    plugins:{...base.plugins,
-      tooltip:{callbacks:{label:ctx=>{
-        if(ctx.datasetIndex>=7)return ' '+ctx.dataset.label+': '+ctx.parsed.y;
-        const total=[450, 522, 451, 335, 434, 431][ctx.dataIndex]||1;
-        return ' '+ctx.dataset.label+': '+ctx.parsed.y+' cli ('+Math.round(ctx.parsed.y/total*100)+'%)';
-      }}}},
-    scales:{x:{...base.scales.x,stacked:true},
-      y:{...base.scales.y,stacked:true,ticks:{...base.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}}});
+      ...RANGO_LABELS.map((rl,i)=>({label:rl+' cajas',data:DIST_RANGO[rl],backgroundColor:dcColors[i],borderRadius:3,stack:'s'})),
+      {type:'line',label:'Total',data:PROM_CLI_MES,borderColor:NAVY,borderWidth:2.5,borderDash:[5,4],pointRadius:4,pointBackgroundColor:NAVY,pointBorderColor:'white',pointBorderWidth:2,fill:false,order:0},
+      {type:'line',label:'Prom 452',data:PROM_CLI_MES.map(()=>452),borderColor:AMBER,borderWidth:1.5,borderDash:[3,3],pointRadius:0,fill:false,order:0}
+    ]},
+    options:{...BASE,plugins:{...BASE.plugins,tooltip:{callbacks:{label:ctx=>{
+      if(ctx.datasetIndex>=RANGO_LABELS.length) return ' '+ctx.dataset.label+': '+ctx.parsed.y;
+      const tot=PROM_CLI_MES[ctx.dataIndex]||1;
+      return ' '+ctx.dataset.label+': '+ctx.parsed.y+' cli ('+Math.round(ctx.parsed.y/tot*100)+'%)';
+    }}}},
+    scales:{x:{...BASE.scales.x,stacked:true},y:{...BASE.scales.y,stacked:true,ticks:{...BASE.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}}});
 
-mc('cInact',{type:'line',data:{labels:LAV,datasets:[
-  {label:'% Inactivos',data:[69.7, 69.2, 73.2, 79.8, 73.6, 74.0],borderColor:RED,backgroundColor:'rgba(192,57,43,0.08)',fill:true,tension:.35,pointRadius:5,pointBackgroundColor:[69.7, 69.2, 73.2, 79.8, 73.6, 74.0].map(v=>v>60?RED:ORANGE),pointBorderColor:'white',pointBorderWidth:2},
-  {label:'Meta 20%',data:[20,20,20,20,20,20],borderColor:ORANGE,borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false}]},
-  options:{...base,scales:{...base.scales,y:{...base.scales.y,min:0,max:100,ticks:{...base.scales.y.ticks,callback:v=>v+'%'}}}}});
+  // 9. Inactividad
+  mc('cInact',{type:'line',data:{labels:LAV,datasets:[
+    {label:'% Inactivos',data:INAC,borderColor:RED,backgroundColor:'rgba(192,57,43,0.08)',fill:true,tension:.35,pointRadius:5,pointBackgroundColor:INAC.map(v=>v>60?RED:ORANGE),pointBorderColor:'white',pointBorderWidth:2},
+    {label:'Meta 20%',data:INAC.map(()=>20),borderColor:ORANGE,borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false}]},
+    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,min:0,max:100,ticks:{...BASE.scales.y.ticks,callback:v=>v+'%'}}}}});
 
-// Fidelidad donut con % en labels
-const fidV=[177, 170, 138, 132, 123, 107];
-const fidP=[20.9, 20.1, 16.3, 15.6, 14.5, 12.6];
-const fidL=["1 mes", "2 meses", "3 meses", "4 meses", "5 meses", "6 meses"];
-const fidColors=['rgba(192,57,43,.85)','rgba(224,120,32,.85)','rgba(241,196,15,.85)','rgba(27,79,138,.8)','rgba(11,110,110,.85)','rgba(27,122,74,.9)'];
-mc('cFidel',{type:'doughnut',
-  data:{labels:fidL.map((l,i)=>l+' — '+fidV[i]+' cli ('+fidP[i]+'%)'),
+  // 10. Fidelidad donut
+  const fidV=[233, 170, 139, 131, 123, 107]; const fidP=[25.8, 18.8, 15.4, 14.5, 13.6, 11.8]; const fidL=["1 mes", "2 meses", "3 meses", "4 meses", "5 meses", "6 meses"];
+  const fidColors=['rgba(192,57,43,.85)','rgba(224,120,32,.85)','rgba(241,196,15,.85)','rgba(27,79,138,.8)','rgba(11,110,110,.85)','rgba(27,122,74,.9)'];
+  mc('cFidel',{type:'doughnut',data:{labels:fidL.map((l,i)=>l+' — '+fidV[i]+' ('+fidP[i]+'%)'),
     datasets:[{data:fidV,backgroundColor:fidColors,borderWidth:2,borderColor:'white',hoverOffset:6}]},
-  options:{responsive:true,maintainAspectRatio:true,cutout:'52%',
-  plugins:{
-    legend:{position:'right',labels:{font:{size:10},padding:8,boxWidth:12,
-      generateLabels:chart=>{
-        const d=chart.data;
-        return d.labels.map((l,i)=>({text:l,fillStyle:d.datasets[0].backgroundColor[i],strokeStyle:'white',lineWidth:2,pointStyle:'circle'}));
-      }}},
-    tooltip:{callbacks:{label:ctx=>' '+fidV[ctx.dataIndex]+' clientes — '+fidP[ctx.dataIndex]+'%'}}
-  }}});
+    options:{responsive:true,maintainAspectRatio:true,cutout:'52%',
+    plugins:{legend:{position:'right',labels:{font:{size:10},padding:8,boxWidth:12}},
+      tooltip:{callbacks:{label:ctx=>' '+fidV[ctx.dataIndex]+' clientes — '+fidP[ctx.dataIndex]+'%'}}}}});
 
-mc('cCartera',{type:'bar',data:{labels:["Nov-25", "Dic-25", "Ene-26", "Feb-26", "Mar-26", "Abr-26"],datasets:[
-  {label:'Cartera acumulada (nunca compraron antes)',data:[451, 677, 738, 762, 788, 805],backgroundColor:'rgba(107,122,153,0.35)',borderRadius:4},
-  {label:'Con compra ese mes',data:[451, 522, 451, 335, 434, 431],backgroundColor:'rgba(27,122,74,0.8)',borderRadius:4}]},
-  options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}}});
+  // 11. Cartera vs activos
+  mc('cCartera',{type:'bar',data:{labels:LAV,datasets:[
+    {label:'Cartera acumulada',data:CART,backgroundColor:'rgba(107,122,153,0.35)',borderRadius:4},
+    {label:'Con compra ese mes',data:CLIV,backgroundColor:'rgba(27,122,74,0.8)',borderRadius:4}]},
+    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,ticks:{...BASE.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}}});
 
-mc('cEERR',{type:'bar',data:{labels:LEE,datasets:[
-  {label:'Ventas',data:[27.573, 20.468, 28.159, 21.129],backgroundColor:'rgba(27,79,138,0.85)',borderRadius:4,stack:'s'},
-  {label:'Costo CV',data:[13.24, 9.778, 14.111, 10.839],backgroundColor:'rgba(192,57,43,0.75)',borderRadius:4,stack:'c'},
-  {label:'Despacho',data:[3.778, 2.535, 5.549, 1.851],backgroundColor:'rgba(224,120,32,0.7)',borderRadius:4,stack:'c'},
-  {label:'Remuneraciones',data:[4.926, 5.702, 5.919, 5.862],backgroundColor:'rgba(241,196,15,0.85)',borderRadius:4,stack:'c'},
-  {label:'Gastos Op.',data:[5.502, 5.593, 6.184, 8.506],backgroundColor:'rgba(107,122,153,0.7)',borderRadius:4,stack:'c'},
-  {type:'line',label:'Resultado Op.',data:[-0.437, -3.666, -4.131, -7.235],borderColor:'rgba(192,57,43,0.95)',backgroundColor:'rgba(192,57,43,0.08)',fill:false,tension:.3,pointRadius:7,pointBackgroundColor:'rgba(192,57,43,0.95)',pointBorderColor:'white',pointBorderWidth:2,order:0}
-]},options:{...base,
-  scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>'$'+v+'M'}}}}});
-</script></body></html>
+  // 12. EERR
+  mc('cEERR',{type:'bar',data:{labels:LEE,datasets:[
+    {label:'Ventas',data:[27.573, 20.468, 28.159, 21.129],backgroundColor:'rgba(27,79,138,0.85)',borderRadius:4,stack:'s'},
+    {label:'Costo CV',data:[13.24, 9.778, 14.111, 10.839],backgroundColor:'rgba(192,57,43,0.75)',borderRadius:4,stack:'c'},
+    {label:'Despacho',data:[3.778, 2.535, 5.549, 1.851],backgroundColor:'rgba(224,120,32,0.7)',borderRadius:4,stack:'c'},
+    {label:'Remun.',data:[4.926, 5.702, 5.919, 5.862],backgroundColor:'rgba(241,196,15,0.85)',borderRadius:4,stack:'c'},
+    {label:'Gtos Op.',data:[5.502, 5.593, 6.184, 8.506],backgroundColor:'rgba(107,122,153,0.7)',borderRadius:4,stack:'c'},
+    {type:'line',label:'Resultado Op.',data:[-0.437, -3.666, -4.131, -7.235],borderColor:'rgba(192,57,43,0.95)',backgroundColor:'rgba(192,57,43,0.08)',fill:false,tension:.3,pointRadius:7,pointBackgroundColor:[-0.437, -3.666, -4.131, -7.235].map(v=>v>=0?GREEN:RED),pointBorderColor:'white',pointBorderWidth:2,order:0}]},
+    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,ticks:{...BASE.scales.y.ticks,callback:v=>'$'+v+'M'}}}}});
+}
+
+// ── APPLY FILTERS ────────────────────────────────────────────────────
+function applyFilters(){
+  fVend=document.getElementById('fVendedor').value;
+  fDesde=document.getElementById('fDesde').value;
+  fHasta=document.getElementById('fHasta').value;
+  // Validar rango
+  if(MESES_AV.indexOf(fDesde)>MESES_AV.indexOf(fHasta)){
+    fHasta=fDesde; document.getElementById('fHasta').value=fDesde;
+  }
+  updateKpis();
+  buildCharts();
+}
+
+// INIT
+buildCharts();
+updateKpis();
+</script>
+</body></html>
