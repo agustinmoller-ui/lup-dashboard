@@ -332,7 +332,7 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
   <div class="card">
     <div class="chd"><div>
       <div class="ctitle">Distribución Cajas/Cliente por Mes <span class="kpi-hint" onclick="openModal('mCpk')">?</span></div>
-      <div class="csub">Clientes por rango de cajas · línea = total · punteada = promedio 452</div>
+      <div class="csub">Clientes por rango de cajas (eje izq) · línea = cajas totales vendidas (eje der)</div>
     </div></div>
     <canvas id="cDistCajas" height="210"></canvas>
     <div class="tk g">💡 La mayoría compra 3-7 cajas/mes. Los rangos altos (8+) son el núcleo de valor — protegerlos es prioridad.</div>
@@ -704,21 +704,17 @@ function buildCharts(){
     options:{...BASE,scales:{x:{...BASE.scales.x,stacked:true},y:{...BASE.scales.y,stacked:true,ticks:{callback:v=>'$'+v+'M'}}}}
   });
 
-  // 3. Ticket
-  const tpAll=msAll.map(m=>vs.reduce((s,v)=>s+(RAW[v]?.pedidos?.[m]||0),0));
-  const ntAllRaw=netoByMes(msAll);
-  const CLI_V_ALL=[28566,31824,33108,32562,35040,35700,46167,46389,53820,50778,55836,54252];
-  const tpArr=msAll.map((m,i)=>tpAll[i]>0?Math.round(ntAllRaw[i]/tpAll[i]):0);
-  const tcArr=msAll.map((m,i)=>{
-    const allcli=[522,532,463,349,456,449];
-    const avidx=MESES_AV.indexOf(m);
-    const c=avidx>=0?allcli[avidx]:1;
-    return ntAllRaw[i]>0&&c>0?Math.round(ntAllRaw[i]/c):0;
-  });
+  // 3. Ticket — valores precalculados desde neto/pedidos
+  const TP_ARR=[50078,43630,46376,44016,41244,43895,41865,43169,47905,51772,52525,46713];
+  const TC_ARR=[null,null,null,null,null,null,49965,53475,59907,58744,62316,55869];
   mc('cTicket',{type:'line',data:{labels:lblAll,datasets:[
-    {label:'Ticket/Pedido',data:tpArr,borderColor:BLUE,backgroundColor:'rgba(27,79,138,0.08)',fill:true,tension:0.35,pointRadius:4,pointBackgroundColor:BLUE,pointBorderColor:'white',pointBorderWidth:2},
-    {label:'Ticket/Cliente',data:tcArr,borderColor:TEAL,fill:false,tension:0.35,pointRadius:3,borderDash:[5,3]}]},
-    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,ticks:{...BASE.scales.y.ticks,callback:v=>'$'+v.toLocaleString('es-CL')}}}}
+    {label:'Ticket/Pedido',data:TP_ARR,borderColor:BLUE,backgroundColor:'rgba(27,79,138,0.08)',
+     fill:true,tension:0.35,pointRadius:4,pointBackgroundColor:BLUE,
+     pointBorderColor:'white',pointBorderWidth:2},
+    {label:'Ticket/Cliente',data:TC_ARR,borderColor:TEAL,fill:false,tension:0.35,
+     pointRadius:3,borderDash:[5,3],spanGaps:false}]},
+    options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,ticks:{...BASE.scales.y.ticks,
+      callback:v=>'$'+v.toLocaleString('es-CL')}}}}
   });
 
   // 4. Precio/caja
@@ -781,18 +777,20 @@ function buildCharts(){
      borderColor:'rgba(27,122,74,0.85)',borderWidth:2.5,borderDash:[3,2],
      pointRadius:4,pointBackgroundColor:'rgba(27,122,74,0.9)',
      pointBorderColor:'white',pointBorderWidth:2,fill:false,order:0},
-    {type:'line',label:'BE 3.190',data:CAJAS_TOT.map(()=>3190),
+    {type:'line',label:'BE 3.190 cajas',data:CAJAS_TOT.map(()=>3190),
      borderColor:RED,borderWidth:2.5,borderDash:[6,4],pointRadius:0,fill:false,order:0}]},
     options:{responsive:true,maintainAspectRatio:true,
       plugins:{legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},
         tooltip:{titleFont:{size:12},bodyFont:{size:11},callbacks:{label:ctx=>{
-          if(ctx.dataset.label==='BE 3.190') return ' BE: 3.190 cajas';
+          if(ctx.dataset.label==='BE 3.190 cajas') return ' Breakeven: 3.190 cajas';
           if(ctx.dataset.label==='Total cajas') return ' Total: '+ctx.parsed.y.toLocaleString('es-CL')+' cajas';
-          return ' '+ctx.dataset.label+': '+ctx.parsed.y.toLocaleString('es-CL');
+          return ' '+ctx.dataset.label+': '+ctx.parsed.y.toLocaleString('es-CL')+' cajas';
         }}}},
       scales:{
-        x:{...BASE.scales.x,stacked:true},
-        y:{...BASE.scales.y,stacked:true,ticks:{...BASE.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}
+        x:{grid:{display:false},ticks:{font:{size:11},maxRotation:0}},
+        y:{grid:{color:'#EEF0F5'},min:0,max:4000,
+           ticks:{font:{size:11},callback:v=>v.toLocaleString('es-CL')}},
+        y1:{display:false}
       }
     }
   });
@@ -807,24 +805,36 @@ function buildCharts(){
     options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,min:0,max:9}}}
   });
 
-  // 8. Distribución cajas apilado
+  // 8. Distribución clientes por rango de cajas + línea cajas reales
+  const CAJAS_REALES=[2227,2638,2589,1912,2764,2469];
   const dcColors=['rgba(192,57,43,0.82)','rgba(224,120,32,0.82)','rgba(241,196,15,0.85)',
     'rgba(27,79,138,0.82)','rgba(11,110,110,0.85)','rgba(27,122,74,0.88)','rgba(90,50,160,0.82)'];
   mc('cDistCajas',{type:'bar',data:{labels:LAV,
     datasets:[
-      ...RANGO_LABELS.map((rl,i)=>({label:rl+' cajas',data:DIST_RANGO[rl],backgroundColor:dcColors[i],borderRadius:3,stack:'s'})),
-      {type:'line',label:'Total',data:PROM_CLI_MES,borderColor:NAVY,borderWidth:2.5,borderDash:[5,4],
-       pointRadius:4,pointBackgroundColor:NAVY,pointBorderColor:'white',pointBorderWidth:2,fill:false,order:0},
-      {type:'line',label:'Prom',data:PROM_CLI_MES.map(()=>449),
-       borderColor:AMBER,borderWidth:1.5,borderDash:[3,3],pointRadius:0,fill:false,order:0}
+      ...RANGO_LABELS.map((rl,i)=>({label:rl+' caj/cli',data:DIST_RANGO[rl],
+        backgroundColor:dcColors[i],borderRadius:3,stack:'s'})),
+      {type:'line',label:'Cajas totales vendidas',data:CAJAS_REALES,
+       borderColor:NAVY,borderWidth:2.5,borderDash:[5,4],
+       pointRadius:4,pointBackgroundColor:NAVY,pointBorderColor:'white',pointBorderWidth:2,
+       fill:false,order:0,yAxisID:'y2'},
+      {type:'line',label:'BE 3.190',data:CAJAS_REALES.map(()=>3190),
+       borderColor:RED,borderWidth:1.5,borderDash:[3,3],pointRadius:0,fill:false,order:0,yAxisID:'y2'}
     ]},
-    options:{...BASE,
-      plugins:{...BASE.plugins,tooltip:{callbacks:{label:ctx=>{
-        if(ctx.datasetIndex>=RANGO_LABELS.length) return ' '+ctx.dataset.label+': '+ctx.parsed.y;
-        const tot=PROM_CLI_MES[ctx.dataIndex]||1;
-        return ' '+ctx.dataset.label+': '+ctx.parsed.y+' cli ('+Math.round(ctx.parsed.y/tot*100)+'%)';
-      }}}},
-      scales:{x:{...BASE.scales.x,stacked:true},y:{...BASE.scales.y,stacked:true,ticks:{...BASE.scales.y.ticks,callback:v=>v.toLocaleString('es-CL')}}}
+    options:{responsive:true,maintainAspectRatio:true,
+      plugins:{
+        legend:{labels:{font:{size:10},padding:6,usePointStyle:true,boxWidth:10}},
+        tooltip:{titleFont:{size:12},bodyFont:{size:11},callbacks:{label:ctx=>{
+          if(ctx.dataset.yAxisID==='y2') return ' '+ctx.dataset.label+': '+ctx.parsed.y.toLocaleString('es-CL')+' cajas';
+          const tot=PROM_CLI_MES[ctx.dataIndex]||1;
+          return ' '+ctx.dataset.label+': '+ctx.parsed.y+' clientes ('+Math.round(ctx.parsed.y/tot*100)+'%)';
+        }}}
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:11},maxRotation:0}},
+        y:{grid:{color:'#EEF0F5'},stacked:true,ticks:{font:{size:11},callback:v=>v+' cli'}},
+        y2:{position:'right',min:1500,max:3500,grid:{display:false},
+            ticks:{font:{size:10},callback:v=>v.toLocaleString('es-CL')+' cj'}}
+      }
     }
   });
 
