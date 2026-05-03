@@ -523,7 +523,7 @@ const CLIV=[522, 532, 463, 349, 456, 449];
 const DIST_RANGO={"1-2": [76, 73, 51, 35, 45, 47], "3": [219, 239, 190, 124, 158, 126], "4-7": [113, 155, 142, 139, 160, 206], "8-13": [26, 30, 43, 21, 48, 37], "14-18": [20, 18, 18, 19, 25, 21], "19-26": [1, 3, 7, 1, 2, 1], "27+": [10, 14, 12, 10, 18, 11]};
 const RANGO_LABELS=["1-2", "3", "4-7", "8-13", "14-18", "19-26", "27+"];
 const PROM_CLI_MES=[465, 532, 463, 349, 456, 449];
-const GRUPOS={"Richard Vera Sr": "Richard", "Richard Vera Jr": "Richard", "Richard Vera Jr2": "Richard", "German Castillo": "German", "Administracion LUP": "Admin", "Susan Custodio": "Otros", "Jose Oviedo": "Otros", "Sebastian Burgos": "Otros"};
+const GRUPOS={"Richard Vera Sr": "Richard", "Richard Vera Jr": "Richard", "Richard Vera Jr2": "Richard", "German Castillo": "German", "Administracion LUP": "Admin/Otros", "Susan Custodio": "Admin/Otros", "Jose Oviedo": "Admin/Otros", "Sebastian Burgos": "Admin/Otros"};
 
 // ── ESTADO FILTROS ──────────────────────────────────────────────────
 let fVend='todos';
@@ -695,13 +695,31 @@ function buildCharts(){
     }
   });
 
-  // 2. Por grupo
-  const grps=['Richard','German','Admin','Otros'];
-  const grpColors=['rgba(27,79,138,0.85)','rgba(224,120,32,0.85)','rgba(155,89,182,0.8)','rgba(107,122,153,0.55)'];
-  mc('cGrupo',{type:'bar',data:{labels:lblAll,datasets:grps.map((g,i)=>({
-    label:g,data:netoGrupoByMes(g,msAll).map(v=>Math.round(v/1e6*100)/100),
-    backgroundColor:grpColors[i],borderRadius:3}))},
-    options:{...BASE,scales:{x:{...BASE.scales.x,stacked:true},y:{...BASE.scales.y,stacked:true,ticks:{callback:v=>'$'+v+'M'}}}}
+  // 2. Por grupo — Admin+Otros fusionados
+  const grps=['Richard','German','Admin/Otros'];
+  const grpColors=['rgba(27,79,138,0.85)','rgba(224,120,32,0.85)','rgba(155,89,182,0.8)'];
+  mc('cGrupo',{type:'bar',data:{labels:lblAll,datasets:[
+    ...grps.map((g,i)=>({
+      label:g,
+      data:netoGrupoByMes(g,msAll).map(v=>Math.round(v/1e6*100)/100),
+      backgroundColor:grpColors[i],borderRadius:3,stack:'s'
+    })),
+    {type:'line',label:'Total',
+     data:netoByMes(msAll).map(v=>Math.round(v/1e6*100)/100),
+     borderColor:'rgba(27,79,138,0.5)',borderWidth:1.5,borderDash:[4,3],
+     pointRadius:3,pointBackgroundColor:'rgba(27,79,138,0.5)',
+     pointBorderColor:'white',pointBorderWidth:1.5,fill:false,order:0}
+  ]},
+    options:{responsive:true,maintainAspectRatio:true,
+      plugins:{legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},
+        tooltip:{titleFont:{size:12},bodyFont:{size:11},callbacks:{label:ctx=>{
+          return ' '+ctx.dataset.label+': $'+ctx.parsed.y+'M';
+        }}}},
+      scales:{
+        x:{...BASE.scales.x,stacked:true},
+        y:{...BASE.scales.y,stacked:true,ticks:{callback:v=>'$'+v+'M'}}
+      }
+    }
   });
 
   // 3. Ticket — valores precalculados desde neto/pedidos
@@ -859,16 +877,51 @@ function buildCharts(){
     options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,min:0,max:100,ticks:{...BASE.scales.y.ticks,callback:v=>v+'%'}}}}
   });
 
-  // 10. Fidelidad donut
-  const fidV=[29,93,106,118,127,107];
-  const fidP=[3.4,10.9,12.5,13.9,15.0,12.6];
-  const fidL=["1 mes","2 meses","3 meses","4 meses","5 meses","6 meses"];
-  const fidColors=['rgba(192,57,43,.85)','rgba(224,120,32,.85)','rgba(241,196,15,.85)','rgba(27,79,138,.8)','rgba(11,110,110,.85)','rgba(27,122,74,.9)'];
-  mc('cFidel',{type:'doughnut',data:{labels:fidL.map((l,i)=>l+' — '+fidV[i]+' ('+fidP[i]+'%)'),
-    datasets:[{data:fidV,backgroundColor:fidColors,borderWidth:2,borderColor:'white',hoverOffset:6}]},
-    options:{responsive:true,maintainAspectRatio:true,cutout:'52%',
-      plugins:{legend:{position:'right',labels:{font:{size:10},padding:8,boxWidth:12}},
-        tooltip:{callbacks:{label:ctx=>' '+fidV[ctx.dataIndex]+' clientes — '+fidP[ctx.dataIndex]+'%'}}}}
+  // 10. Fidelidad — barras horizontales más legibles + contexto completo
+  const FID_V=[281,29,93,106,118,127,107];
+  const FID_L=['Sin compra AV','1 mes','2 meses','3 meses','4 meses','5 meses','6 meses (nov→abr)'];
+  const FID_COLORS=[
+    'rgba(192,57,43,0.75)',   // sin compra → rojo
+    'rgba(224,120,32,0.80)',  // 1 mes
+    'rgba(241,196,15,0.85)',  // 2 meses
+    'rgba(27,79,138,0.70)',   // 3 meses
+    'rgba(11,110,110,0.80)',  // 4 meses
+    'rgba(27,122,74,0.85)',   // 5 meses
+    'rgba(27,122,74,1.0)'    // 6 meses → verde fuerte = fieles
+  ];
+  const FID_PCT=FID_V.map(v=>Math.round(v/861*100*10)/10);
+  mc('cFidel',{
+    type:'bar',
+    data:{
+      labels:['Cartera AV (861 clientes)'],
+      datasets:FID_L.map((l,i)=>({
+        label:l+' — '+FID_V[i]+' ('+FID_PCT[i]+'%)',
+        data:[FID_V[i]],
+        backgroundColor:FID_COLORS[i],
+        borderRadius:i===6?4:2,
+        stack:'s'
+      }))
+    },
+    options:{
+      indexAxis:'y',
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{
+          position:'right',
+          labels:{font:{size:10},padding:8,usePointStyle:true,boxWidth:12}
+        },
+        tooltip:{titleFont:{size:12},bodyFont:{size:11},callbacks:{label:ctx=>{
+          const i=ctx.datasetIndex;
+          return ' '+FID_L[i]+': '+FID_V[i]+' clientes ('+FID_PCT[i]+'% cartera)';
+        }}}
+      },
+      scales:{
+        x:{grid:{color:'#EEF0F5'},stacked:true,
+           ticks:{font:{size:10},callback:v=>v+' cli'},
+           max:861},
+        y:{grid:{display:false},stacked:true,ticks:{font:{size:11}}}
+      }
+    }
   });
 
   // 11. Cartera vs activos + % activación
