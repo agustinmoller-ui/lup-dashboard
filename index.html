@@ -316,23 +316,23 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
   <div class="mks" id="mksPrecios">
     <div class="mk" style="background:#EEF4FF">
       <div class="mkl">Precio/Caja <span style="font-size:9px;color:var(--muted)" id="mkPrecioLbl">Abr-26</span></div>
-      <div class="mkv" style="color:var(--blue)" id="mkPrecio">$10.160</div>
+      <div class="mkv" style="color:var(--blue)" id="mkPrecio">$10.080</div>
     </div>
     <div class="mk" style="background:#FEF0EE">
       <div class="mkl">Costo CV/Caja <span style="font-size:9px;color:var(--muted)" id="mkCostoLbl">Abr-26</span></div>
-      <div class="mkv" style="color:var(--red)" id="mkCosto">$5.169</div>
+      <div class="mkv" style="color:var(--red)" id="mkCosto">$5.170</div>
     </div>
     <div class="mk" style="background:#F0FAF5">
       <div class="mkl">Margen <span style="font-size:9px;color:var(--muted)" id="mkMargenLbl">Abr-26</span></div>
-      <div class="mkv" style="color:var(--green)" id="mkMargen">49,1%</div>
+      <div class="mkv" style="color:var(--green)" id="mkMargen">48,7%</div>
     </div>
     <div class="mk" style="background:#FFF8E1">
       <div class="mkl">Margen Prom 6M</div>
-      <div class="mkv" style="color:var(--orange)" id="mkMargenProm">50,9%</div>
+      <div class="mkv" style="color:var(--orange)" id="mkMargenProm">51,1%</div>
       <div style="font-size:9px;color:var(--muted)" id="mkMargenDiff">-1,8pp vs promedio</div>
     </div>
   </div>
-  <div class="tk w">⚠️ Nov–Dic sin dato de costo (EERR disponible desde Ene-26). Precio baja $600/caja de Ene a Abr. Costo estable ~$5.1K. El margen cae de 52.2% a 48.7% — la palanca es sostener precio de venta, no el costo.</div>
+  <div class="tk w">⚠️ Nov–Dic sin dato de costo (EERR disponible desde Ene-26). Precio baja $591/caja de Ene a Abr. Costo estable ~$5.1K. El margen cae de 52.0% a 48.7% — la palanca es sostener precio de venta, no el costo.</div>
 </div>
 
 <div class="st"><span class="st-tag">AV</span> Cajas & Clientes · Nov-25 a Abr-26</div>
@@ -540,10 +540,10 @@ const MESES_ALL=["2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10
 const CAJAS_R=[1841, 1904, 984, 836, 1235, 2096];
 const CAJAS_G=[305, 335, 390, 218, 360, 225];
 const CAJAS_O=[50, 60, 70, 50, 60, 148];
-const CAJAS_TOT=[2227, 2638, 2589, 1912, 2764, 2469];
-const PRECIO_CAJA=[11712, 10784, 10713, 10723, 10281, 10160];
-const COSTO_CAJA=[5669, 5219, 5124, 5114, 5114, 5169];
-const MARGEN_PCT=[51.6, 51.6, 52.2, 52.3, 50.3, 49.1];
+const CAJAS_TOT=[2227, 2638, 2584, 1912, 2759, 2474];
+const PRECIO_CAJA=[11712, 10784, 10671, 10705, 10205, 10080];
+const COSTO_CAJA=[5669, 5219, 5124, 5114, 5114, 5170];
+const MARGEN_PCT=[51.6, 51.6, 52.0, 52.2, 49.9, 48.7];
 const CPK=[4.27, 4.96, 5.59, 5.48, 6.06, 5.5];
 const INAC=[42.2, 41.1, 48.7, 61.4, 49.5, 50.3];
 const CART=[522, 751, 815, 845, 882, 903];
@@ -826,15 +826,15 @@ function buildCharts(){
     type:'bar',
     data:{labels:LAV,datasets:[
       {type:'bar',label:'Precio Neto/Caja',
-       data:[11712,10784,10713,10723,10281,10160],
+       data:[11712,10784,10671,10705,10205,10080],
        backgroundColor:LAV.map((_,i)=>i<2?'rgba(27,79,138,0.45)':'rgba(27,79,138,0.82)'),
        borderRadius:5,yAxisID:'y',order:2},
       {type:'bar',label:'Costo CV/Caja',
-       data:[5669,5219,5124,5114,5114,5169],
+       data:[5669,5219,5124,5114,5114,5170],
        backgroundColor:LAV.map((_,i)=>i<2?'rgba(192,57,43,0.35)':'rgba(192,57,43,0.75)'),
        borderRadius:5,yAxisID:'y',order:2},
       {type:'line',label:'Margen Bruto %',
-       data:[51.6,51.6,52.2,52.3,50.3,49.1],
+       data:[51.6,51.6,52.0,52.2,49.9,48.7],
        borderColor:'rgba(27,122,74,0.9)',backgroundColor:'rgba(27,122,74,0.07)',fill:true,
        tension:0.3,spanGaps:true,
        pointRadius:5,
