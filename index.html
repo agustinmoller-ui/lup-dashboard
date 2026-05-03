@@ -283,14 +283,14 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
   <div class="tk r" id="tkContactos">🚨 Conversión Abr-26: 52.2% — por campaña C5 (492 visitas sin venta incluidas). Meta: 75%.</div>
 </div>
 
-<!-- GRÁFICO B: Cobertura — % sin contactar por mes -->
+<!-- GRÁFICO B: Días sin contacto — rangos por vendedor -->
 <div class="card" style="margin-top:12px">
   <div class="chd"><div>
-    <div class="ctitle">Cobertura Mensual — % Cartera Sin Contacto <span class="kpi-hint" onclick="openModal('mConv')">?</span></div>
-    <div class="csub">% clientes sin compra ese mes sobre cartera total · meta &lt;10% · rojo = sobre meta</div>
-  </div><span class="cbadge">líneas</span></div>
-  <canvas id="cCobertura" height="160"></canvas>
-  <div class="tk r">🚨 50.3% de la cartera sin compra en Abr-26. Meta &lt;10% requiere sistematizar frecuencia de visitas.</div>
+    <div class="ctitle">Días Sin Contacto — Distribución por Vendedor <span class="kpi-hint" onclick="openModal('mConv')">?</span></div>
+    <div class="csub">747 clientes · barras apiladas por rango de días desde último contacto · datos actuales Sheet</div>
+  </div><span class="cbadge">hoy</span></div>
+  <canvas id="cCobertura" height="200"></canvas>
+  <div id="tkCobertura" class="tk r">🚨 22.9% de clientes (171) sin contacto hace +28 días. Meta: 0% sobre 14 días para mantener frecuencia.</div>
 </div>
 
 <div class="st"><span class="st-tag">TICKET</span> Ticket Promedio · 12 Meses</div>
@@ -658,10 +658,27 @@ function updateKpis(){
   const fN=v=>Math.round(v).toLocaleString('es-CL');
   const fP=v=>Math.round(v*10)/10+'%';
   const fK=v=>'$'+Math.round(v).toLocaleString('es-CL');
+  // [0] Ventas Netas
   if(kpis[0]) updKpi(kpis[0],netoUlt,netoProm,false,fM);
+  // [1] Pedidos
   if(kpis[1]) updKpi(kpis[1],pedUlt,pedProm,false,fN);
-  if(kpis[4]) updKpi(kpis[4],visUlt,visProm,false,fN);  // visitas es el 4to (índice 3)
-  if(kpis[5]) updKpi(kpis[5],convUlt,convProm,false,fP);
+  // [2] Clientes Activos — hardcoded en HTML, OK
+  // [3] Visitas (contactos) = visitas sin venta + ventas
+  if(kpis[3]) updKpi(kpis[3],visUlt,visProm,false,fN);
+  // [4] Cajas Vendidas — desde CAJAS_TOT
+  const cajUlt=CAJAS_TOT[CAJAS_TOT.length-1];
+  const cajProm=Math.round(CAJAS_TOT.reduce((a,b)=>a+b,0)/CAJAS_TOT.length);
+  if(kpis[4]) updKpi(kpis[4],cajUlt,cajProm,false,fN);
+  // [5] Conversión AV
+  if(kpis[5]) updKpi(kpis[5],convUlt,convProm,true,fP); // inv=true: más conv = mejor
+  // [6] Cajas/Cliente AV — desde CPK
+  const cpkUlt=CPK[CPK.length-1];
+  const cpkProm=Math.round(CPK.reduce((a,b)=>a+b,0)/CPK.length*100)/100;
+  if(kpis[6]) updKpi(kpis[6],cpkUlt,cpkProm,false,v=>v.toFixed(1));
+  // [7] % Inactividad — inv=true: más inac = peor
+  const inacUlt=INAC[INAC.length-1];
+  const inacProm=Math.round(INAC.reduce((a,b)=>a+b,0)/INAC.length*10)/10;
+  if(kpis[7]) updKpi(kpis[7],inacUlt,inacProm,true,fP);
 }
 
 // ── CHART FACTORY ─────────────────────────────────────────────────
@@ -829,46 +846,55 @@ function buildCharts(){
     }
   });
 
-  // 5B. cCobertura — % sin contactar por mes (cobertura mensual)
-  // Sin compra ese mes / cartera total
-  const CART_TOT=[522,751,815,845,882,903];
-  const CLIV_M=[522,532,463,349,456,449];
-  const NO_CONT_ABS=CART_TOT.map((c,i)=>c-CLIV_M[i]);        // absoluto sin compra
-  const NO_CONT_PCT=CART_TOT.map((c,i)=>Math.round((c-CLIV_M[i])/c*100*10)/10);
-  const COB_PCT=CART_TOT.map((c,i)=>Math.round(CLIV_M[i]/c*100*10)/10);
+  // 5B. cCobertura — días sin contacto por vendedor (datos reales Sheet, hoy 2026-05-03)
+  // Fuente: "Últimas visitas/Ventas" — 747 clientes con fecha último contacto
+  const VEND_COB=['Richard Vera Sr','Richard Vera Jr 2','Richard Vera Jr','Total'];
+  const COB_14=[169,139,46,355];
+  const COB_15_21=[73,62,48,183];
+  const COB_22_28=[23,14,1,38];
+  const COB_28MAS=[88,47,36,171];
+  const COB_LABELS=['R. Vera Sr','R. Vera Jr 2','R. Vera Jr','TOTAL'];
+  const COB_TOTALES=[353,262,131,747];
   mc('cCobertura',{
     type:'bar',
-    data:{labels:LAV,datasets:[
-      {label:'Con compra ese mes',data:CLIV_M,
-       backgroundColor:'rgba(27,122,74,0.75)',borderRadius:3,stack:'s',yAxisID:'y',order:2},
-      {label:'Sin compra ese mes',data:NO_CONT_ABS,
-       backgroundColor:'rgba(192,57,43,0.55)',borderRadius:3,stack:'s',yAxisID:'y',order:2},
-      {type:'line',label:'% Sin contactar',data:NO_CONT_PCT,
-       borderColor:RED,borderWidth:2.5,fill:false,tension:0.3,
-       pointRadius:6,
-       pointBackgroundColor:NO_CONT_PCT.map(v=>v<=10?GREEN:v<=30?AMBER:RED),
-       pointBorderColor:'white',pointBorderWidth:2,
-       yAxisID:'y2',order:1},
-      {type:'line',label:'Meta <10%',data:LAV.map(()=>10),
-       borderColor:'rgba(192,57,43,0.3)',borderWidth:1.2,borderDash:[4,4],
-       pointRadius:0,fill:false,yAxisID:'y2',order:0}
+    data:{labels:COB_LABELS,datasets:[
+      {label:'≤14 días ✅',data:COB_14,
+       backgroundColor:'rgba(27,122,74,0.85)',borderRadius:3,stack:'s'},
+      {label:'15-21 días ⚠️',data:COB_15_21,
+       backgroundColor:'rgba(241,196,15,0.85)',borderRadius:3,stack:'s'},
+      {label:'22-28 días 🟠',data:COB_22_28,
+       backgroundColor:'rgba(224,120,32,0.85)',borderRadius:3,stack:'s'},
+      {label:'>28 días 🔴',data:COB_28MAS,
+       backgroundColor:'rgba(192,57,43,0.85)',borderRadius:3,stack:'s'}
     ]},
     options:{responsive:true,maintainAspectRatio:true,
-      plugins:{legend:{labels:{font:{size:10},padding:7,usePointStyle:true,boxWidth:10}},
-        tooltip:{titleFont:{size:12},bodyFont:{size:11},callbacks:{label:ctx=>{
-          const i=ctx.dataIndex;
-          if(ctx.dataset.yAxisID==='y2') return ' '+ctx.dataset.label+': '+ctx.parsed.y+'%';
-          const lbl=ctx.dataset.label==='Sin compra ese mes'
-            ?(' Sin compra: '+ctx.parsed.y.toLocaleString('es-CL')+' ('+NO_CONT_PCT[i]+'%)')
-            :(' Con compra: '+ctx.parsed.y.toLocaleString('es-CL')+' ('+COB_PCT[i]+'%)');
-          return lbl;
-        }}}},
+      plugins:{
+        legend:{labels:{font:{size:10},padding:8,usePointStyle:true,boxWidth:10}},
+        tooltip:{titleFont:{size:12},bodyFont:{size:11},callbacks:{
+          title:ctx=>{
+            const i=ctx[0].dataIndex;
+            return COB_LABELS[i]+' — '+COB_TOTALES[i]+' clientes';
+          },
+          label:ctx=>{
+            const v=ctx.parsed.y;
+            const i=ctx.dataIndex;
+            const pct=Math.round(v/COB_TOTALES[i]*100*10)/10;
+            return ' '+ctx.dataset.label+': '+v+' ('+pct+'%)';
+          },
+          afterBody:ctx=>{
+            const i=ctx[0].dataIndex;
+            const ok=COB_14[i];
+            const pctOk=Math.round(ok/COB_TOTALES[i]*100);
+            const malo=COB_28MAS[i];
+            const pctMalo=Math.round(malo/COB_TOTALES[i]*100);
+            return ['','✅ Al día (≤14d): '+pctOk+'%','🔴 Críticos (>28d): '+pctMalo+'%'];
+          }
+        }}
+      },
       scales:{
-        x:{grid:{display:false},ticks:{font:{size:11},maxRotation:0}},
+        x:{grid:{display:false},ticks:{font:{size:11}}},
         y:{stacked:true,grid:{color:'#EEF0F5'},
-           ticks:{font:{size:11},callback:v=>v.toLocaleString('es-CL')}},
-        y2:{position:'right',min:0,max:110,grid:{display:false},
-            ticks:{callback:v=>v+'%',font:{size:10}}}
+           ticks:{font:{size:11},callback:v=>v+' cli'}}
       }
     }
   });
