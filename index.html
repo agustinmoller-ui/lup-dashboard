@@ -183,7 +183,7 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
       <div style="border-radius:10px;border-left:4px solid #C0392B;background:#FEF0EE;padding:13px 15px">
         <div style="font-size:10px;font-weight:700;color:#C0392B;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">🚨 Problema urgente — Resultado Operacional</div>
         <div style="font-size:12px;color:#5A1A12;line-height:1.65">
-          LUP opera con <strong>resultado negativo todos los meses</strong>: −$0.4M (Ene) → −$7.2M (Abr). El problema no es el margen bruto (52%) — es que los gastos operacionales crecieron <strong>+55% en 4 meses</strong> ($5.5M → $8.5M). Ese crecimiento no tiene correlato en ventas.<br><br>
+          LUP opera con <strong>resultado negativo todos los meses</strong>: −$0.4M (Ene) → −$5.4M (Abr). El problema no es el margen bruto (52%) — es que los gastos operacionales crecieron <strong>+55% en 4 meses</strong> ($5.5M → $8.5M). Ese crecimiento no tiene correlato en ventas.<br><br>
           <strong>Acción:</strong> Auditar línea "Gastos generales" de Abr-26 ($5M solo en esa línea). Identificar qué generó el salto. Es la palanca más inmediata para volver a resultado positivo.
         </div>
       </div>
@@ -328,7 +328,7 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
     </div>
     <div class="mk" style="background:#FFF8E1">
       <div class="mkl">Margen Prom 6M</div>
-      <div class="mkv" style="color:var(--orange)" id="mkMargenProm">51,1%</div>
+      <div class="mkv" style="color:var(--orange)" id="mkMargenProm">51,0%</div>
       <div style="font-size:9px;color:var(--muted)" id="mkMargenDiff">-1,8pp vs promedio</div>
     </div>
   </div>
@@ -1097,24 +1097,20 @@ function buildCharts(){
 
   // 12. EERR — ventas separadas, costos agrupados
   const EERR_MESES=["Ene-26","Feb-26","Mar-26","Abr-26"];
-  const VENTAS_M=[27.6,20.5,28.2,21.1];
-  const MB_M=[14.2,10.6,14.4,10.9];  // margen bruto (ventas-cv)
-  const DESP_M=[3.5,3.2,4.0,4.1];
-  const REM_M=[3.2,3.1,3.3,3.5];
-  const GTO_M=[2.3,2.2,2.0,5.0];
-  const RES_M=VENTAS_M.map((v,i)=>Math.round((v-MB_M[i]-DESP_M[i]-REM_M[i]-GTO_M[i])*10)/10);
-  // Resultado = Ventas - CV - Despacho - Remun - GtosOp
-  // MB_M aquí es margen bruto (ya descuenta CV)... recalcular
-  // Ventas: 27.6 | CV~13.4 | MB=14.2 → Resultado = 14.2-3.5-3.2-2.3 = 5.2 (no cuadra con EERR)
-  // Usar datos directos del EERR:
-  // Resultado Op: Ene=-0.4, Feb=-1.6, Mar=+1.4, Abr=-7.2
-  const RES_OP=[-0.4,-1.6,1.4,-7.2];
+  // Fuente oficial: EERR LUP · actualizado May-26
+  const VENTAS_M=[27.6, 20.5, 28.2, 24.9];
+  const CV_M=[13.2, 9.8, 14.1, 12.8];   // costo de ventas
+  const MB_M=[14.3, 10.7, 14.0, 12.2];   // margen bruto = ventas - CV
+  const DESP_M=[3.8, 2.5, 5.5, 1.9];
+  const REM_M=[4.9, 5.7, 5.9, 5.9];
+  const GTO_M=[5.5, 5.6, 6.2, 8.5];
+  const RES_OP=[-0.4, -3.7, -4.1, -5.4];
   mc('cEERR',{
     type:'bar',
     data:{labels:EERR_MESES,datasets:[
       {type:'bar',label:'Ventas netas',data:VENTAS_M,
        backgroundColor:'rgba(27,79,138,0.75)',borderRadius:4,order:2,yAxisID:'y'},
-      {type:'bar',label:'Costo CV',data:[13.4,9.9,13.8,10.2],
+      {type:'bar',label:'Costo CV',data:CV_M,
        backgroundColor:'rgba(192,57,43,0.65)',borderRadius:4,order:2,yAxisID:'y'},
       {type:'bar',label:'Despacho',data:DESP_M,
        backgroundColor:'rgba(224,120,32,0.7)',borderRadius:4,order:2,yAxisID:'y'},
@@ -1147,6 +1143,17 @@ function buildCharts(){
   })
 }
 
+
+// Aplicar filtro de vendedor
+function applyFilters(){
+  const sel=document.getElementById('fVendedor');
+  if(sel) fVend=sel.value;
+  // Destruir gráficos existentes
+  Object.values(charts).forEach(c=>{try{c.destroy();}catch(e){}});
+  charts={};
+  buildCharts();
+  updateKpis();
+}
 
 // INIT
 buildCharts();
