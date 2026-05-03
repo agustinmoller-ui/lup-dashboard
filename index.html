@@ -275,7 +275,7 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
 <div class="card">
   <div class="chd"><div>
     <div class="ctitle">Contactos totales · Ventas · % Conversión <span class="kpi-hint" onclick="openModal('mConv')">?</span></div>
-    <div class="csub" id="subtConv">Total AV · barras = contactos y ventas · línea = % conversión</div>
+    <div class="csub" id="subtConv">Barras apiladas: con venta + sin venta · líneas: % conversión (meta 75%) y % sin contactar (meta <10%)</div>
   </div><span class="cbadge">eje dual</span></div>
   <canvas id="cConv" height="180"></canvas>
   <div class="tk r" id="tkConv">🚨 Conversión cae a 52.2% en Abr-26 — mínimo histórico. Meta: 75%. Cada punto de conversión recuperado ≈ +$300K/mes.</div>
@@ -302,10 +302,10 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
   <div class="csub">Fuente: EERR oficial · Ene–Abr 2026 con datos reales · Nov–Dic precio estimado</div></div><span class="cbadge">eje dual</span></div>
   <canvas id="cPrecioCaja" height="165"></canvas>
   <div class="mks">
-    <div class="mk" style="background:#EEF4FF"><div class="mkl">Precio Prom/Caja</div><div class="mkv" style="color:var(--blue)">$0</div></div>
-    <div class="mk" style="background:#FEF0EE"><div class="mkl">Costo CV Prom</div><div class="mkv" style="color:var(--red)">$5,130</div></div>
-    <div class="mk" style="background:#F0FAF5"><div class="mkl">Mejor Margen</div><div class="mkv" style="color:var(--green)">0%</div><div style="font-size:9px;color:var(--muted)">Ene-26</div></div>
-    <div class="mk" style="background:#FFF8E1"><div class="mkl">Peor Margen</div><div class="mkv" style="color:var(--orange)">0%</div><div style="font-size:9px;color:var(--muted)">Ene-26</div></div>
+    <div class="mk" style="background:#EEF4FF"><div class="mkl">Precio Prom/Caja</div><div class="mkv" style="color:var(--blue)">$10.729</div></div>
+    <div class="mk" style="background:#FEF0EE"><div class="mkl">Costo CV Prom</div><div class="mkv" style="color:var(--red)">$5.235</div></div>
+    <div class="mk" style="background:#F0FAF5"><div class="mkl">Mejor Margen</div><div class="mkv" style="color:var(--green)">52,3%</div><div style="font-size:9px;color:var(--muted)">Feb-26</div></div>
+    <div class="mk" style="background:#FFF8E1"><div class="mkl">Peor Margen</div><div class="mkv" style="color:var(--orange)">49,1%</div><div style="font-size:9px;color:var(--muted)">Abr-26</div></div>
   </div>
   <div class="tk w">⚠️ Nov–Dic sin dato de costo (EERR disponible desde Ene-26). Precio baja $600/caja de Ene a Abr. Costo estable ~$5.1K. El margen cae de 52.2% a 48.7% — la palanca es sostener precio de venta, no el costo.</div>
 </div>
@@ -558,6 +558,12 @@ function netoGrupoByMes(grupo,meses){
 }
 // Visitas y ventas AV
 function visitasByMes(meses){
+  // Solo visitas SIN venta (rebotes / no convertidos)
+  const vs=getVendores();
+  return meses.map(m=>vs.reduce((s,v)=>s+(RAW[v]?.visitas?.[m]||0),0));
+}
+function contactosByMes(meses){
+  // Total contactos = visitas sin venta + ventas
   const vs=getVendores();
   return meses.map(m=>vs.reduce((s,v)=>s+(RAW[v]?.visitas?.[m]||0)+(RAW[v]?.ventas?.[m]||0),0));
 }
@@ -567,7 +573,7 @@ function ventasByMes(meses){
 }
 function convByMes(meses){
   return meses.map(m=>{
-    const tot=visitasByMes([m])[0];
+    const tot=contactosByMes([m])[0];
     const vta=ventasByMes([m])[0];
     return tot>0?Math.round(vta/tot*100*10)/10:0;
   });
@@ -592,7 +598,7 @@ function updateKpis(){
   const pedProm=Math.round(pedArr.reduce((a,b)=>a+b,0)/pedArr.length);
   // Clientes (no filtrable por vendedor — es único por RUT)
   // Visitas
-  const visArr=visitasByMes(msAV);
+  const visArr=contactosByMes(msAV);
   const visUlt=visArr[visArr.length-1];
   const visProm=Math.round(visArr.reduce((a,b)=>a+b,0)/visArr.length);
   // Conversión
@@ -774,32 +780,56 @@ function buildCharts(){
     }
   });
 
-  // 5. Conversión — barras + línea dual
-  const visArr=visitasByMes(msAV);
-  const vtaArr=ventasByMes(msAV);
-  const convArr=convByMes(msAV);
-  mc('cConv',{data:{labels:lblAV,datasets:[
-    {type:'bar',label:'Contactos totales',data:visArr,backgroundColor:'rgba(27,79,138,0.5)',borderRadius:4,yAxisID:'y',order:2},
-    {type:'bar',label:'Ventas',data:vtaArr,backgroundColor:'rgba(27,122,74,0.8)',borderRadius:4,yAxisID:'y',order:2},
-    {type:'line',label:'% Conversión',data:convArr,
-     borderColor:RED,backgroundColor:'rgba(192,57,43,0.05)',fill:true,tension:0.3,
-     pointRadius:5,pointBackgroundColor:convArr.map(v=>v>=75?GREEN:RED),
-     pointBorderColor:'white',pointBorderWidth:2,yAxisID:'y2',order:1},
-    {type:'line',label:'Meta 75%',data:msAV.map(()=>75),
-     borderColor:'rgba(224,120,32,0.6)',borderWidth:1.5,borderDash:[4,4],
-     pointRadius:0,fill:false,yAxisID:'y2',order:0}]},
+  // 5. Conversión — stacked apilado: venta + visita sin venta + líneas %
+  // Datos hardcoded para exactitud garantizada
+  const VIST_NV=[198,286,185,98,78,492];    // visitas SIN venta
+  const VTAS_M=[623,659,579,396,541,537];    // ventas/pedidos
+  const CONV_M=[75.9,69.7,75.8,80.2,87.4,52.2]; // % conversión real
+  const NO_CONT_PCT=[0.0,29.2,43.2,58.7,48.3,50.3]; // % cartera sin compra ese mes
+  mc('cConv',{
+    type:'bar',
+    data:{labels:LAV,datasets:[
+      {label:'Con venta',data:VTAS_M,
+       backgroundColor:'rgba(27,122,74,0.85)',borderRadius:3,stack:'s',yAxisID:'y',order:2},
+      {label:'Sin venta (rebote)',data:VIST_NV,
+       backgroundColor:'rgba(107,122,153,0.55)',borderRadius:3,stack:'s',yAxisID:'y',order:2},
+      {type:'line',label:'% Conversión',data:CONV_M,
+       borderColor:GREEN,borderWidth:2.5,fill:false,tension:0.3,
+       pointRadius:6,
+       pointBackgroundColor:CONV_M.map(v=>v>=75?GREEN:v>=60?AMBER:RED),
+       pointBorderColor:'white',pointBorderWidth:2,
+       yAxisID:'y2',order:1},
+      {type:'line',label:'% Sin contactar (meta <10%)',data:NO_CONT_PCT,
+       borderColor:RED,borderWidth:2,fill:false,tension:0.3,
+       borderDash:[5,3],
+       pointRadius:5,
+       pointBackgroundColor:NO_CONT_PCT.map(v=>v<=10?GREEN:RED),
+       pointBorderColor:'white',pointBorderWidth:2,
+       yAxisID:'y2',order:1},
+      {type:'line',label:'Meta conv 75%',data:LAV.map(()=>75),
+       borderColor:'rgba(27,122,74,0.3)',borderWidth:1.2,borderDash:[4,4],
+       pointRadius:0,fill:false,yAxisID:'y2',order:0},
+      {type:'line',label:'Meta no-contactar <10%',data:LAV.map(()=>10),
+       borderColor:'rgba(192,57,43,0.3)',borderWidth:1.2,borderDash:[4,4],
+       pointRadius:0,fill:false,yAxisID:'y2',order:0}
+    ]},
     options:{responsive:true,maintainAspectRatio:true,
-      plugins:{legend:{labels:{font:{size:11},padding:10,usePointStyle:true,boxWidth:10}},
-        tooltip:{titleFont:{size:12},bodyFont:{size:11}}},
+      plugins:{legend:{labels:{font:{size:10},padding:7,usePointStyle:true,boxWidth:10}},
+        tooltip:{titleFont:{size:12},bodyFont:{size:11},callbacks:{label:ctx=>{
+          if(ctx.dataset.yAxisID==='y2') return ' '+ctx.dataset.label+': '+ctx.parsed.y+'%';
+          return ' '+ctx.dataset.label+': '+ctx.parsed.y.toLocaleString('es-CL')+' contactos';
+        }}}},
       scales:{
         x:{grid:{display:false},ticks:{font:{size:11},maxRotation:0}},
-        y:{position:'left',grid:{color:'#EEF0F5'},ticks:{font:{size:11},callback:v=>v.toLocaleString('es-CL')}},
-        y2:{position:'right',min:0,max:110,grid:{display:false},ticks:{callback:v=>v+'%',font:{size:10}}}
+        y:{position:'left',stacked:true,grid:{color:'#EEF0F5'},
+           ticks:{font:{size:11},callback:v=>v.toLocaleString('es-CL')}},
+        y2:{position:'right',min:0,max:110,grid:{display:false},
+            ticks:{callback:v=>v+'%',font:{size:10}}}
       }
     }
   });
 
-  // 6. Cajas vs BE — apilado + línea total + línea BE
+    // 6. Cajas vs BE — apilado + línea total + línea BE
   mc('cCajas',{type:'bar',data:{labels:LAV,datasets:[
     {label:'Richard',data:CAJAS_R,backgroundColor:'rgba(27,79,138,0.85)',borderRadius:3,stack:'s'},
     {label:'Germán', data:CAJAS_G,backgroundColor:'rgba(224,120,32,0.85)',borderRadius:3,stack:'s'},
@@ -877,49 +907,46 @@ function buildCharts(){
     options:{...BASE,scales:{...BASE.scales,y:{...BASE.scales.y,min:0,max:100,ticks:{...BASE.scales.y.ticks,callback:v=>v+'%'}}}}
   });
 
-  // 10. Fidelidad — barras horizontales más legibles + contexto completo
+  // 10. Fidelidad — barras verticales (más compatible con móvil)
   const FID_V=[281,29,93,106,118,127,107];
-  const FID_L=['Sin compra AV','1 mes','2 meses','3 meses','4 meses','5 meses','6 meses (nov→abr)'];
+  const FID_L=['Sin compra AV','1 mes','2 meses','3 meses','4 meses','5 meses','6 meses'];
   const FID_COLORS=[
-    'rgba(192,57,43,0.75)',   // sin compra → rojo
-    'rgba(224,120,32,0.80)',  // 1 mes
-    'rgba(241,196,15,0.85)',  // 2 meses
-    'rgba(27,79,138,0.70)',   // 3 meses
-    'rgba(11,110,110,0.80)',  // 4 meses
-    'rgba(27,122,74,0.85)',   // 5 meses
-    'rgba(27,122,74,1.0)'    // 6 meses → verde fuerte = fieles
+    'rgba(192,57,43,0.75)',
+    'rgba(224,120,32,0.80)',
+    'rgba(241,196,15,0.85)',
+    'rgba(27,79,138,0.65)',
+    'rgba(11,110,110,0.80)',
+    'rgba(27,122,74,0.80)',
+    'rgba(27,122,74,1.0)'
   ];
   const FID_PCT=FID_V.map(v=>Math.round(v/861*100*10)/10);
   mc('cFidel',{
     type:'bar',
     data:{
-      labels:['Cartera AV (861 clientes)'],
-      datasets:FID_L.map((l,i)=>({
-        label:l+' — '+FID_V[i]+' ('+FID_PCT[i]+'%)',
-        data:[FID_V[i]],
-        backgroundColor:FID_COLORS[i],
-        borderRadius:i===6?4:2,
-        stack:'s'
-      }))
+      labels:FID_L,
+      datasets:[{
+        label:'Clientes',
+        data:FID_V,
+        backgroundColor:FID_COLORS,
+        borderRadius:5,
+        borderSkipped:false
+      }]
     },
     options:{
-      indexAxis:'y',
-      responsive:true,maintainAspectRatio:false,
+      responsive:true,maintainAspectRatio:true,
       plugins:{
-        legend:{
-          position:'right',
-          labels:{font:{size:10},padding:8,usePointStyle:true,boxWidth:12}
-        },
-        tooltip:{titleFont:{size:12},bodyFont:{size:11},callbacks:{label:ctx=>{
-          const i=ctx.datasetIndex;
-          return ' '+FID_L[i]+': '+FID_V[i]+' clientes ('+FID_PCT[i]+'% cartera)';
-        }}}
+        legend:{display:false},
+        tooltip:{titleFont:{size:12},bodyFont:{size:11},callbacks:{
+          title:ctx=>ctx[0].label,
+          label:ctx=>{
+            const i=ctx.dataIndex;
+            return [' Clientes: '+FID_V[i],' % cartera AV: '+FID_PCT[i]+'%'];
+          }
+        }}
       },
       scales:{
-        x:{grid:{color:'#EEF0F5'},stacked:true,
-           ticks:{font:{size:10},callback:v=>v+' cli'},
-           max:861},
-        y:{grid:{display:false},stacked:true,ticks:{font:{size:11}}}
+        x:{grid:{display:false},ticks:{font:{size:10},maxRotation:20}},
+        y:{grid:{color:'#EEF0F5'},ticks:{font:{size:10},callback:v=>v+' cli'}}
       }
     }
   });
