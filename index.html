@@ -313,11 +313,24 @@ footer{text-align:center;padding:18px;font-size:10px;color:var(--muted)}
   <div class="chd"><div><div class="ctitle">Precio Neto/Caja vs Costo CV/Caja + Margen %</div>
   <div class="csub">Fuente: EERR oficial · Ene–Abr 2026 con datos reales · Nov–Dic precio estimado</div></div><span class="cbadge">eje dual</span></div>
   <canvas id="cPrecioCaja" height="165"></canvas>
-  <div class="mks">
-    <div class="mk" style="background:#EEF4FF"><div class="mkl">Precio Prom/Caja</div><div class="mkv" style="color:var(--blue)">$10.729</div></div>
-    <div class="mk" style="background:#FEF0EE"><div class="mkl">Costo CV Prom</div><div class="mkv" style="color:var(--red)">$5.235</div></div>
-    <div class="mk" style="background:#F0FAF5"><div class="mkl">Mejor Margen</div><div class="mkv" style="color:var(--green)">52,3%</div><div style="font-size:9px;color:var(--muted)">Feb-26</div></div>
-    <div class="mk" style="background:#FFF8E1"><div class="mkl">Peor Margen</div><div class="mkv" style="color:var(--orange)">49,1%</div><div style="font-size:9px;color:var(--muted)">Abr-26</div></div>
+  <div class="mks" id="mksPrecios">
+    <div class="mk" style="background:#EEF4FF">
+      <div class="mkl">Precio/Caja <span style="font-size:9px;color:var(--muted)" id="mkPrecioLbl">Abr-26</span></div>
+      <div class="mkv" style="color:var(--blue)" id="mkPrecio">$10.160</div>
+    </div>
+    <div class="mk" style="background:#FEF0EE">
+      <div class="mkl">Costo CV/Caja <span style="font-size:9px;color:var(--muted)" id="mkCostoLbl">Abr-26</span></div>
+      <div class="mkv" style="color:var(--red)" id="mkCosto">$5.169</div>
+    </div>
+    <div class="mk" style="background:#F0FAF5">
+      <div class="mkl">Margen <span style="font-size:9px;color:var(--muted)" id="mkMargenLbl">Abr-26</span></div>
+      <div class="mkv" style="color:var(--green)" id="mkMargen">49,1%</div>
+    </div>
+    <div class="mk" style="background:#FFF8E1">
+      <div class="mkl">Margen Prom 6M</div>
+      <div class="mkv" style="color:var(--orange)" id="mkMargenProm">50,9%</div>
+      <div style="font-size:9px;color:var(--muted)" id="mkMargenDiff">-1,8pp vs promedio</div>
+    </div>
   </div>
   <div class="tk w">⚠️ Nov–Dic sin dato de costo (EERR disponible desde Ene-26). Precio baja $600/caja de Ene a Abr. Costo estable ~$5.1K. El margen cae de 52.2% a 48.7% — la palanca es sostener precio de venta, no el costo.</div>
 </div>
@@ -528,6 +541,9 @@ const CAJAS_R=[1841, 1904, 984, 836, 1235, 2096];
 const CAJAS_G=[305, 335, 390, 218, 360, 225];
 const CAJAS_O=[50, 60, 70, 50, 60, 148];
 const CAJAS_TOT=[2227, 2638, 2589, 1912, 2764, 2469];
+const PRECIO_CAJA=[11712, 10784, 10713, 10723, 10281, 10160];
+const COSTO_CAJA=[5669, 5219, 5124, 5114, 5114, 5169];
+const MARGEN_PCT=[51.6, 51.6, 52.2, 52.3, 50.3, 49.1];
 const CPK=[4.27, 4.96, 5.59, 5.48, 6.06, 5.5];
 const INAC=[42.2, 41.1, 48.7, 61.4, 49.5, 50.3];
 const CART=[522, 751, 815, 845, 882, 903];
@@ -679,6 +695,41 @@ function updateKpis(){
   const inacUlt=INAC[INAC.length-1];
   const inacProm=Math.round(INAC.reduce((a,b)=>a+b,0)/INAC.length*10)/10;
   if(kpis[7]) updKpi(kpis[7],inacUlt,inacProm,true,fP);
+
+  // Calugas Precio/Costo/Margen — mes en análisis (último disponible AV)
+  const avMeses=getMesesAV();
+  const avUltM=avMeses[avMeses.length-1];
+  const avLbl=getLabelAV(avUltM);
+  // Índice dentro de LAV (Nov-25=0 ... Abr-26=5)
+  const LAV_IDX={'2025-11':0,'2025-12':1,'2026-01':2,'2026-02':3,'2026-03':4,'2026-04':5};
+  const pIdx=LAV_IDX[avUltM]!==undefined?LAV_IDX[avUltM]:PRECIO_CAJA.length-1;
+  const precioUlt=PRECIO_CAJA[pIdx];
+  const costoUlt=COSTO_CAJA[pIdx];
+  const margenUlt=MARGEN_PCT[pIdx];
+  const margenProm=Math.round(MARGEN_PCT.reduce((a,b)=>a+b,0)/MARGEN_PCT.length*10)/10;
+  const margenDiff=Math.round((margenUlt-margenProm)*10)/10;
+  const fmtPrecio=v=>'$'+Math.round(v).toLocaleString('es-CL');
+  const mkPrecio=document.getElementById('mkPrecio');
+  const mkCosto=document.getElementById('mkCosto');
+  const mkMargen=document.getElementById('mkMargen');
+  const mkMargenProm=document.getElementById('mkMargenProm');
+  const mkMargenDiff=document.getElementById('mkMargenDiff');
+  const mkPrecioLbl=document.getElementById('mkPrecioLbl');
+  const mkCostoLbl=document.getElementById('mkCostoLbl');
+  const mkMargenLbl=document.getElementById('mkMargenLbl');
+  if(mkPrecio){mkPrecio.textContent=fmtPrecio(precioUlt); mkPrecioLbl.textContent=avLbl;}
+  if(mkCosto){mkCosto.textContent=fmtPrecio(costoUlt); mkCostoLbl.textContent=avLbl;}
+  if(mkMargen){
+    mkMargen.textContent=margenUlt.toFixed(1)+'%';
+    mkMargenLbl.textContent=avLbl;
+    mkMargen.style.color=margenUlt>=52?'var(--green)':margenUlt>=50?'var(--orange)':'var(--red)';
+  }
+  if(mkMargenProm) mkMargenProm.textContent=margenProm.toFixed(1)+'%';
+  if(mkMargenDiff){
+    const signo=margenDiff>=0?'+':'';
+    mkMargenDiff.textContent=signo+margenDiff.toFixed(1)+'pp vs promedio';
+    mkMargenDiff.style.color=margenDiff>=0?'var(--green)':'var(--red)';
+  }
 }
 
 // ── CHART FACTORY ─────────────────────────────────────────────────
